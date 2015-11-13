@@ -58,7 +58,7 @@ public enum Dexter {
   private void requestPermission(String permission) {
     int permissionCode = getPermissionCodeForPermission(permission);
     permissionCodes.put(permissionCode, permission);
-    ActivityCompat.requestPermissions(activity, new String[] { permission }, permissionCode);
+    ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
     listener.onPermissionDialogShown(permission);
   }
 
