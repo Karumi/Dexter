@@ -21,20 +21,20 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-public class DexterActivity extends Activity {
+public final class DexterActivity extends Activity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Dexter.INSTANCE.onActivityCreated(this);
+    Dexter.onActivityCreated(this);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, String[] permissions,
       int[] grantResults) {
     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      Dexter.INSTANCE.onPermissionRequestGranted(requestCode);
+      Dexter.onPermissionRequestGranted(requestCode);
     } else {
-      Dexter.INSTANCE.onPermissionRequestDenied(requestCode);
+      Dexter.onPermissionRequestDenied(requestCode);
     }
   }
 }

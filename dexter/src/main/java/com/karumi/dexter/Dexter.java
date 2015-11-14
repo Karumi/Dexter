@@ -18,108 +18,42 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.util.SparseArray;
+import com.karumi.dexter.listener.PermissionListener;
 
-public enum Dexter {
+/**
+ * Class to simplify the management of Android runtime permissions.
+ * Dexter needs to be initialized before checking for a permission using {@link
+ * #initialize(Context)}.
+ */
+public final class Dexter {
 
-  INSTANCE;
+  private static DexterInstance instance;
 
-  private final SparseArray<String> permissionCodes = new SparseArray<>();
-  private String permission;
-  private Context context;
-  private Activity activity;
-  private Listener listener;
-
-  public void initialize(Context context) {
-    this.context = context;
-  }
-
-  public void checkPermission(String permission, Listener listener) {
-    this.permission = permission;
-    this.listener = listener;
-
-    Intent intent = new Intent(context, DexterActivity.class);
-    context.startActivity(intent);
-  }
-
-  private void handleDeniedPermission(String permission) {
-    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-      listener.onPermissionRationaleShouldBeShown(permission,
-          new PermissionRationaleToken(this, permission));
-    } else {
-      requestPermission(permission);
+  public static void initialize(Context context) {
+    if (instance == null) {
+      instance = new DexterInstance(context);
     }
   }
 
-  private void requestPermission(String permission) {
-    int permissionCode = getPermissionCodeForPermission(permission);
-    permissionCodes.put(permissionCode, permission);
-    ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
-    listener.onPermissionDialogShown(permission);
+  /**
+   * Checks the permission and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   *
+   * @param permission One of the values found in {@link android.Manifest.permission}
+   */
+  public static void checkPermission(String permission, PermissionListener listener) {
+    instance.checkPermission(permission, listener);
   }
 
-  private int getPermissionCodeForPermission(String permission) {
-    return permission.hashCode();
+  static void onActivityCreated(Activity activity) {
+    instance.onActivityCreated(activity);
   }
 
-  void onActivityCreated(Activity activity) {
-    this.activity = activity;
-
-    int permissionState = ContextCompat.checkSelfPermission(activity, permission);
-    switch (permissionState) {
-      case PackageManager.PERMISSION_DENIED:
-        handleDeniedPermission(permission);
-        break;
-      case PackageManager.PERMISSION_GRANTED:
-      default:
-        listener.onPermissionGranted(permission);
-        activity.finish();
-        break;
-    }
+  static void onPermissionRequestGranted(int permissionCode) {
+    instance.onPermissionRequestGranted(permissionCode);
   }
 
-  void onPermissionRequestGranted(int permissionCode) {
-    String permission = permissionCodes.get(permissionCode);
-    listener.onPermissionGranted(permission);
-    activity.finish();
-  }
-
-  void onPermissionRequestDenied(int permissionCode) {
-    String permission = permissionCodes.get(permissionCode);
-    listener.onPermissionDenied(permission);
-    activity.finish();
-  }
-
-  public interface PermissionToken {
-    void continuePermissionRequest();
-  }
-
-  private static final class PermissionRationaleToken implements PermissionToken {
-
-    private final Dexter dexter;
-    private final String permission;
-
-    public PermissionRationaleToken(Dexter dexter, String permission) {
-      this.dexter = dexter;
-      this.permission = permission;
-    }
-
-    @Override public void continuePermissionRequest() {
-      dexter.requestPermission(permission);
-    }
-  }
-
-  public interface Listener {
-    void onPermissionGranted(String permission);
-
-    void onPermissionDenied(String permission);
-
-    void onPermissionDialogShown(String permission);
-
-    void onPermissionRationaleShouldBeShown(String permission, PermissionToken token);
+  static void onPermissionRequestDenied(int permissionCode) {
+    instance.onPermissionRequestDenied(permissionCode);
   }
 }
