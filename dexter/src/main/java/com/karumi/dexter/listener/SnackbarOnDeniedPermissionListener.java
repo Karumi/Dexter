@@ -34,12 +34,22 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
   private final ViewGroup rootView;
   private final String text;
 
+  /**
+   * @param context Context to inflate the snackbar
+   * @param rootView Parent view to show the snackbar
+   * @param text Message displayed in the snackbar
+   */
   public SnackbarOnDeniedPermissionListener(Context context, ViewGroup rootView, String text) {
     this.context = context;
     this.rootView = rootView;
     this.text = text;
   }
 
+  /**
+   * @param context Context to inflate the snackbar
+   * @param rootView Parent view to show the snackbar
+   * @param resId Resource id of the string displayed in the snackbar
+   */
   public SnackbarOnDeniedPermissionListener(Context context, ViewGroup rootView,
       @StringRes int resId) {
     this.context = context;

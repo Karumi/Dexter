@@ -18,21 +18,11 @@
     package="com.karumi.dexter"
     >
 
-  <uses-permission android:name="android.permission.CAMERA"/>
-  <uses-permission android:name="android.permission.READ_CONTACTS"/>
-  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-
-  <application
-      android:allowBackup="true"
-      android:label="@string/app_name"
-      android:supportsRtl="true"
-      >
-
+  <application>
     <activity
         android:name=".DexterActivity"
         android:theme="@style/Theme.Transparent"
         />
-
   </application>
 
 </manifest>

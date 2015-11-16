@@ -48,6 +48,10 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
         .show();
   }
 
+  /**
+   * Builder class to configure the displayed dialog.
+   * Non set fields will be initialized to an empty string.
+   */
   public static class Builder {
     private final Context context;
     private String title;
