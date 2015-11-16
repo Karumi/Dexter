@@ -15,6 +15,9 @@
   ~ limitations under the License.
   -->
 <resources>
+  <dimen name="title_font_size">30sp</dimen>
+  <dimen name="icon_size">50dp</dimen>
+  <dimen name="header_margin">10dp</dimen>
   <dimen name="permission_button_margin_vertical">10dp</dimen>
   <dimen name="permission_feedback_margin_vertical">@dimen/permission_button_margin_vertical</dimen>
   <dimen name="button_width">120dp</dimen>

@@ -21,6 +21,8 @@
     android:background="@color/colorPrimaryDark"
     >
 
+  <include layout="@layout/header"/>
+
   <Button
       android:id="@+id/contacts_permission_button"
       android:layout_width="@dimen/button_width"
