@@ -2,12 +2,12 @@ Dexter
 ==================
 
 
-Dexter is an Android library that simplifies the process to request for permissions at runtime.
+Dexter is an Android library that simplifies the process of requesting permissions at runtime.
 
 Android Marshmallow includes a new functionality to let users grant or deny permissions when running an app instead of granting them all when installing it. This approach gives the user more control over applications but requires developers to add lots of code to support it.
 
-The official API is heavily coupled with the ``Activity`` class, forcing you to put your permission handling logic in your activities.
-Dexter frees your permission handling code from your activities and lets you write that logic anywhere you want.
+The official API is heavily coupled with the ``Activity`` class.
+Dexter frees your permission code from your activities and lets you write that logic anywhere you want.
 
 
 Screenshots
@@ -18,10 +18,15 @@ Screenshots
 Usage
 -----
 
-To start using the library you just need to initialize Dexter with a ``Context``:
+To start using the library you just need to initialize Dexter with a ``Context``, preferably your ``Application`` as it won't be destroyed during your app lifetime:
 
 ```java
-Dexter.initialize(context);
+public MyApplication extends Application {
+	@Override public void onCreate() {
+		super.onCreate();
+		Dexter.initialize(context);
+	}
+}
 ```
 
 Once the library is initialized you can start checking permissions at will. For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
@@ -33,11 +38,14 @@ Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
 });
 ```
 
-To make your life easier we provide you with some ``PermissionListener`` implementations to perform recurrent actions:
+To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
 * ``EmptyPermissionListener`` to make it easier to implement only the methods you want.
 * ``DialogOnDeniedPermissionListener`` to show a configurable dialog whenever the user rejects a permission request.
 * ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request.
 * ``MultiPermissionListener`` to compound multiple listeners into one.
+
+
+**IMPORTANT**: Remember to follow [Google design patterns] [2] to make your application as user-friendly as possible.
 
 Add it to your project
 ----------------------
@@ -70,8 +78,8 @@ Feel free to add any useful feature to the library, we will be glad to improve i
 Libraries used in this project
 ------------------------------
 
-* [JUnit] [2]
-* [Butterknife] [3]
+* [JUnit] [3]
+* [Butterknife] [4]
 
 License
 -------
@@ -91,5 +99,6 @@ License
     limitations under the License.
 
 [1]: ./art/example.gif
-[2]: https://github.com/junit-team/junit
-[3]: https://github.com/JakeWharton/butterknife
+[2]: http://www.google.es/design/spec/patterns/permissions.html
+[3]: https://github.com/junit-team/junit
+[4]: https://github.com/JakeWharton/butterknife

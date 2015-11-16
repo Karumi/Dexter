@@ -21,9 +21,9 @@ import android.content.Context;
 import com.karumi.dexter.listener.PermissionListener;
 
 /**
- * Class to simplify the management of Android runtime permissions.
+ * Class to simplify the management of Android runtime permissions
  * Dexter needs to be initialized before checking for a permission using {@link
- * #initialize(Context)}.
+ * #initialize(Context)}
  */
 public final class Dexter {
 
@@ -36,8 +36,8 @@ public final class Dexter {
   }
 
   /**
-   * Checks the permission and notifies the listener of its state.
-   * It is important to note that permissions still have to be declared in the manifest.
+   * Checks the permission and notifies the listener of its state
+   * It is important to note that permissions still have to be declared in the manifest
    *
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
@@ -49,11 +49,11 @@ public final class Dexter {
     instance.onActivityCreated(activity);
   }
 
-  static void onPermissionRequestGranted(int permissionCode) {
-    instance.onPermissionRequestGranted(permissionCode);
+  static void onPermissionRequestGranted() {
+    instance.onPermissionRequestGranted();
   }
 
-  static void onPermissionRequestDenied(int permissionCode) {
-    instance.onPermissionRequestDenied(permissionCode);
+  static void onPermissionRequestDenied() {
+    instance.onPermissionRequestDenied();
   }
 }

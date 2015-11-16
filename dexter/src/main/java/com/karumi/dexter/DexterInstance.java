@@ -22,22 +22,34 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.SparseArray;
 import com.karumi.dexter.listener.PermissionListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Inner implementation of a dexter instance
+ */
 final class DexterInstance {
 
-  private final SparseArray<String> permissionCodes = new SparseArray<>();
   private String permission;
   private Context context;
   private Activity activity;
   private PermissionListener listener;
+  private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
 
   DexterInstance(Context context) {
     this.context = context;
   }
 
+  /**
+   * Checks the state of a specific permission reporting it to the listener when known
+   */
   void checkPermission(String permission, PermissionListener listener) {
+    if (isRequestingPermission.getAndSet(true)) {
+      throw new IllegalStateException(
+          "Only one permission request at a time. Currently handling permission: ["
+              + this.permission + "]");
+    }
+
     this.permission = permission;
     this.listener = listener;
 
@@ -45,6 +57,9 @@ final class DexterInstance {
     context.startActivity(intent);
   }
 
+  /**
+   * Method called whenever the inner activity has been created and is ready to be used
+   */
   void onActivityCreated(Activity activity) {
     this.activity = activity;
 
@@ -55,33 +70,47 @@ final class DexterInstance {
         break;
       case PackageManager.PERMISSION_GRANTED:
       default:
-        listener.onPermissionGranted(permission);
-        activity.finish();
+        finishWithGrantedPermission(permission);
         break;
     }
   }
 
-  void onPermissionRequestGranted(int permissionCode) {
-    String permission = permissionCodes.get(permissionCode);
-    listener.onPermissionGranted(permission);
-    activity.finish();
+  /**
+   * Method called whenever the permission has been granted by the user
+   */
+  void onPermissionRequestGranted() {
+    finishWithGrantedPermission(permission);
   }
 
-  void onPermissionRequestDenied(int permissionCode) {
-    String permission = permissionCodes.get(permissionCode);
-    listener.onPermissionDenied(permission);
-    activity.finish();
+  /**
+   * Method called whenever the permission has been denied by the user
+   */
+  void onPermissionRequestDenied() {
+    finishWithDeniedPermission(permission);
   }
 
+  /**
+   * Method called when the user has been informed with the rationale and agrees to continue
+   * with the permission request process
+   */
+  void onContinuePermissionRequest(String permission) {
+    requestPermission(permission);
+  }
+
+  /**
+   * Method called when the user has been informed with the rationale and decides to cancel
+   * the permission request process
+   */
+  void onCancelPermissionRequest(String permission) {
+    finishWithDeniedPermission(permission);
+  }
+
+  /**
+   * Starts the native request permission process
+   */
   void requestPermission(String permission) {
     int permissionCode = getPermissionCodeForPermission(permission);
-    permissionCodes.put(permissionCode, permission);
-    ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
-  }
-
-  void cleanPermission(String permission) {
-    permissionCodes.delete(permissionCodes.indexOfValue(permission));
-    listener.onPermissionDenied(permission);
+    ActivityCompat.requestPermissions(activity, new String[] { permission }, permissionCode);
   }
 
   private void handleDeniedPermission(String permission) {
@@ -91,6 +120,18 @@ final class DexterInstance {
     } else {
       requestPermission(permission);
     }
+  }
+
+  private void finishWithGrantedPermission(String permission) {
+    activity.finish();
+    listener.onPermissionGranted(permission);
+    isRequestingPermission.set(false);
+  }
+
+  private void finishWithDeniedPermission(String permission) {
+    activity.finish();
+    listener.onPermissionDenied(permission);
+    isRequestingPermission.set(false);
   }
 
   private int getPermissionCodeForPermission(String permission) {

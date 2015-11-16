@@ -29,14 +29,14 @@ final class PermissionRationaleToken implements PermissionToken {
 
   @Override public void continuePermissionRequest() {
     if (!isTokenResolved) {
-      dexterInstance.requestPermission(permission);
+      dexterInstance.onContinuePermissionRequest(permission);
       isTokenResolved = true;
     }
   }
 
   @Override public void cancelPermissionRequest() {
     if (!isTokenResolved) {
-      dexterInstance.cleanPermission(permission);
+      dexterInstance.onCancelPermissionRequest(permission);
       isTokenResolved = true;
     }
   }
