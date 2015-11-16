@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.MultiPermissionListener;
 import com.karumi.dexter.listener.PermissionListener;
 import com.karumi.dexter.listener.SnackbarOnDeniedPermissionListener;
@@ -120,8 +121,13 @@ public class SampleActivity extends Activity implements PermissionListener {
     contactsPermissionListener = new MultiPermissionListener(this,
         new SnackbarOnDeniedPermissionListener(this, rootView,
             R.string.contacts_permission_denied_feedback));
-    audioPermissionListener = new MultiPermissionListener(this,
-        new SnackbarOnDeniedPermissionListener(this, rootView,
-            R.string.audio_permission_denied_feedback));
+    PermissionListener dialogOnDeniedPermissionListener =
+        new DialogOnDeniedPermissionListener.Builder(this)
+            .withTitle(R.string.audio_permission_denied_dialog_title)
+            .withMessage(R.string.audio_permission_denied_dialog_feedback)
+            .withButtonText(android.R.string.ok)
+            .withIcon(R.mipmap.ic_logo_karumi)
+            .build();
+    audioPermissionListener = new MultiPermissionListener(this, dialogOnDeniedPermissionListener);
   }
 }
