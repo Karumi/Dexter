@@ -106,7 +106,7 @@ final class DexterInstance {
    * the permission request process
    */
   void onCancelPermissionRequest(String permission) {
-    finishWithDeniedPermission(permission, firstTimeRequested);
+    finishWithDeniedPermission(permission, false);
   }
 
   /**

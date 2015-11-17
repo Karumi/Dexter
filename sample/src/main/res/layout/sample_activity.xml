@@ -85,4 +85,25 @@
       style="@style/PermissionFeedback"
       />
 
+  <Button
+      android:id="@+id/location_permission_button"
+      android:layout_width="@dimen/button_width"
+      android:layout_height="@dimen/button_height"
+      android:text="@string/ask_for_location_permission_button"
+      android:layout_below="@id/audio_permission_button"
+      android:layout_centerHorizontal="true"
+      style="@style/PermissionButton"
+      />
+
+  <TextView
+      android:id="@+id/location_permission_feedback"
+      android:layout_width="@dimen/feedback_width"
+      android:layout_height="@dimen/feedback_height"
+      android:layout_toRightOf="@id/location_permission_button"
+      android:layout_toEndOf="@id/location_permission_button"
+      android:layout_below="@id/audio_permission_feedback"
+      android:text="@string/permission_unknown_feedback"
+      style="@style/PermissionFeedback"
+      />
+
 </RelativeLayout>
