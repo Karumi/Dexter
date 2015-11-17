@@ -17,9 +17,11 @@
 package com.karumi.dexter.sample;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
@@ -34,6 +36,9 @@ import com.karumi.dexter.listener.MultiPermissionListener;
 import com.karumi.dexter.listener.PermissionListener;
 import com.karumi.dexter.listener.SnackbarOnDeniedPermissionListener;
 
+/**
+ * Sample activity showing the permission request process with Dexter.
+ */
 public class SampleActivity extends Activity implements PermissionListener {
 
   @Bind(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
@@ -48,7 +53,6 @@ public class SampleActivity extends Activity implements PermissionListener {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
-    Dexter.initialize(this);
     ButterKnife.bind(this);
     createPermissionListeners();
   }
@@ -85,9 +89,10 @@ public class SampleActivity extends Activity implements PermissionListener {
     }
   }
 
-  @Override
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) @Override
   public void onPermissionRationaleShouldBeShown(String permission, final PermissionToken token) {
-    new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)
+    new AlertDialog.Builder(this)
+        .setTitle(R.string.permission_rationale_title)
         .setMessage(R.string.permission_rationale_message)
         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {
@@ -99,6 +104,11 @@ public class SampleActivity extends Activity implements PermissionListener {
           @Override public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
             token.continuePermissionRequest();
+          }
+        })
+        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+          @Override public void onDismiss(DialogInterface dialog) {
+            token.cancelPermissionRequest();
           }
         })
         .show();
@@ -116,15 +126,18 @@ public class SampleActivity extends Activity implements PermissionListener {
 
   private void createPermissionListeners() {
     cameraPermissionListener = new MultiPermissionListener(this,
-        new SnackbarOnDeniedPermissionListener.Builder(this, rootView,
-            R.string.camera_permission_denied_feedback).withOpenSettingsButton(
-            R.string.permission_rationale_settings_button_text, getPackageName()).build());
+        SnackbarOnDeniedPermissionListener.Builder
+            .with(this, rootView, R.string.camera_permission_denied_feedback)
+            .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
+            .build());
     contactsPermissionListener = new MultiPermissionListener(this,
-        new SnackbarOnDeniedPermissionListener.Builder(this, rootView,
-            R.string.contacts_permission_denied_feedback).withOpenSettingsButton(
-            R.string.permission_rationale_settings_button_text, getPackageName()).build());
+        SnackbarOnDeniedPermissionListener.Builder
+            .with(this, rootView, R.string.contacts_permission_denied_feedback)
+            .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
+            .build());
     PermissionListener dialogOnDeniedPermissionListener =
-        new DialogOnDeniedPermissionListener.Builder(this)
+        DialogOnDeniedPermissionListener.Builder
+            .withContext(this)
             .withTitle(R.string.audio_permission_denied_dialog_title)
             .withMessage(R.string.audio_permission_denied_dialog_feedback)
             .withButtonText(android.R.string.ok)

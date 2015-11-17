@@ -17,6 +17,7 @@
 package com.karumi.dexter;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import com.karumi.dexter.listener.PermissionListener;
 
@@ -29,6 +30,12 @@ public final class Dexter {
 
   private static DexterInstance instance;
 
+  /**
+   * Initializes the library
+   *
+   * @param context Context used by Dexter. Use your {@link Application} to make sure the instance
+   * is not cleaned up during your app lifetime
+   */
   public static void initialize(Context context) {
     if (instance == null) {
       instance = new DexterInstance(context);
@@ -40,6 +47,7 @@ public final class Dexter {
    * It is important to note that permissions still have to be declared in the manifest
    *
    * @param permission One of the values found in {@link android.Manifest.permission}
+   * @param listener The class that will be reported when the state of the permission is ready
    */
   public static void checkPermission(String permission, PermissionListener listener) {
     instance.checkPermission(permission, listener);

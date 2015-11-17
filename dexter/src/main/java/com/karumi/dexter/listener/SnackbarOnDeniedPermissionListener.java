@@ -46,7 +46,7 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
    * @param buttonText Message displayed in the snackbar button
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
-  public SnackbarOnDeniedPermissionListener(Context context, ViewGroup rootView, String text,
+  private SnackbarOnDeniedPermissionListener(Context context, ViewGroup rootView, String text,
       String buttonText, View.OnClickListener onButtonClickListener) {
     this.context = context;
     this.rootView = rootView;
@@ -78,14 +78,18 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
     private String buttonText;
     private View.OnClickListener onClickListener;
 
-    public Builder(Context context, ViewGroup rootView, String text) {
+    private Builder(Context context, ViewGroup rootView, String text) {
       this.context = context;
       this.rootView = rootView;
       this.text = text;
     }
 
-    public Builder(Context context, ViewGroup rootView, @StringRes int textResourceId) {
-      this(context, rootView, context.getString(textResourceId));
+    public static Builder with(Context context, ViewGroup rootView, String text) {
+      return new Builder(context, rootView, text);
+    }
+
+    public static Builder with(Context context, ViewGroup rootView, @StringRes int textResourceId) {
+      return Builder.with(context, rootView, context.getString(textResourceId));
     }
 
     /**
@@ -108,12 +112,12 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
     /**
      * Adds a button that opens the application settings when clicked
      */
-    public Builder withOpenSettingsButton(String buttonText, final String applicationPackageName) {
+    public Builder withOpenSettingsButton(String buttonText) {
       this.buttonText = buttonText;
       this.onClickListener = new View.OnClickListener() {
         @Override public void onClick(View v) {
           Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-              Uri.parse("package:" + applicationPackageName));
+              Uri.parse("package:" + context.getPackageName()));
           myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
           myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
           context.startActivity(myAppSettings);
@@ -125,10 +129,8 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
     /**
      * Adds a button that opens the application settings when clicked
      */
-    public Builder withOpenSettingsButton(@StringRes int buttonTextResourceId,
-        final String applicationPackageName) {
-      return withOpenSettingsButton(context.getString(buttonTextResourceId),
-          applicationPackageName);
+    public Builder withOpenSettingsButton(@StringRes int buttonTextResourceId) {
+      return withOpenSettingsButton(context.getString(buttonTextResourceId));
     }
 
     /**

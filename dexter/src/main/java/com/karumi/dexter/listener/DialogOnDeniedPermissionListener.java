@@ -59,8 +59,12 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
     private String buttonText;
     private Drawable icon;
 
-    public Builder(Context context) {
+    private Builder(Context context) {
       this.context = context;
+    }
+
+    public static Builder withContext(Context context) {
+      return new Builder(context);
     }
 
     public Builder withTitle(String title) {

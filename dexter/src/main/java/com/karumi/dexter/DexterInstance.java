@@ -41,7 +41,10 @@ final class DexterInstance {
   }
 
   /**
-   * Checks the state of a specific permission reporting it to the listener when known
+   * Checks the state of a specific permission reporting it when ready to the listener
+   *
+   * @param permission One of the values found in {@link android.Manifest.permission}
+   * @param listener The class that will be reported when the state of the permission is ready
    */
   void checkPermission(String permission, PermissionListener listener) {
     if (isRequestingPermission.getAndSet(true)) {
@@ -54,6 +57,7 @@ final class DexterInstance {
     this.listener = listener;
 
     Intent intent = new Intent(context, DexterActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
   }
 
@@ -110,13 +114,17 @@ final class DexterInstance {
    */
   void requestPermission(String permission) {
     int permissionCode = getPermissionCodeForPermission(permission);
-    ActivityCompat.requestPermissions(activity, new String[] { permission }, permissionCode);
+    ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
   }
 
   private void handleDeniedPermission(String permission) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-      listener.onPermissionRationaleShouldBeShown(permission,
-          new PermissionRationaleToken(this, permission));
+      PermissionRationaleToken permissionToken = new PermissionRationaleToken(this, permission);
+      listener.onPermissionRationaleShouldBeShown(permission, permissionToken);
+
+      if (!permissionToken.isTokenResolved()) {
+        permissionToken.continuePermissionRequest();
+      }
     } else {
       requestPermission(permission);
     }

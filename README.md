@@ -40,12 +40,34 @@ Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
 
 To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
 * ``EmptyPermissionListener`` to make it easier to implement only the methods you want.
-* ``DialogOnDeniedPermissionListener`` to show a configurable dialog whenever the user rejects a permission request.
-* ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request.
-* ``MultiPermissionListener`` to compound multiple listeners into one.
+* ``DialogOnDeniedPermissionListener`` to show a configurable dialog whenever the user rejects a permission request:
+```java
+PermissionListener dialogPermissionListener =
+	new DialogOnDeniedPermissionListener.Builder(context)
+		.withTitle("Camera permission")
+		.withMessage("Camera permission is needed to take pictures of your cat")
+		.withButtonText(android.R.string.ok)
+		.withIcon(R.mipmap.my_icon)
+		.build();
+Dexter.checkPermission(Manifest.permission.CAMERA, dialogPermissionListener);
+```
+* ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request:
+```java
+PermissionListener snackbarPermissionListener =
+	new SnackbarOnDeniedPermissionListener.Builder(context, rootView, "Camera access is needed to take pictures of your dog")
+		.withOpenSettingsButton("Settings")
+		.build();
+Dexter.checkPermission(Manifest.permission.CAMERA, snackbarPermissionListener);
+```
+* ``MultiPermissionListener`` to compound multiple listeners into one:
+```java
+PermissionListener snackbarPermissionListener = /*...*/;
+PermissionListener dialogPermissionListener = /*...*/;
+Dexter.checkPermission(Manifest.permission.CAMERA, new MultiPermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/));
+```
 
 
-**IMPORTANT**: Remember to follow [Google design patterns] [2] to make your application as user-friendly as possible.
+**IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 
 Add it to your project
 ----------------------
@@ -75,11 +97,13 @@ Do you want to contribute?
 
 Feel free to add any useful feature to the library, we will be glad to improve it with your help.
 
+Keep in mind that your PRs **must** be validated by Travis-CI. Please, run a local build with ``./gradlew checkstyle build`` before submiting your code.
+
+
 Libraries used in this project
 ------------------------------
 
-* [JUnit] [3]
-* [Butterknife] [4]
+* [Butterknife] [3]
 
 License
 -------
@@ -100,5 +124,4 @@ License
 
 [1]: ./art/example.gif
 [2]: http://www.google.es/design/spec/patterns/permissions.html
-[3]: https://github.com/junit-team/junit
-[4]: https://github.com/JakeWharton/butterknife
+[3]: https://github.com/JakeWharton/butterknife

@@ -40,4 +40,8 @@ final class PermissionRationaleToken implements PermissionToken {
       isTokenResolved = true;
     }
   }
+
+  boolean isTokenResolved() {
+    return isTokenResolved;
+  }
 }
