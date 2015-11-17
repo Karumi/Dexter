@@ -83,7 +83,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:1.0.0'
+    compile 'com.karumi:dexter:1.0.1'
 }
 ```
 
@@ -93,7 +93,7 @@ or to your ``pom.xml`` if you are using Maven
 <dependency>
     <groupId>com.karumi</groupId>
     <artifactId>dexter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <type>aar</type>
 </dependency>
 
@@ -129,6 +129,6 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[1]: ./art/example.gif
+[1]: ./art/screenshot.gif
 [2]: http://www.google.es/design/spec/patterns/permissions.html
 [3]: https://github.com/JakeWharton/butterknife
