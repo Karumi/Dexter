@@ -1,5 +1,5 @@
-Dexter
-==================
+Dexter [![Build Status](https://travis-ci.org/Karumi/Dexter.svg?branch=master)](https://travis-ci.org/Karumi/Dexter)
+======
 
 
 Dexter is an Android library that simplifies the process of requesting permissions at runtime.
