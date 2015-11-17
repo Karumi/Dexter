@@ -46,7 +46,7 @@ To make your life easier we offer some ``PermissionListener`` implementations to
 
 ```java
 PermissionListener dialogPermissionListener =
-	new DialogOnDeniedPermissionListener.Builder(context)
+	DialogOnDeniedPermissionListener.Builder.withContext(context)
 		.withTitle("Camera permission")
 		.withMessage("Camera permission is needed to take pictures of your cat")
 		.withButtonText(android.R.string.ok)
@@ -59,7 +59,7 @@ Dexter.checkPermission(Manifest.permission.CAMERA, dialogPermissionListener);
 
 ```java
 PermissionListener snackbarPermissionListener =
-	new SnackbarOnDeniedPermissionListener.Builder(context, rootView, "Camera access is needed to take pictures of your dog")
+	SnackbarOnDeniedPermissionListener.Builder.with(rootView, "Camera access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
 		.build();
 Dexter.checkPermission(Manifest.permission.CAMERA, snackbarPermissionListener);
