@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class DexterInstance {
 
   private String permission;
+  private boolean firstTimeRequested;
   private Context context;
   private Activity activity;
   private PermissionListener listener;
@@ -66,7 +67,6 @@ final class DexterInstance {
    */
   void onActivityCreated(Activity activity) {
     this.activity = activity;
-
     int permissionState = ContextCompat.checkSelfPermission(activity, permission);
     switch (permissionState) {
       case PackageManager.PERMISSION_DENIED:
@@ -90,7 +90,7 @@ final class DexterInstance {
    * Method called whenever the permission has been denied by the user
    */
   void onPermissionRequestDenied() {
-    finishWithDeniedPermission(permission);
+    finishWithDeniedPermission(permission, firstTimeRequested);
   }
 
   /**
@@ -106,7 +106,7 @@ final class DexterInstance {
    * the permission request process
    */
   void onCancelPermissionRequest(String permission) {
-    finishWithDeniedPermission(permission);
+    finishWithDeniedPermission(permission, firstTimeRequested);
   }
 
   /**
@@ -114,6 +114,7 @@ final class DexterInstance {
    */
   void requestPermission(String permission) {
     int permissionCode = getPermissionCodeForPermission(permission);
+    this.firstTimeRequested = !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
     ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
   }
 
@@ -132,10 +133,15 @@ final class DexterInstance {
     isRequestingPermission.set(false);
   }
 
-  private void finishWithDeniedPermission(String permission) {
-    activity.finish();
-    listener.onPermissionDenied(permission);
-    isRequestingPermission.set(false);
+  private void finishWithDeniedPermission(String permission, boolean firstTimeRequested) {
+    if (firstTimeRequested) {
+      PermissionToken permissionToken = new PermissionDeniedToken(this, permission);
+      listener.onFirstTimePermissionDenied(permission, permissionToken);
+    } else {
+      activity.finish();
+      listener.onPermissionDenied(permission);
+      isRequestingPermission.set(false);
+    }
   }
 
   private int getPermissionCodeForPermission(String permission) {
