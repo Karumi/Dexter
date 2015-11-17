@@ -30,6 +30,7 @@ public MyApplication extends Application {
 ```
 
 Once the library is initialized you can start checking permissions at will. For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
+
 ```java
 Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
 	@Override public void onPermissionGranted(String permission) {/* ... */}
@@ -39,8 +40,10 @@ Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
 ```
 
 To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
+
 * ``EmptyPermissionListener`` to make it easier to implement only the methods you want.
 * ``DialogOnDeniedPermissionListener`` to show a configurable dialog whenever the user rejects a permission request:
+
 ```java
 PermissionListener dialogPermissionListener =
 	new DialogOnDeniedPermissionListener.Builder(context)
@@ -51,7 +54,9 @@ PermissionListener dialogPermissionListener =
 		.build();
 Dexter.checkPermission(Manifest.permission.CAMERA, dialogPermissionListener);
 ```
+
 * ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request:
+
 ```java
 PermissionListener snackbarPermissionListener =
 	new SnackbarOnDeniedPermissionListener.Builder(context, rootView, "Camera access is needed to take pictures of your dog")
@@ -59,7 +64,9 @@ PermissionListener snackbarPermissionListener =
 		.build();
 Dexter.checkPermission(Manifest.permission.CAMERA, snackbarPermissionListener);
 ```
+
 * ``MultiPermissionListener`` to compound multiple listeners into one:
+
 ```java
 PermissionListener snackbarPermissionListener = /*...*/;
 PermissionListener dialogPermissionListener = /*...*/;

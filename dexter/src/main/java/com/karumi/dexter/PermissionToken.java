@@ -19,8 +19,6 @@ package com.karumi.dexter;
 /**
  * Utility class to let clients show the user how is the permission going to be used
  * Clients of this class must call one of the two methods and only once
- * In case none of the methods is actually called, the request will proceed as if the user accepted
- * to continue with the process
  */
 public interface PermissionToken {
 
