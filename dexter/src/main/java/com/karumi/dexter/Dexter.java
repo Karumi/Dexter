@@ -17,7 +17,6 @@
 package com.karumi.dexter;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import com.karumi.dexter.listener.PermissionListener;
 
@@ -33,7 +32,7 @@ public final class Dexter {
   /**
    * Initializes the library
    *
-   * @param context Context used by Dexter. Use your {@link Application} to make sure the instance
+   * @param context Context used by Dexter. Use your {@link android.app.Application} to make sure the instance
    * is not cleaned up during your app lifetime
    */
   public static void initialize(Context context) {
