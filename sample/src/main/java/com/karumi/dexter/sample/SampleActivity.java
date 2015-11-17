@@ -127,12 +127,12 @@ public class SampleActivity extends Activity implements PermissionListener {
   private void createPermissionListeners() {
     cameraPermissionListener = new MultiPermissionListener(this,
         SnackbarOnDeniedPermissionListener.Builder
-            .with(this, rootView, R.string.camera_permission_denied_feedback)
+            .with(rootView, R.string.camera_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .build());
     contactsPermissionListener = new MultiPermissionListener(this,
         SnackbarOnDeniedPermissionListener.Builder
-            .with(this, rootView, R.string.contacts_permission_denied_feedback)
+            .with(rootView, R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .build());
     PermissionListener dialogOnDeniedPermissionListener =
