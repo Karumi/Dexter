@@ -139,6 +139,6 @@ final class DexterInstance {
   }
 
   private int getPermissionCodeForPermission(String permission) {
-    return permission.hashCode();
+    return Math.abs(permission.hashCode() % Integer.MAX_VALUE);
   }
 }
