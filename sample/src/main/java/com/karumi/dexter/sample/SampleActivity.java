@@ -104,24 +104,28 @@ public class SampleActivity extends Activity implements PermissionListener {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void showFirstTimeFineLocationPermisionDenied(final PermissionToken token) {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.first_time_permission_denied_title)
                 .setMessage(R.string.first_time_permission_denied_message)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         token.cancelPermissionRequest();
                     }
                 })
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         token.continuePermissionRequest();
                     }
                 })
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override public void onDismiss(DialogInterface dialog) {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
                         token.cancelPermissionRequest();
                     }
                 })
