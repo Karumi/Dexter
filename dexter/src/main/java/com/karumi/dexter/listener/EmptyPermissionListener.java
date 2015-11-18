@@ -32,6 +32,10 @@ public class EmptyPermissionListener implements PermissionListener {
 
   }
 
+  @Override public void onPermissionPermanentlyDenied(String permission) {
+
+  }
+
   @Override
   public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {
 

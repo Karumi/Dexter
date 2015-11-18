@@ -40,6 +40,15 @@ public interface PermissionListener {
   void onPermissionDenied(String permission);
 
   /**
+   * Method called whenever a requested permission has been denied and the user selected the
+   * "Never Ask Again" option.
+   *
+   * @param permission The permission that has been requested. One of the values found in {@link
+   * android.Manifest.permission}
+   */
+  void onPermissionPermanentlyDenied(String permission);
+
+  /**
    * Method called whenever Android asks the application to inform the user of the need for the
    * requested permission. The request process won't continue until the token is properly used.
    *

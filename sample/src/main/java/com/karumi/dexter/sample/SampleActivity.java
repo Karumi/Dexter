@@ -26,15 +26,17 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.MultiPermissionListener;
 import com.karumi.dexter.listener.PermissionListener;
 import com.karumi.dexter.listener.SnackbarOnDeniedPermissionListener;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Sample activity showing the permission request process with Dexter.
@@ -89,6 +91,16 @@ public class SampleActivity extends Activity implements PermissionListener {
     }
   }
 
+  @Override public void onPermissionPermanentlyDenied(String permission) {
+    if (Manifest.permission.CAMERA.equals(permission)) {
+      showPermissionPermanentlyDenied(cameraPermissionFeedbackView);
+    } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
+      showPermissionPermanentlyDenied(contactsPermissionFeedbackView);
+    } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
+      showPermissionPermanentlyDenied(audioPermissionFeedbackView);
+    }
+  }
+
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) @Override
   public void onPermissionRationaleShouldBeShown(String permission, final PermissionToken token) {
     new AlertDialog.Builder(this)
@@ -121,6 +133,11 @@ public class SampleActivity extends Activity implements PermissionListener {
 
   private void showPermissionDenied(TextView feedbackView) {
     feedbackView.setText(R.string.permission_denied_feedback);
+    feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
+  }
+
+  private void showPermissionPermanentlyDenied(TextView feedbackView) {
+    feedbackView.setText(R.string.permission_permanently_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
 

@@ -22,7 +22,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+
 import com.karumi.dexter.listener.PermissionListener;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -134,7 +136,11 @@ final class DexterInstance {
 
   private void finishWithDeniedPermission(String permission) {
     activity.finish();
-    listener.onPermissionDenied(permission);
+    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+      listener.onPermissionDenied(permission);
+    } else {
+      listener.onPermissionPermanentlyDenied(permission);
+    }
     isRequestingPermission.set(false);
   }
 
