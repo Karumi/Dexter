@@ -26,15 +26,20 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.MultiPermissionListener;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionListener;
+import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.SnackbarOnDeniedPermissionListener;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Sample activity showing the permission request process with Dexter.
@@ -69,28 +74,40 @@ public class SampleActivity extends Activity implements PermissionListener {
     Dexter.checkPermission(Manifest.permission.RECORD_AUDIO, audioPermissionListener);
   }
 
-  @Override public void onPermissionGranted(String permission) {
-    if (Manifest.permission.CAMERA.equals(permission)) {
-      showPermissionGranted(cameraPermissionFeedbackView);
-    } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
-      showPermissionGranted(contactsPermissionFeedbackView);
-    } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
-      showPermissionGranted(audioPermissionFeedbackView);
+  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
+    switch (response.getRequestedPermission().getPermission()) {
+      case Manifest.permission.CAMERA:
+        showPermissionGranted(cameraPermissionFeedbackView);
+        break;
+      case Manifest.permission.READ_CONTACTS:
+        showPermissionGranted(contactsPermissionFeedbackView);
+        break;
+      case Manifest.permission.RECORD_AUDIO:
+        showPermissionGranted(audioPermissionFeedbackView);
+        break;
+      default:
+        throw new RuntimeException("We didn't request this permission!");
     }
   }
 
-  @Override public void onPermissionDenied(String permission) {
-    if (Manifest.permission.CAMERA.equals(permission)) {
-      showPermissionDenied(cameraPermissionFeedbackView);
-    } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
-      showPermissionDenied(contactsPermissionFeedbackView);
-    } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
-      showPermissionDenied(audioPermissionFeedbackView);
+  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
+    switch (response.getRequestedPermission().getPermission()) {
+      case Manifest.permission.CAMERA:
+        showPermissionDenied(cameraPermissionFeedbackView, response.isPermanentlyDenied());
+        break;
+      case Manifest.permission.READ_CONTACTS:
+        showPermissionDenied(contactsPermissionFeedbackView, response.isPermanentlyDenied());
+        break;
+      case Manifest.permission.RECORD_AUDIO:
+        showPermissionDenied(audioPermissionFeedbackView, response.isPermanentlyDenied());
+        break;
+      default:
+        throw new RuntimeException("We didn't request this permission!");
     }
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) @Override
-  public void onPermissionRationaleShouldBeShown(String permission, final PermissionToken token) {
+  public void onPermissionRationaleShouldBeShown(PermissionRequest permission, final PermissionToken token) {
     new AlertDialog.Builder(this)
         .setTitle(R.string.permission_rationale_title)
         .setMessage(R.string.permission_rationale_message)
@@ -119,8 +136,10 @@ public class SampleActivity extends Activity implements PermissionListener {
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_granted));
   }
 
-  private void showPermissionDenied(TextView feedbackView) {
-    feedbackView.setText(R.string.permission_denied_feedback);
+  private void showPermissionDenied(TextView feedbackView, boolean isPermanentlyDenied) {
+    feedbackView.setText(isPermanentlyDenied
+        ? R.string.permission_permanently_denied_feedback
+        : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
 

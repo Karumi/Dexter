@@ -25,7 +25,7 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
   private final Drawable icon;
 
   private DialogOnDeniedPermissionListener(Context context, String title, String message,
-      String positiveButtonText, Drawable icon) {
+                                           String positiveButtonText, Drawable icon) {
     this.context = context;
     this.title = title;
     this.message = message;
@@ -33,8 +33,8 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
     this.icon = icon;
   }
 
-  @Override public void onPermissionDenied(String permission) {
-    super.onPermissionDenied(permission);
+  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
+    super.onPermissionDenied(response);
 
     new AlertDialog.Builder(context)
         .setTitle(title)

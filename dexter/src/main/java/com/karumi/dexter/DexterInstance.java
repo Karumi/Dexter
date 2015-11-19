@@ -22,7 +22,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionListener;
+import com.karumi.dexter.listener.PermissionRequest;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -114,13 +119,13 @@ final class DexterInstance {
    */
   void requestPermission(String permission) {
     int permissionCode = getPermissionCodeForPermission(permission);
-    ActivityCompat.requestPermissions(activity, new String[] {permission}, permissionCode);
+    ActivityCompat.requestPermissions(activity, new String[]{permission}, permissionCode);
   }
 
   private void handleDeniedPermission(String permission) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
       PermissionRationaleToken permissionToken = new PermissionRationaleToken(this, permission);
-      listener.onPermissionRationaleShouldBeShown(permission, permissionToken);
+      listener.onPermissionRationaleShouldBeShown(new PermissionRequest(permission), permissionToken);
     } else {
       requestPermission(permission);
     }
@@ -128,13 +133,14 @@ final class DexterInstance {
 
   private void finishWithGrantedPermission(String permission) {
     activity.finish();
-    listener.onPermissionGranted(permission);
+    listener.onPermissionGranted(PermissionGrantedResponse.from(permission));
     isRequestingPermission.set(false);
   }
 
   private void finishWithDeniedPermission(String permission) {
     activity.finish();
-    listener.onPermissionDenied(permission);
+    listener.onPermissionDenied(PermissionDeniedResponse.from(permission,
+        !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)));
     isRequestingPermission.set(false);
   }
 

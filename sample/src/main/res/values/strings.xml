@@ -21,6 +21,7 @@
   <string name="ask_for_audio_permission_button">Audio</string>
   <string name="permission_granted_feedback">GRANTED</string>
   <string name="permission_denied_feedback">DENIED</string>
+  <string name="permission_permanently_denied_feedback">PERMA-DENIED</string>
   <string name="permission_unknown_feedback">UNKNOWN</string>
   <string name="camera_permission_denied_feedback">Camera permission is needed for doing some magic</string>
   <string name="contacts_permission_denied_feedback">Contacts permission is needed for doing some magic</string>

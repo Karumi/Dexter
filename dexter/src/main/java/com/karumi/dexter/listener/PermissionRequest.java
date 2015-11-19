@@ -16,23 +16,26 @@
 
 package com.karumi.dexter.listener;
 
-import com.karumi.dexter.PermissionToken;
+import android.support.annotation.NonNull;
 
 /**
- * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
- * required methods.
+ * Wrapper class for a permission request
  */
-public class EmptyPermissionListener implements PermissionListener {
+public final class PermissionRequest {
+  private final String permission;
 
-  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-
+  public PermissionRequest(@NonNull String permission) {
+    this.permission = permission;
   }
 
-  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
-
+  /**
+   * One of the values found in {@link android.Manifest.permission}
+   */
+  public String getPermission() {
+    return permission;
   }
 
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-
+  @Override public String toString() {
+    return "Permission: " + permission;
   }
 }
