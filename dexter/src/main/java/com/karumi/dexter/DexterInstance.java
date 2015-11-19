@@ -22,12 +22,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionListener;
 import com.karumi.dexter.listener.PermissionRequest;
-
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 final class DexterInstance {
 
-  private String permission;
+  private Collection<String> pendingPermissions;
   private Context context;
   private Activity activity;
   private PermissionListener listener;
@@ -52,13 +53,20 @@ final class DexterInstance {
    * @param listener The class that will be reported when the state of the permission is ready
    */
   void checkPermission(String permission, PermissionListener listener) {
-    if (isRequestingPermission.getAndSet(true)) {
-      throw new IllegalStateException(
-          "Only one permission request at a time. Currently handling permission: ["
-              + this.permission + "]");
-    }
+    checkPermissions(Collections.singleton(permission), listener);
+  }
 
-    this.permission = permission;
+  /**
+   * Checks the state of a group of permissions reporting it when ready to the listener
+   *
+   * @param permissions Collection of values found in {@link android.Manifest.permission}
+   * @param listener The class that will be reported when the state of the permissions are ready
+   */
+  void checkPermissions(Collection<String> permissions, PermissionListener listener) {
+    assertOneDexterRequestOngoing();
+    assertRequestSomePermission(permissions);
+
+    this.pendingPermissions = new LinkedList<>(permissions);
     this.listener = listener;
 
     Intent intent = new Intent(context, DexterActivity.class);
@@ -72,79 +80,123 @@ final class DexterInstance {
   void onActivityCreated(Activity activity) {
     this.activity = activity;
 
-    int permissionState = ContextCompat.checkSelfPermission(activity, permission);
-    switch (permissionState) {
-      case PackageManager.PERMISSION_DENIED:
-        handleDeniedPermission(permission);
-        break;
-      case PackageManager.PERMISSION_GRANTED:
-      default:
-        finishWithGrantedPermission(permission);
-        break;
+    Collection<String> deniedPermissions = new LinkedList<>();
+    Collection<String> grantedPermissions = new LinkedList<>();
+
+    for (String permission : pendingPermissions) {
+      int permissionState = ContextCompat.checkSelfPermission(activity, permission);
+      switch (permissionState) {
+        case PackageManager.PERMISSION_DENIED:
+          deniedPermissions.add(permission);
+          break;
+        case PackageManager.PERMISSION_GRANTED:
+        default:
+          grantedPermissions.add(permission);
+          break;
+      }
     }
+
+    handleDeniedPermissions(deniedPermissions);
+    finishWithGrantedPermissions(grantedPermissions);
   }
 
   /**
    * Method called whenever the permission has been granted by the user
    */
-  void onPermissionRequestGranted() {
-    finishWithGrantedPermission(permission);
+  void onPermissionRequestGranted(Collection<String> permissions) {
+    finishWithGrantedPermissions(permissions);
   }
 
   /**
    * Method called whenever the permission has been denied by the user
    */
-  void onPermissionRequestDenied() {
-    finishWithDeniedPermission(permission);
+  void onPermissionRequestDenied(Collection<String> permissions) {
+    finishWithDeniedPermission(permissions);
   }
 
   /**
    * Method called when the user has been informed with the rationale and agrees to continue
    * with the permission request process
    */
-  void onContinuePermissionRequest(String permission) {
-    requestPermission(permission);
+  void onContinuePermissionRequest() {
+    requestPermissions(pendingPermissions);
   }
 
   /**
    * Method called when the user has been informed with the rationale and decides to cancel
    * the permission request process
    */
-  void onCancelPermissionRequest(String permission) {
-    finishWithDeniedPermission(permission);
+  void onCancelPermissionRequest() {
+    finishWithDeniedPermission(pendingPermissions);
   }
 
   /**
-   * Starts the native request permission process
+   * Starts the native request permissions process
    */
-  void requestPermission(String permission) {
-    int permissionCode = getPermissionCodeForPermission(permission);
-    ActivityCompat.requestPermissions(activity, new String[]{permission}, permissionCode);
+  void requestPermissions(Collection<String> permissions) {
+    int requestCode = getRequestCodeForPermissions(permissions);
+    ActivityCompat.requestPermissions(activity, permissions.toArray(new String[permissions.size()]),
+        requestCode);
   }
 
-  private void handleDeniedPermission(String permission) {
-    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-      PermissionRationaleToken permissionToken = new PermissionRationaleToken(this, permission);
-      listener.onPermissionRationaleShouldBeShown(new PermissionRequest(permission), permissionToken);
+  private void handleDeniedPermissions(Collection<String> permissions) {
+    if (permissions.isEmpty()) {
+      return;
+    }
+
+    Collection<PermissionRequest> shouldShowRequestRationalePermissions = new LinkedList<>();
+
+    for (String permission : permissions) {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+        shouldShowRequestRationalePermissions.add(new PermissionRequest(permission));
+      }
+    }
+
+    if (shouldShowRequestRationalePermissions.isEmpty()) {
+      requestPermissions(permissions);
     } else {
-      requestPermission(permission);
+      PermissionRationaleToken permissionToken = new PermissionRationaleToken(this);
+      listener.onPermissionRationaleShouldBeShown(shouldShowRequestRationalePermissions,
+          permissionToken);
     }
   }
 
-  private void finishWithGrantedPermission(String permission) {
-    activity.finish();
-    listener.onPermissionGranted(PermissionGrantedResponse.from(permission));
-    isRequestingPermission.set(false);
+  private void finishWithGrantedPermissions(Collection<String> permissions) {
+    for (String permission : permissions) {
+      listener.onPermissionGranted(PermissionGrantedResponse.from(permission));
+    }
+    onPermissionsManaged(permissions);
   }
 
-  private void finishWithDeniedPermission(String permission) {
-    activity.finish();
-    listener.onPermissionDenied(PermissionDeniedResponse.from(permission,
-        !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)));
-    isRequestingPermission.set(false);
+  private void finishWithDeniedPermission(Collection<String> permissions) {
+    for (String permission : permissions) {
+      listener.onPermissionDenied(PermissionDeniedResponse.from(permission,
+          !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)));
+    }
+    onPermissionsManaged(permissions);
   }
 
-  private int getPermissionCodeForPermission(String permission) {
-    return Math.abs(permission.hashCode() % Integer.MAX_VALUE);
+  private void onPermissionsManaged(Collection<String> permissions) {
+    pendingPermissions.removeAll(permissions);
+    if (pendingPermissions.isEmpty()) {
+      activity.finish();
+      isRequestingPermission.set(false);
+    }
+  }
+
+  private int getRequestCodeForPermissions(Collection<String> permissions) {
+    return Math.abs(permissions.hashCode() % Integer.MAX_VALUE);
+  }
+
+  private void assertOneDexterRequestOngoing() {
+    if (isRequestingPermission.getAndSet(true)) {
+      throw new IllegalStateException("Only one Dexter request at a time is allowed");
+    }
+  }
+
+  private void assertRequestSomePermission(Collection<String> permissions) {
+    if (permissions.isEmpty()) {
+      throw new IllegalStateException("Dexter has to be called with at least one permission");
+    }
   }
 }

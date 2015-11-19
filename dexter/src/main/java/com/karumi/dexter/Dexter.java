@@ -19,6 +19,7 @@ package com.karumi.dexter;
 import android.app.Activity;
 import android.content.Context;
 import com.karumi.dexter.listener.PermissionListener;
+import java.util.Collection;
 
 /**
  * Class to simplify the management of Android runtime permissions
@@ -32,8 +33,8 @@ public final class Dexter {
   /**
    * Initializes the library
    *
-   * @param context Context used by Dexter. Use your {@link android.app.Application} to make sure the instance
-   * is not cleaned up during your app lifetime
+   * @param context Context used by Dexter. Use your {@link android.app.Application} to make sure
+   * the instance is not cleaned up during your app lifetime
    */
   public static void initialize(Context context) {
     if (instance == null) {
@@ -52,15 +53,24 @@ public final class Dexter {
     instance.checkPermission(permission, listener);
   }
 
+  /**
+   * Checks the permissions and notifies the listener of its state
+   * It is important to note that permissions still have to be declared in the manifest
+   *
+   * @param permissions Collection of values found in {@link android.Manifest.permission}
+   * @param listener The class that will be reported when the state of the permissions are ready
+   */
+  public static void checkPermissions(Collection<String> permissions, PermissionListener listener) {
+    instance.checkPermissions(permissions, listener);
+  }
+
   static void onActivityCreated(Activity activity) {
     instance.onActivityCreated(activity);
   }
 
-  static void onPermissionRequestGranted() {
-    instance.onPermissionRequestGranted();
-  }
-
-  static void onPermissionRequestDenied() {
-    instance.onPermissionRequestDenied();
+  static void onPermissionsRequested(Collection<String> grantedPermissions,
+      Collection<String> deniedPermissions) {
+    instance.onPermissionRequestGranted(grantedPermissions);
+    instance.onPermissionRequestDenied(deniedPermissions);
   }
 }

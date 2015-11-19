@@ -17,7 +17,6 @@
 package com.karumi.dexter.listener;
 
 import com.karumi.dexter.PermissionToken;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -60,9 +59,10 @@ public class MultiPermissionListener implements PermissionListener {
   }
 
   @Override
-  public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+      PermissionToken token) {
     for (PermissionListener listener : listeners) {
-      listener.onPermissionRationaleShouldBeShown(permission, token);
+      listener.onPermissionRationaleShouldBeShown(permissions, token);
     }
   }
 }

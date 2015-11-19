@@ -17,6 +17,7 @@
 package com.karumi.dexter.listener;
 
 import com.karumi.dexter.PermissionToken;
+import java.util.Collection;
 
 /**
  * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
@@ -32,7 +33,9 @@ public class EmptyPermissionListener implements PermissionListener {
 
   }
 
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+  @Override
+  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+      PermissionToken token) {
 
   }
 }
