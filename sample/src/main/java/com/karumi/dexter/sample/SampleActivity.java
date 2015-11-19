@@ -85,6 +85,8 @@ public class SampleActivity extends Activity implements PermissionListener {
       case Manifest.permission.RECORD_AUDIO:
         showPermissionGranted(audioPermissionFeedbackView);
         break;
+      default:
+        throw new RuntimeException("We didn't request this permission!");
     }
   }
 
@@ -99,6 +101,8 @@ public class SampleActivity extends Activity implements PermissionListener {
       case Manifest.permission.RECORD_AUDIO:
         showPermissionDenied(audioPermissionFeedbackView, response.isPermanentlyDenied());
         break;
+      default:
+        throw new RuntimeException("We didn't request this permission!");
     }
   }
 
