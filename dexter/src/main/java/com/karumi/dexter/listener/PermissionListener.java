@@ -26,27 +26,18 @@ public interface PermissionListener {
   /**
    * Method called whenever a requested permission has been granted.
    *
-   * @param permission The permission that has been requested. One of the values found in {@link
-   * android.Manifest.permission}
+   * @param response A response object that contains the permission that has been requested and
+   * any additional flags relevant to this response
    */
-  void onPermissionGranted(String permission);
+  void onPermissionGranted(PermissionGrantedResponse response);
 
   /**
    * Method called whenever a requested permission has been denied.
    *
-   * @param permission The permission that has been requested. One of the values found in {@link
-   * android.Manifest.permission}
+   * @param response A response object that contains the permission that has been requested and
+   * any additional flags relevant to this response
    */
-  void onPermissionDenied(String permission);
-
-  /**
-   * Method called whenever a requested permission has been denied and the user selected the
-   * "Never Ask Again" option.
-   *
-   * @param permission The permission that has been requested. One of the values found in {@link
-   * android.Manifest.permission}
-   */
-  void onPermissionPermanentlyDenied(String permission);
+  void onPermissionDenied(PermissionDeniedResponse response);
 
   /**
    * Method called whenever Android asks the application to inform the user of the need for the
@@ -57,5 +48,5 @@ public interface PermissionListener {
    * @param token Token used to continue or cancel the permission request process. The permission
    * request process will remain blocked until one of the token methods is called.
    */
-  void onPermissionRationaleShouldBeShown(String permission, PermissionToken token);
+  void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token);
 }

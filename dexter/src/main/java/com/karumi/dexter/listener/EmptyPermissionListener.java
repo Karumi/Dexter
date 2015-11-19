@@ -24,20 +24,15 @@ import com.karumi.dexter.PermissionToken;
  */
 public class EmptyPermissionListener implements PermissionListener {
 
-  @Override public void onPermissionGranted(String permission) {
+  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
 
   }
 
-  @Override public void onPermissionDenied(String permission) {
+  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
 
   }
 
-  @Override public void onPermissionPermanentlyDenied(String permission) {
-
-  }
-
-  @Override
-  public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {
+  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
 
   }
 }
