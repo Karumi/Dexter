@@ -24,9 +24,14 @@
   <string name="permission_unknown_feedback">UNKNOWN</string>
   <string name="camera_permission_denied_feedback">Camera permission is needed for doing some magic</string>
   <string name="contacts_permission_denied_feedback">Contacts permission is needed for doing some magic</string>
+  <string name="location_permission_denied_feedback">GPS permission is needed for doing some magic</string>
   <string name="audio_permission_denied_dialog_title">Audio permission request</string>
   <string name="audio_permission_denied_dialog_feedback">Audio recording will not be available until you accept the permission request</string>
   <string name="permission_rationale_title">We need this permission</string>
   <string name="permission_rationale_message">This permission is needed for doing some fancy stuff so please, allow it!</string>
   <string name="permission_rationale_settings_button_text">SETTINGS</string>
+  <string name="ask_for_location_permission_button">GPS</string>
+  <string name="first_time_permission_denied_title">Let me explain you</string>
+  <string name="first_time_permission_denied_message">If you allow us to use this permission we can do some
+    magic</string>
 </resources>

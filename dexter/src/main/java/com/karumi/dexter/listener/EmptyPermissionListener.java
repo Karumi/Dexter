@@ -28,6 +28,11 @@ public class EmptyPermissionListener implements PermissionListener {
 
   }
 
+  @Override
+  public void onFirstTimePermissionDenied(String permission, PermissionToken token) {
+
+  }
+
   @Override public void onPermissionDenied(String permission) {
 
   }

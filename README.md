@@ -35,6 +35,7 @@ Once the library is initialized you can start checking permissions at will. For 
 Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
 	@Override public void onPermissionGranted(String permission) {/* ... */}
 	@Override public void onPermissionDenied(String permission) {/* ... */}
+	@Override public void onFirstTimePermissionDenied(String permission, PermissionToken token) {/* ... */}
 	@Override public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {/* ... */}
 });
 ```

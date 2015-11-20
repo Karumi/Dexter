@@ -26,15 +26,17 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.MultiPermissionListener;
 import com.karumi.dexter.listener.PermissionListener;
 import com.karumi.dexter.listener.SnackbarOnDeniedPermissionListener;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Sample activity showing the permission request process with Dexter.
@@ -44,11 +46,13 @@ public class SampleActivity extends Activity implements PermissionListener {
   @Bind(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
   @Bind(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
   @Bind(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
+  @Bind(R.id.location_permission_feedback) TextView locationPermissionFeedbackView;
   @Bind(android.R.id.content) ViewGroup rootView;
 
   private PermissionListener cameraPermissionListener;
   private PermissionListener contactsPermissionListener;
   private PermissionListener audioPermissionListener;
+  private PermissionListener locationPermissionListener;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -69,6 +73,10 @@ public class SampleActivity extends Activity implements PermissionListener {
     Dexter.checkPermission(Manifest.permission.RECORD_AUDIO, audioPermissionListener);
   }
 
+  @OnClick(R.id.location_permission_button) public void onLocationPermissionButtonClicked() {
+    Dexter.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, locationPermissionListener);
+  }
+
   @Override public void onPermissionGranted(String permission) {
     if (Manifest.permission.CAMERA.equals(permission)) {
       showPermissionGranted(cameraPermissionFeedbackView);
@@ -76,16 +84,63 @@ public class SampleActivity extends Activity implements PermissionListener {
       showPermissionGranted(contactsPermissionFeedbackView);
     } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
       showPermissionGranted(audioPermissionFeedbackView);
+    } else if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
+      showPermissionGranted(locationPermissionFeedbackView);
     }
   }
 
-  @Override public void onPermissionDenied(String permission) {
+    @Override public void onFirstTimePermissionDenied(String permission, PermissionToken token) {
+        if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
+            showFirstTimeFineLocationPermisionDenied(token);
+        } else {
+            token.cancelPermissionRequest();
+            if (Manifest.permission.CAMERA.equals(permission)) {
+                showPermissionDenied(cameraPermissionFeedbackView);
+            } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
+                showPermissionDenied(contactsPermissionFeedbackView);
+            } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
+                showPermissionDenied(audioPermissionFeedbackView);
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void showFirstTimeFineLocationPermisionDenied(final PermissionToken token) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.first_time_permission_denied_title)
+                .setMessage(R.string.first_time_permission_denied_message)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        token.cancelPermissionRequest();
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        token.continuePermissionRequest();
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        token.cancelPermissionRequest();
+                    }
+                })
+                .show();
+    }
+
+    @Override public void onPermissionDenied(String permission) {
     if (Manifest.permission.CAMERA.equals(permission)) {
       showPermissionDenied(cameraPermissionFeedbackView);
     } else if (Manifest.permission.READ_CONTACTS.equals(permission)) {
       showPermissionDenied(contactsPermissionFeedbackView);
     } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
       showPermissionDenied(audioPermissionFeedbackView);
+    } else if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
+      showPermissionDenied(locationPermissionFeedbackView);
     }
   }
 
@@ -133,6 +188,11 @@ public class SampleActivity extends Activity implements PermissionListener {
     contactsPermissionListener = new MultiPermissionListener(this,
         SnackbarOnDeniedPermissionListener.Builder
             .with(rootView, R.string.contacts_permission_denied_feedback)
+            .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
+            .build());
+    locationPermissionListener = new MultiPermissionListener(this,
+        SnackbarOnDeniedPermissionListener.Builder
+            .with(rootView, R.string.location_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .build());
     PermissionListener dialogOnDeniedPermissionListener =

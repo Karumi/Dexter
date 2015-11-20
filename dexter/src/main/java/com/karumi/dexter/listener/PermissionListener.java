@@ -32,6 +32,16 @@ public interface PermissionListener {
   void onPermissionGranted(String permission);
 
   /**
+   * Method called the first time a requested permission has been denied.
+   *
+   * @param permission The permission that has been requested. One of the values found in {@link
+   * android.Manifest.permission}
+   * @param token Token used to continue or cancel the permission request process. The permission
+   * request process will remain blocked until one of the token methods is called.
+   */
+  void onFirstTimePermissionDenied(String permission, PermissionToken token);
+
+  /**
    * Method called whenever a requested permission has been denied.
    *
    * @param permission The permission that has been requested. One of the values found in {@link

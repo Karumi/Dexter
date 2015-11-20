@@ -52,6 +52,13 @@ public class MultiPermissionListener implements PermissionListener {
     }
   }
 
+  @Override
+  public void onFirstTimePermissionDenied(String permission, PermissionToken token) {
+    for (PermissionListener listener : listeners) {
+      listener.onFirstTimePermissionDenied(permission, token);
+    }
+  }
+
   @Override public void onPermissionDenied(String permission) {
     for (PermissionListener listener : listeners) {
       listener.onPermissionDenied(permission);
