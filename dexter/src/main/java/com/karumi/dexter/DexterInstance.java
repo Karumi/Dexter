@@ -128,14 +128,14 @@ final class DexterInstance {
 
   private void finishWithGrantedPermission(String permission) {
     activity.finish();
-    listener.onPermissionGranted(permission);
     isRequestingPermission.set(false);
+    listener.onPermissionGranted(permission);
   }
 
   private void finishWithDeniedPermission(String permission) {
     activity.finish();
-    listener.onPermissionDenied(permission);
     isRequestingPermission.set(false);
+    listener.onPermissionDenied(permission);
   }
 
   private int getPermissionCodeForPermission(String permission) {
