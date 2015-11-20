@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.multi;
 
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Collection;
 
 /**
- * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
+ * Empty implementation of {@link PermissionsListener} to allow extensions to implement only the
  * required methods.
  */
-public class EmptyPermissionListener implements PermissionListener {
+public class EmptyPermissionsListener implements PermissionsListener {
 
-  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-
-  }
-
-  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
+  @Override public void onPermissionsChecked(PermissionsReport report) {
 
   }
 

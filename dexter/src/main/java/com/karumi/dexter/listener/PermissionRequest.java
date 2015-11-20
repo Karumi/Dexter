@@ -22,20 +22,21 @@ import android.support.annotation.NonNull;
  * Wrapper class for a permission request
  */
 public final class PermissionRequest {
-  private final String permission;
 
-  public PermissionRequest(@NonNull String permission) {
-    this.permission = permission;
+  private final String name;
+
+  public PermissionRequest(@NonNull String name) {
+    this.name = name;
   }
 
   /**
    * One of the values found in {@link android.Manifest.permission}
    */
-  public String getPermission() {
-    return permission;
+  public String getName() {
+    return name;
   }
 
   @Override public String toString() {
-    return "Permission: " + permission;
+    return "Permission name: " + name;
   }
 }

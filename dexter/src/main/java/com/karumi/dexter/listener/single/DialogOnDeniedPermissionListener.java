@@ -2,19 +2,19 @@
  * Copyright (C) 2015 Karumi.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.single;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
 
 /**
- * Utility listener that shows a {@link Dialog} with a minimum configuration when the user rejects
- * some permission.
+ * Utility listener that shows a {@link android.app.Dialog} with a minimum configuration when the
+ * user rejects some permission.
  */
 public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
 
@@ -25,7 +25,7 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
   private final Drawable icon;
 
   private DialogOnDeniedPermissionListener(Context context, String title, String message,
-                                           String positiveButtonText, Drawable icon) {
+      String positiveButtonText, Drawable icon) {
     this.context = context;
     this.title = title;
     this.message = message;
@@ -36,8 +36,7 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
     super.onPermissionDenied(response);
 
-    new AlertDialog.Builder(context)
-        .setTitle(title)
+    new AlertDialog.Builder(context).setTitle(title)
         .setMessage(message)
         .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {

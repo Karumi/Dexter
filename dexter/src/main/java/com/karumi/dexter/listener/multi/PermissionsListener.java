@@ -14,40 +14,33 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.multi;
 
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Collection;
 
 /**
- * Interface that listens to updates to the permission requests.
+ * Interface that listens to updates to the permission requests
  */
-public interface PermissionListener {
+public interface PermissionsListener {
 
   /**
-   * Method called whenever a requested permission has been granted.
+   * Method called when all permissions has been completely checked
    *
-   * @param response A response object that contains the permission that has been requested and
-   * any additional flags relevant to this response
+   * @param report In detail report with all the permissions that has been denied and granted
    */
-  void onPermissionGranted(PermissionGrantedResponse response);
-
-  /**
-   * Method called whenever a requested permission has been denied.
-   *
-   * @param response A response object that contains the permission that has been requested and
-   * any additional flags relevant to this response
-   */
-  void onPermissionDenied(PermissionDeniedResponse response);
+  void onPermissionsChecked(PermissionsReport report);
 
   /**
    * Method called whenever Android asks the application to inform the user of the need for the
-   * requested permissions. The request process won't continue until the token is properly used.
+   * requested permissions. The request process won't continue until the token is properly used
    *
    * @param permissions The permissions that has been requested. Collections of values found in
    * {@link android.Manifest.permission}
    * @param token Token used to continue or cancel the permission request process. The permission
-   * request process will remain blocked until one of the token methods is called.
+   * request process will remain blocked until one of the token methods is called
    */
   void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
       PermissionToken token);
