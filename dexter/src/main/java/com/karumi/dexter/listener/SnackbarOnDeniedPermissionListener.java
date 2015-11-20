@@ -43,15 +43,15 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnDeniedPermissionListener(ViewGroup rootView, String text, String buttonText,
-                                             View.OnClickListener onButtonClickListener) {
+      View.OnClickListener onButtonClickListener) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
   }
 
-  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
-    super.onPermissionDenied(response);
+  @Override public void onPermissionDenied(String permission) {
+    super.onPermissionDenied(permission);
 
     Snackbar snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG);
     if (buttonText != null && onButtonClickListener != null) {
@@ -96,7 +96,7 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
      * Adds a text button with the provided click listener
      */
     public Builder withButton(@StringRes int buttonTextResourceId,
-                              View.OnClickListener onClickListener) {
+        View.OnClickListener onClickListener) {
       return withButton(rootView.getContext().getString(buttonTextResourceId), onClickListener);
     }
 
