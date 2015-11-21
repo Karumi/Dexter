@@ -29,7 +29,7 @@ import com.karumi.dexter.PermissionsReport;
  * Utility listener that shows a {@link Dialog} with a minimum configuration when the user rejects
  * any of the requested permissions.
  */
-public class DialogOnDeniedPermissionsListener extends EmptyPermissionsListener {
+public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultiplePermissionsListener {
 
   private final Context context;
   private final String title;
@@ -37,8 +37,8 @@ public class DialogOnDeniedPermissionsListener extends EmptyPermissionsListener 
   private final String positiveButtonText;
   private final Drawable icon;
 
-  private DialogOnDeniedPermissionsListener(Context context, String title, String message,
-      String positiveButtonText, Drawable icon) {
+  private DialogOnAnyDeniedMultiplePermissionsListener(Context context, String title,
+      String message, String positiveButtonText, Drawable icon) {
     this.context = context;
     this.title = title;
     this.message = message;
@@ -125,11 +125,11 @@ public class DialogOnDeniedPermissionsListener extends EmptyPermissionsListener 
       return this;
     }
 
-    public DialogOnDeniedPermissionsListener build() {
+    public DialogOnAnyDeniedMultiplePermissionsListener build() {
       String title = this.title == null ? "" : this.title;
       String message = this.message == null ? "" : this.message;
       String buttonText = this.buttonText == null ? "" : this.buttonText;
-      return new DialogOnDeniedPermissionsListener(context, title, message, buttonText, icon);
+      return new DialogOnAnyDeniedMultiplePermissionsListener(context, title, message, buttonText, icon);
     }
   }
 }

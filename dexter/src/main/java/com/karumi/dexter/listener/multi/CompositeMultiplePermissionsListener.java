@@ -27,29 +27,29 @@ import java.util.Collection;
  * All inner listeners will be called for a given event unless one of them throws an exception or
  * is blocked.
  */
-public class CompositePermissionsListener implements PermissionsListener {
+public class CompositeMultiplePermissionsListener implements MultiplePermissionsListener {
 
-  private final Collection<PermissionsListener> listeners;
+  private final Collection<MultiplePermissionsListener> listeners;
 
   /**
-   * Creates a {@link CompositePermissionsListener} containing all the provided listeners.
+   * Creates a {@link CompositeMultiplePermissionsListener} containing all the provided listeners.
    * This constructor does not guaranty any calling order on inner listeners.
    */
-  public CompositePermissionsListener(PermissionsListener... listeners) {
+  public CompositeMultiplePermissionsListener(MultiplePermissionsListener... listeners) {
     this(Arrays.asList(listeners));
   }
 
   /**
-   * Creates a {@link CompositePermissionsListener} containing all the provided listeners.
+   * Creates a {@link CompositeMultiplePermissionsListener} containing all the provided listeners.
    * This constructor will guaranty that inner listeners are called following the iterator order
    * of the collection.
    */
-  public CompositePermissionsListener(Collection<PermissionsListener> listeners) {
+  public CompositeMultiplePermissionsListener(Collection<MultiplePermissionsListener> listeners) {
     this.listeners = listeners;
   }
 
   @Override public void onPermissionsChecked(PermissionsReport report) {
-    for (PermissionsListener listener : listeners) {
+    for (MultiplePermissionsListener listener : listeners) {
       listener.onPermissionsChecked(report);
     }
   }
@@ -57,7 +57,7 @@ public class CompositePermissionsListener implements PermissionsListener {
   @Override
   public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
       PermissionToken token) {
-    for (PermissionsListener listener : listeners) {
+    for (MultiplePermissionsListener listener : listeners) {
       listener.onPermissionRationaleShouldBeShown(permissions, token);
     }
   }

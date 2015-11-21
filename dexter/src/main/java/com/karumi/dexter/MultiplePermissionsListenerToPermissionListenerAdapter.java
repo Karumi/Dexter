@@ -19,41 +19,39 @@ package com.karumi.dexter;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.PermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collection;
 
-public class PermissionsListenerToPermissionListenerAdapter implements PermissionsListener {
+/**
+ * Adapter to translate calls to a {@link MultiplePermissionsListener} into @{PermissionListener}
+ * methods
+ */
+final class MultiplePermissionsListenerToPermissionListenerAdapter
+    implements MultiplePermissionsListener {
 
   private final PermissionListener listener;
 
-  public PermissionsListenerToPermissionListenerAdapter(PermissionListener listener) {
+  public MultiplePermissionsListenerToPermissionListenerAdapter(PermissionListener listener) {
     this.listener = listener;
   }
 
   @Override public void onPermissionsChecked(PermissionsReport report) {
     Collection<PermissionDeniedResponse> deniedResponses = report.getDeniedPermissionResponses();
     Collection<PermissionGrantedResponse> grantedResponses = report.getGrantedPermissionResponses();
+
     if (!deniedResponses.isEmpty()) {
-      PermissionDeniedResponse response = getFirstFromCollection(deniedResponses);
+      PermissionDeniedResponse response = CollectionUtils.getFirstFromCollection(deniedResponses);
       listener.onPermissionDenied(response);
     } else {
-      PermissionGrantedResponse response = getFirstFromCollection(grantedResponses);
+      PermissionGrantedResponse response = CollectionUtils.getFirstFromCollection(grantedResponses);
       listener.onPermissionGranted(response);
     }
   }
 
   @Override public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> requests,
       PermissionToken token) {
-    PermissionRequest firstRequest = getFirstFromCollection(requests);
+    PermissionRequest firstRequest = CollectionUtils.getFirstFromCollection(requests);
     listener.onPermissionRationaleShouldBeShown(firstRequest, token);
-  }
-
-  private <T> T getFirstFromCollection(Collection<T> items) {
-    T firstItem = null;
-    for (T item : items) {
-      firstItem = item;
-    }
-    return firstItem;
   }
 }

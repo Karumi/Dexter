@@ -18,7 +18,7 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
-import com.karumi.dexter.listener.multi.PermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collection;
 
@@ -61,7 +61,8 @@ public final class Dexter {
    * @param permissions Collection of values found in {@link android.Manifest.permission}
    * @param listener The class that will be reported when the state of the permissions are ready
    */
-  public static void checkPermissions(Collection<String> permissions, PermissionsListener listener) {
+  public static void checkPermissions(Collection<String> permissions,
+      MultiplePermissionsListener listener) {
     instance.checkPermissions(permissions, listener);
   }
 

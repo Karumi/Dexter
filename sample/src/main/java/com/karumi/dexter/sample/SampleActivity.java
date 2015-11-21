@@ -32,12 +32,12 @@ import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.PermissionsReport;
-import com.karumi.dexter.listener.multi.CompositePermissionsListener;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.PermissionsListener;
-import com.karumi.dexter.listener.multi.SnackbarOnDeniedPermissionsListener;
+import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
 import com.karumi.dexter.listener.single.CompositePermissionListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
@@ -48,14 +48,15 @@ import java.util.Collection;
 /**
  * Sample activity showing the permission request process with Dexter.
  */
-public class SampleActivity extends Activity implements PermissionListener, PermissionsListener {
+public class SampleActivity extends Activity
+    implements PermissionListener, MultiplePermissionsListener {
 
   @Bind(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
   @Bind(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
   @Bind(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
   @Bind(android.R.id.content) ViewGroup rootView;
 
-  private PermissionsListener allPermissionsListener;
+  private MultiplePermissionsListener allPermissionsListener;
   private PermissionListener cameraPermissionListener;
   private PermissionListener contactsPermissionListener;
   private PermissionListener audioPermissionListener;
@@ -176,8 +177,8 @@ public class SampleActivity extends Activity implements PermissionListener, Perm
   }
 
   private void createPermissionListeners() {
-    allPermissionsListener = new CompositePermissionsListener(this,
-        SnackbarOnDeniedPermissionsListener.Builder.with(rootView,
+    allPermissionsListener = new CompositeMultiplePermissionsListener(this,
+        SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(rootView,
             R.string.all_permissions_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .build());

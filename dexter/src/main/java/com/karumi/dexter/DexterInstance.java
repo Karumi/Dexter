@@ -25,7 +25,7 @@ import android.support.v4.content.ContextCompat;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.PermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Inner implementation of a dexter instance
+ * Inner implementation of a dexter instance holding the state of the permissions request
  */
 final class DexterInstance {
 
@@ -42,7 +42,7 @@ final class DexterInstance {
   private PermissionsReport permissionsReport;
   private Context context;
   private Activity activity;
-  private PermissionsListener listener;
+  private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
 
   DexterInstance(Context context) {
@@ -56,17 +56,19 @@ final class DexterInstance {
    * @param listener The class that will be reported when the state of the permission is ready
    */
   void checkPermission(String permission, PermissionListener listener) {
-    PermissionsListener adapter = new PermissionsListenerToPermissionListenerAdapter(listener);
+    MultiplePermissionsListener adapter =
+        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
     checkPermissions(Collections.singleton(permission), adapter);
   }
 
   /**
-   * Checks the state of a group of permissions reporting it when ready to the listener
+   * Checks the state of a collection of permissions reporting their state to the listener when all
+   * of them are resolved
    *
    * @param permissions Collection of values found in {@link android.Manifest.permission}
-   * @param listener The class that will be reported when the state of the permissions are ready
+   * @param listener The class that will be reported when the state of all the permissions is ready
    */
-  void checkPermissions(Collection<String> permissions, PermissionsListener listener) {
+  void checkPermissions(Collection<String> permissions, MultiplePermissionsListener listener) {
     assertNoDexterRequestOngoing();
     assertRequestSomePermission(permissions);
 
@@ -104,21 +106,21 @@ final class DexterInstance {
   }
 
   /**
-   * Method called whenever the permission has been granted by the user
+   * Method called whenever the permissions has been granted by the user
    */
   void onPermissionRequestGranted(Collection<String> permissions) {
     updatePermissionsAsGranted(permissions);
   }
 
   /**
-   * Method called whenever the permission has been denied by the user
+   * Method called whenever the permissions has been denied by the user
    */
   void onPermissionRequestDenied(Collection<String> permissions) {
     updatePermissionsAsDenied(permissions);
   }
 
   /**
-   * Method called when the user has been informed with the rationale and agrees to continue
+   * Method called when the user has been informed with a rationale and agrees to continue
    * with the permission request process
    */
   void onContinuePermissionRequest() {
@@ -126,7 +128,7 @@ final class DexterInstance {
   }
 
   /**
-   * Method called when the user has been informed with the rationale and decides to cancel
+   * Method called when the user has been informed with a rationale and decides to cancel
    * the permission request process
    */
   void onCancelPermissionRequest() {

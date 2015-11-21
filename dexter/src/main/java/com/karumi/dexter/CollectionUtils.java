@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.multi;
+package com.karumi.dexter;
 
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
-import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Collection;
 
 /**
- * Empty implementation of {@link PermissionsListener} to allow extensions to implement only the
- * required methods.
+ * Utility class containing useful methods related to the {@link Collection} classes
  */
-public class EmptyPermissionsListener implements PermissionsListener {
+final class CollectionUtils {
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
-
-  }
-
-  @Override
-  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
-      PermissionToken token) {
-
+  /**
+   * Returns the first element of the collection or null if there is not any
+   */
+  public static <T> T getFirstFromCollection(Collection<T> items) {
+    T firstItem = null;
+    for (T item : items) {
+      firstItem = item;
+    }
+    return firstItem;
   }
 }

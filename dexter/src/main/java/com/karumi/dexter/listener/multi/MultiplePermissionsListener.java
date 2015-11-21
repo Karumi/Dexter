@@ -24,7 +24,7 @@ import java.util.Collection;
 /**
  * Interface that listens to updates to the permission requests
  */
-public interface PermissionsListener {
+public interface MultiplePermissionsListener {
 
   /**
    * Method called when all permissions has been completely checked
