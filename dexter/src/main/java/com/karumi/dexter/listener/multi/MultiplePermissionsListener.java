@@ -17,7 +17,7 @@
 package com.karumi.dexter.listener.multi;
 
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Collection;
 
@@ -31,7 +31,7 @@ public interface MultiplePermissionsListener {
    *
    * @param report In detail report with all the permissions that has been denied and granted
    */
-  void onPermissionsChecked(PermissionsReport report);
+  void onPermissionsChecked(MultiplePermissionsReport report);
 
   /**
    * Method called whenever Android asks the application to inform the user of the need for the

@@ -17,7 +17,7 @@
 package com.karumi.dexter.sample;
 
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -32,7 +32,7 @@ public class SampleMultiplePermissionListener implements MultiplePermissionsList
     this.activity = activity;
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     for (PermissionGrantedResponse response : report.getGrantedPermissionResponses()) {
       activity.showPermissionGranted(response.getPermissionName());
     }

@@ -85,12 +85,12 @@ Collection<String> permissions = Arrays.asList(
 		Manifest.permission.READ_CONTACTS,
 		Manifest.permission.RECORD_AUDIO);
 Dexter.checkPermissions(permissions, new MultiplePermissionsListener() {
-	@Override public void onPermissionsChecked(PermissionsReport report) {/* ... */}
+	@Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
 	@Override public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {/* ... */}
 });
 ```
 
-The ``PermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
+The ``MultiplePermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
 
 As with the single permission listener, there are also some useful implementations for recurring patterns:
 

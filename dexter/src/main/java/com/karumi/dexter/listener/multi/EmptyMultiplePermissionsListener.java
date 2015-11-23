@@ -17,17 +17,17 @@
 package com.karumi.dexter.listener.multi;
 
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Collection;
 
 /**
  * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement only the
- * required methods.
+ * required methods
  */
 public class EmptyMultiplePermissionsListener implements MultiplePermissionsListener {
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
 
   }
 

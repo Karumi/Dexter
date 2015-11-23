@@ -23,7 +23,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 
 /**
  * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
- * required methods.
+ * required methods
  */
 public class EmptyPermissionListener implements PermissionListener {
 

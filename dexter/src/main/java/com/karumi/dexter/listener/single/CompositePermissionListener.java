@@ -24,9 +24,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Listener that composes multiple listeners into one.
+ * Listener that composes multiple listeners into one
  * All inner listeners will be called for a given event unless one of them throws an exception or
- * is blocked.
+ * is blocked
  */
 public class CompositePermissionListener implements PermissionListener {
 

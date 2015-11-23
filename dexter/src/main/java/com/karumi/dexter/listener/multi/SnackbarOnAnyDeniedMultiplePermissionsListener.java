@@ -24,7 +24,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
@@ -51,7 +51,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
     this.onButtonClickListener = onButtonClickListener;
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     super.onPermissionsChecked(report);
 
     if (!report.areAllPermissionsGranted()) {

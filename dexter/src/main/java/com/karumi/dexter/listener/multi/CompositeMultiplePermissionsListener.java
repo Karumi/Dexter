@@ -17,15 +17,15 @@
 package com.karumi.dexter.listener.multi;
 
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Listener that composes multiple listeners into one.
+ * Listener that composes multiple listeners into one
  * All inner listeners will be called for a given event unless one of them throws an exception or
- * is blocked.
+ * is blocked
  */
 public class CompositeMultiplePermissionsListener implements MultiplePermissionsListener {
 
@@ -48,7 +48,7 @@ public class CompositeMultiplePermissionsListener implements MultiplePermissions
     this.listeners = listeners;
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     for (MultiplePermissionsListener listener : listeners) {
       listener.onPermissionsChecked(report);
     }

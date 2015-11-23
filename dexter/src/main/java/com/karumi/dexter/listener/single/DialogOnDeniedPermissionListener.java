@@ -14,7 +14,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 
 /**
  * Utility listener that shows a {@link android.app.Dialog} with a minimum configuration when the
- * user rejects some permission.
+ * user rejects some permission
  */
 public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
 
@@ -36,7 +36,8 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
     super.onPermissionDenied(response);
 
-    new AlertDialog.Builder(context).setTitle(title)
+    new AlertDialog.Builder(context)
+        .setTitle(title)
         .setMessage(message)
         .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {

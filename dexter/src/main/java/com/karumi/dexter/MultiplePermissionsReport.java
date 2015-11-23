@@ -23,14 +23,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An in detail report of the request permission process.
+ * An in detail report of the request permission process
  */
-public final class PermissionsReport {
+public final class MultiplePermissionsReport {
 
   private final List<PermissionGrantedResponse> grantedPermissionResponses;
   private final List<PermissionDeniedResponse> deniedPermissionResponses;
 
-  PermissionsReport() {
+  MultiplePermissionsReport() {
     grantedPermissionResponses = new LinkedList<>();
     deniedPermissionResponses = new LinkedList<>();
   }

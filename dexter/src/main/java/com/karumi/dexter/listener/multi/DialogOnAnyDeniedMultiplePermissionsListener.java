@@ -23,11 +23,11 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
-import com.karumi.dexter.PermissionsReport;
+import com.karumi.dexter.MultiplePermissionsReport;
 
 /**
  * Utility listener that shows a {@link Dialog} with a minimum configuration when the user rejects
- * any of the requested permissions.
+ * any of the requested permissions
  */
 public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultiplePermissionsListener {
 
@@ -46,7 +46,7 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultipleP
     this.icon = icon;
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     super.onPermissionsChecked(report);
 
     if (!report.areAllPermissionsGranted()) {
@@ -55,7 +55,8 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultipleP
   }
 
   private void showDialog() {
-    new AlertDialog.Builder(context).setTitle(title)
+    new AlertDialog.Builder(context)
+        .setTitle(title)
         .setMessage(message)
         .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {

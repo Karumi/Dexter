@@ -36,7 +36,7 @@ final class MultiplePermissionsListenerToPermissionListenerAdapter
     this.listener = listener;
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
+  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     Collection<PermissionDeniedResponse> deniedResponses = report.getDeniedPermissionResponses();
     Collection<PermissionGrantedResponse> grantedResponses = report.getGrantedPermissionResponses();
 

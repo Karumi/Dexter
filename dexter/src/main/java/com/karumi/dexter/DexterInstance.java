@@ -40,7 +40,7 @@ final class DexterInstance {
   private final AndroidPermissionService androidPermissionService;
   private final IntentProvider intentProvider;
   private Collection<String> pendingPermissions;
-  private PermissionsReport permissionsReport;
+  private MultiplePermissionsReport multiplePermissionsReport;
   private Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
@@ -75,7 +75,7 @@ final class DexterInstance {
     assertRequestSomePermission(permissions);
 
     this.pendingPermissions = new TreeSet<>(permissions);
-    this.permissionsReport = new PermissionsReport();
+    this.multiplePermissionsReport = new MultiplePermissionsReport();
     this.listener = listener;
 
     startBackgroundActivity();
@@ -177,7 +177,7 @@ final class DexterInstance {
   private void updatePermissionsAsGranted(Collection<String> permissions) {
     for (String permission : permissions) {
       PermissionGrantedResponse response = PermissionGrantedResponse.from(permission);
-      permissionsReport.addGrantedPermissionResponse(response);
+      multiplePermissionsReport.addGrantedPermissionResponse(response);
     }
     onPermissionsChecked(permissions);
   }
@@ -186,7 +186,7 @@ final class DexterInstance {
     for (String permission : permissions) {
       PermissionDeniedResponse response = PermissionDeniedResponse.from(permission,
           !androidPermissionService.shouldShowRequestPermissionRationale(activity, permission));
-      permissionsReport.addDeniedPermissionResponse(response);
+      multiplePermissionsReport.addDeniedPermissionResponse(response);
     }
     onPermissionsChecked(permissions);
   }
@@ -200,7 +200,7 @@ final class DexterInstance {
     if (pendingPermissions.isEmpty()) {
       activity.finish();
       isRequestingPermission.set(false);
-      listener.onPermissionsChecked(permissionsReport);
+      listener.onPermissionsChecked(multiplePermissionsReport);
     }
   }
 
