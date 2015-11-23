@@ -29,7 +29,10 @@ public MyApplication extends Application {
 }
 ```
 
-Once the library is initialized you can start checking permissions at will. For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
+Once the library is initialized you can start checking permissions at will. You have two options, you can either check for a single permission or check for multiple permissions at once.
+
+###Single permission 
+For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
 Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
@@ -65,14 +68,72 @@ PermissionListener snackbarPermissionListener =
 Dexter.checkPermission(Manifest.permission.CAMERA, snackbarPermissionListener);
 ```
 
-* ``MultiPermissionListener`` to compound multiple listeners into one:
+* ``CompositePermissionListener`` to compound multiple listeners into one:
 
 ```java
 PermissionListener snackbarPermissionListener = /*...*/;
 PermissionListener dialogPermissionListener = /*...*/;
-Dexter.checkPermission(Manifest.permission.CAMERA, new MultiPermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/));
+Dexter.checkPermission(Manifest.permission.CAMERA, new CompositePermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/));
 ```
 
+###Multiple permissions
+If you want to request multiple permissions you just need to do the same but registering an implementation of ``MultiplePermissionsListener``:
+
+```java
+Collection<String> permissions = Arrays.asList(
+		Manifest.permission.CAMERA,
+		Manifest.permission.READ_CONTACTS,
+		Manifest.permission.RECORD_AUDIO);
+Dexter.checkPermissions(permissions, new MultiplePermissionsListener() {
+	@Override public void onPermissionsChecked(PermissionsReport report) {/* ... */}
+	@Override public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {/* ... */}
+});
+```
+
+The ``PermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
+
+As with the single permission listener, there are also some useful implementations for recurring patterns:
+
+* ``EmptyMultiplePermissionsListener`` to make it easier to implement only the methods you want.
+* ``DialogOnAnyDeniedMultiplePermissionsListener`` to show a configurable dialog whenever the user rejects at least one permission:
+
+```java
+MultiplePermissionsListener dialogMultiplePermissionsListener =
+	DialogOnAnyDeniedMultiplePermissionsListener.Builder.withContext(context)
+		.withTitle("Camera & audio permission")
+		.withMessage("Both camera and audio permission are needed to take pictures of your cat")
+		.withButtonText(android.R.string.ok)
+		.withIcon(R.mipmap.my_icon)
+		.build();
+Collection<String> permissions = Arrays.asList(
+		Manifest.permission.CAMERA,
+		Manifest.permission.RECORD_AUDIO);
+Dexter.checkPermissions(permissions, dialogMultiplePermissionsListener);
+```
+
+* ``SnackbarOnAnyDeniedMultiplePermissionsListener`` to show a snackbar message whenever the user rejects any of the requested permissions:
+
+```java
+MultiplePermissionsListener snackbarMultiplePermissionsListener =
+	SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(rootView, "Camera and audio access is needed to take pictures of your dog")
+		.withOpenSettingsButton("Settings")
+		.build();
+Collection<String> permissions = Arrays.asList(
+		Manifest.permission.CAMERA,
+		Manifest.permission.RECORD_AUDIO);
+Dexter.checkPermissions(permissions, snackbarMultiplePermissionsListener);
+```
+
+* ``CompositePermissionListener`` to compound multiple listeners into one:
+
+```java
+MultiplePermissionsListener snackbarMultiplePermissionsListener = /*...*/;
+MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
+Collection<String> permissions = Arrays.asList(
+		Manifest.permission.CAMERA,
+		Manifest.permission.RECORD_AUDIO);
+Dexter.checkPermissions(permissions, new CompositePermissionListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/));
+```
 
 **IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 

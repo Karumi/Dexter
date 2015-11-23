@@ -49,7 +49,7 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultipleP
   @Override public void onPermissionsChecked(PermissionsReport report) {
     super.onPermissionsChecked(report);
 
-    if (!report.hasUserGrantedAllPermissions()) {
+    if (!report.areAllPermissionsGranted()) {
       showDialog();
     }
   }

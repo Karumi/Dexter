@@ -54,7 +54,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
   @Override public void onPermissionsChecked(PermissionsReport report) {
     super.onPermissionsChecked(report);
 
-    if (!report.hasUserGrantedAllPermissions()) {
+    if (!report.areAllPermissionsGranted()) {
       showSnackbar();
     }
   }

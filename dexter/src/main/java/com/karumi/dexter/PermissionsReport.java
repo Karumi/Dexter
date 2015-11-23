@@ -60,14 +60,14 @@ public final class PermissionsReport {
   /**
    * Returns whether the user has granted all the requested permission
    */
-  public boolean hasUserGrantedAllPermissions() {
+  public boolean areAllPermissionsGranted() {
     return deniedPermissionResponses.isEmpty();
   }
 
   /**
    * Returns whether the user has permanently denied any of the requested permissions
    */
-  public boolean hasPermanentlyDeniedAnyPermission() {
+  public boolean isAnyPermissionPermanentlyDenied() {
     boolean hasPermanentlyDeniedAnyPermission = false;
 
     for (PermissionDeniedResponse deniedResponse : deniedPermissionResponses) {
