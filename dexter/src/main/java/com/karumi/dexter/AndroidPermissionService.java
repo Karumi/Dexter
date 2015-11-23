@@ -1,5 +1,17 @@
 /*
  * Copyright (C) 2015 Karumi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.karumi.dexter;
@@ -17,22 +29,22 @@ class AndroidPermissionService {
   /**
    * @see ContextCompat#checkSelfPermission
    */
-  public int checkSelfPermission(Activity activity, String permission) {
+  int checkSelfPermission(Activity activity, String permission) {
     return ContextCompat.checkSelfPermission(activity, permission);
   }
 
   /**
    * @see ActivityCompat#requestPermissions
    */
-  public void requestPermissions(final @NonNull Activity activity,
-      final @NonNull String[] permissions, final int requestCode) {
+  void requestPermissions(final @NonNull Activity activity, final @NonNull String[] permissions,
+      final int requestCode) {
     ActivityCompat.requestPermissions(activity, permissions, requestCode);
   }
 
   /**
    * @see ActivityCompat#shouldShowRequestPermissionRationale
    */
-  public boolean shouldShowRequestPermissionRationale(@NonNull Activity activity,
+  boolean shouldShowRequestPermissionRationale(@NonNull Activity activity,
       @NonNull String permission) {
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
   }

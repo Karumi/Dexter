@@ -16,13 +16,13 @@
 
 package com.karumi.dexter.sample;
 
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import java.util.Collection;
+import java.util.List;
 
 public class SampleMultiplePermissionListener implements MultiplePermissionsListener {
 
@@ -42,8 +42,7 @@ public class SampleMultiplePermissionListener implements MultiplePermissionsList
     }
   }
 
-  @Override
-  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token) {
     activity.showPermissionRationale(token);
   }

@@ -18,7 +18,6 @@ package com.karumi.dexter;
 
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,25 +34,17 @@ public final class MultiplePermissionsReport {
     deniedPermissionResponses = new LinkedList<>();
   }
 
-  boolean addGrantedPermissionResponse(PermissionGrantedResponse response) {
-    return grantedPermissionResponses.add(response);
-  }
-
-  boolean addDeniedPermissionResponse(PermissionDeniedResponse response) {
-    return deniedPermissionResponses.add(response);
-  }
-
   /**
    * Returns a collection with all the permissions that has been granted
    */
-  public Collection<PermissionGrantedResponse> getGrantedPermissionResponses() {
+  public List<PermissionGrantedResponse> getGrantedPermissionResponses() {
     return grantedPermissionResponses;
   }
 
   /**
    * Returns a collection with all the permissions that has been denied
    */
-  public Collection<PermissionDeniedResponse> getDeniedPermissionResponses() {
+  public List<PermissionDeniedResponse> getDeniedPermissionResponses() {
     return deniedPermissionResponses;
   }
 
@@ -78,5 +69,18 @@ public final class MultiplePermissionsReport {
     }
 
     return hasPermanentlyDeniedAnyPermission;
+  }
+
+  boolean addGrantedPermissionResponse(PermissionGrantedResponse response) {
+    return grantedPermissionResponses.add(response);
+  }
+
+  boolean addDeniedPermissionResponse(PermissionDeniedResponse response) {
+    return deniedPermissionResponses.add(response);
+  }
+
+  void clear() {
+    grantedPermissionResponses.clear();
+    deniedPermissionResponses.clear();
   }
 }

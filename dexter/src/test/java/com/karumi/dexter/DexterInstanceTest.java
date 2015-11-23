@@ -28,16 +28,17 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DexterInstanceTest {
+@RunWith(MockitoJUnitRunner.class) public class DexterInstanceTest {
 
   private static final String ANY_PERMISSION = "noissimrep yna";
 
@@ -51,61 +52,56 @@ public class DexterInstanceTest {
   private DexterInstance dexter;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
     IntentProvider intentProvider = new IntentMockProvider(intent);
     dexter = new DexterInstance(context, androidPermissionService, intentProvider);
   }
 
   @Test(expected = IllegalStateException.class)
   public void onNoPermissionCheckedThenThrowException() {
-    dexter.checkPermissions(Collections.<String>emptyList(), multiplePermissionsListener);
+    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList());
   }
 
   @Test(expected = IllegalStateException.class)
   public void onCheckPermissionMoreThanOnceThenThrowException() {
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION);
   }
 
   @Test public void onPermissionAlreadyGrantedThenNotifiesListener() {
     givenPermissionIsAlreadyGranted(ANY_PERMISSION);
 
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
-    dexter.onActivityCreated(activity);
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
 
-    verify(permissionListener).onPermissionGranted(isA(PermissionGrantedResponse.class));
+    thenPermissionIsGranted(ANY_PERMISSION);
   }
 
   @Test public void onShouldShowRationaleThenNotifiesListener() {
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
     givenShouldShowRationaleForPermission(ANY_PERMISSION);
 
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
-    dexter.onActivityCreated(activity);
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
 
-    verify(permissionListener).onPermissionRationaleShouldBeShown(isA(PermissionRequest.class),
-        isA(PermissionToken.class));
+    thenShouldShowRationaleForPermission(ANY_PERMISSION);
   }
 
   @Test public void onPermissionDeniedThenNotifiesListener() {
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
+    givenShouldShowRationaleForPermission(ANY_PERMISSION);
 
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
-    dexter.onActivityCreated(activity);
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
     dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
 
-    verify(permissionListener).onPermissionDenied(isA(PermissionDeniedResponse.class));
+    thenPermissionIsDenied(ANY_PERMISSION);
   }
 
   @Test public void onPermissionPermanentlyDeniedThenNotifiesListener() {
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
     givenShouldShowNotRationaleForPermission(ANY_PERMISSION);
 
-    dexter.checkPermission(ANY_PERMISSION, permissionListener);
-    dexter.onActivityCreated(activity);
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
     dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
 
-    thenPermissionIsPermanentlyDenied();
+    thenPermissionIsPermanentlyDenied(ANY_PERMISSION);
   }
 
   private void givenPermissionIsAlreadyDenied(String permission) {
@@ -117,29 +113,73 @@ public class DexterInstanceTest {
   }
 
   private void givenPermissionIsChecked(String permission, int permissionState) {
-    when(androidPermissionService.checkSelfPermission(activity, permission)).thenReturn(permissionState);
+    when(androidPermissionService.checkSelfPermission(activity, permission)).thenReturn(
+        permissionState);
   }
 
   private void givenShouldShowRationaleForPermission(String permission) {
-    when(androidPermissionService.shouldShowRequestPermissionRationale(activity, permission)).thenReturn(
-        true);
+    when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
+        permission)).thenReturn(true);
   }
 
   private void givenShouldShowNotRationaleForPermission(String permission) {
-    when(androidPermissionService.shouldShowRequestPermissionRationale(activity, permission)).thenReturn(
-        false);
+    when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
+        permission)).thenReturn(false);
   }
 
-  private void thenPermissionIsPermanentlyDenied() {
+  private void whenCheckPermission(PermissionListener permissionListener, String permission) {
+    dexter.checkPermission(permissionListener, permission);
+    dexter.onActivityCreated(activity);
+  }
+
+  private void thenPermissionIsGranted(String permission) {
+    verify(permissionListener).onPermissionGranted(
+        argThat(getPermissionGrantedResponseMatcher(permission)));
+  }
+
+  private void thenPermissionIsDenied(String permission) {
     verify(permissionListener).onPermissionDenied(
-        argThat(getPermissionPermanentlyDeniedResponse()));
+        argThat(getPermissionDeniedResponseMatcher(permission, false)));
   }
 
-  private static ArgumentMatcher<PermissionDeniedResponse> getPermissionPermanentlyDeniedResponse() {
+  private void thenPermissionIsPermanentlyDenied(String permission) {
+    verify(permissionListener).onPermissionDenied(
+        argThat(getPermissionDeniedResponseMatcher(permission, true)));
+  }
+
+  private void thenShouldShowRationaleForPermission(String permission) {
+    verify(permissionListener).onPermissionRationaleShouldBeShown(
+        argThat(getPermissionRequestShouldShowTokenMatcher(permission)),
+        isA(PermissionToken.class));
+  }
+
+  private static ArgumentMatcher<PermissionGrantedResponse> getPermissionGrantedResponseMatcher(
+      final String permission) {
+    return new ArgumentMatcher<PermissionGrantedResponse>() {
+      @Override public boolean matches(Object argument) {
+        PermissionGrantedResponse response = (PermissionGrantedResponse) argument;
+        return permission.equals(response.getPermissionName());
+      }
+    };
+  }
+
+  private static ArgumentMatcher<PermissionDeniedResponse> getPermissionDeniedResponseMatcher(
+      final String permission, final boolean isPermanentlyDenied) {
     return new ArgumentMatcher<PermissionDeniedResponse>() {
       @Override public boolean matches(Object argument) {
         PermissionDeniedResponse response = (PermissionDeniedResponse) argument;
-        return response.isPermanentlyDenied();
+        return permission.equals(response.getPermissionName())
+            && response.isPermanentlyDenied() == isPermanentlyDenied;
+      }
+    };
+  }
+
+  private static ArgumentMatcher<PermissionRequest> getPermissionRequestShouldShowTokenMatcher(
+      final String permission) {
+    return new ArgumentMatcher<PermissionRequest>() {
+      @Override public boolean matches(Object argument) {
+        PermissionRequest request = (PermissionRequest) argument;
+        return permission.equals(request.getName());
       }
     };
   }

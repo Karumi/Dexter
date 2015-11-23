@@ -28,6 +28,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,49 +37,55 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 final class DexterInstance {
 
+  private static final int PERMISSIONS_REQUEST_CODE = 42;
+
   private final Context context;
   private final AndroidPermissionService androidPermissionService;
   private final IntentProvider intentProvider;
-  private Collection<String> pendingPermissions;
-  private MultiplePermissionsReport multiplePermissionsReport;
+  private final Collection<String> pendingPermissions;
+  private final MultiplePermissionsReport multiplePermissionsReport;
   private Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
 
-  DexterInstance(Context context, AndroidPermissionService androidPermissionService, IntentProvider intentProvider) {
+  DexterInstance(Context context, AndroidPermissionService androidPermissionService,
+      IntentProvider intentProvider) {
     this.context = context;
     this.androidPermissionService = androidPermissionService;
     this.intentProvider = intentProvider;
+    this.pendingPermissions = new TreeSet<>();
+    this.multiplePermissionsReport = new MultiplePermissionsReport();
   }
 
   /**
    * Checks the state of a specific permission reporting it when ready to the listener
    *
-   * @param permission One of the values found in {@link android.Manifest.permission}
    * @param listener The class that will be reported when the state of the permission is ready
+   * @param permission One of the values found in {@link android.Manifest.permission}
    */
-  void checkPermission(String permission, PermissionListener listener) {
+  void checkPermission(PermissionListener listener, String permission) {
     MultiplePermissionsListener adapter =
         new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    checkPermissions(Collections.singleton(permission), adapter);
+    checkPermissions(adapter, Collections.singleton(permission));
   }
 
   /**
    * Checks the state of a collection of permissions reporting their state to the listener when all
    * of them are resolved
    *
-   * @param permissions Collection of values found in {@link android.Manifest.permission}
    * @param listener The class that will be reported when the state of all the permissions is ready
+   * @param permissions Array of values found in {@link android.Manifest.permission}
    */
-  void checkPermissions(Collection<String> permissions, MultiplePermissionsListener listener) {
-    assertNoDexterRequestOngoing();
-    assertRequestSomePermission(permissions);
+  void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions) {
+    checkNoDexterRequestOngoing();
+    checkRequestSomePermission(permissions);
 
-    this.pendingPermissions = new TreeSet<>(permissions);
-    this.multiplePermissionsReport = new MultiplePermissionsReport();
+    pendingPermissions.clear();
+    pendingPermissions.addAll(permissions);
+    multiplePermissionsReport.clear();
     this.listener = listener;
 
-    startBackgroundActivity();
+    startTransparentActivity();
   }
 
   /**
@@ -141,12 +148,11 @@ final class DexterInstance {
    * Starts the native request permissions process
    */
   void requestPermissionsToSystem(Collection<String> permissions) {
-    int requestCode = getRequestCodeForPermissions(permissions);
-    androidPermissionService.requestPermissions(activity, permissions.toArray(new String[permissions.size()]),
-        requestCode);
+    androidPermissionService.requestPermissions(activity,
+        permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
   }
 
-  private void startBackgroundActivity() {
+  private void startTransparentActivity() {
     Intent intent = intentProvider.get(context, DexterActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
@@ -157,7 +163,7 @@ final class DexterInstance {
       return;
     }
 
-    Collection<PermissionRequest> shouldShowRequestRationalePermissions = new LinkedList<>();
+    List<PermissionRequest> shouldShowRequestRationalePermissions = new LinkedList<>();
 
     for (String permission : permissions) {
       if (androidPermissionService.shouldShowRequestPermissionRationale(activity, permission)) {
@@ -204,17 +210,13 @@ final class DexterInstance {
     }
   }
 
-  private int getRequestCodeForPermissions(Collection<String> permissions) {
-    return Math.abs(permissions.hashCode() % Integer.MAX_VALUE);
-  }
-
-  private void assertNoDexterRequestOngoing() {
+  private void checkNoDexterRequestOngoing() {
     if (isRequestingPermission.getAndSet(true)) {
       throw new IllegalStateException("Only one Dexter request at a time is allowed");
     }
   }
 
-  private void assertRequestSomePermission(Collection<String> permissions) {
+  private void checkRequestSomePermission(Collection<String> permissions) {
     if (permissions.isEmpty()) {
       throw new IllegalStateException("Dexter has to be called with at least one permission");
     }

@@ -16,11 +16,12 @@
 
 package com.karumi.dexter.listener.multi;
 
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Listener that composes multiple listeners into one
@@ -54,8 +55,7 @@ public class CompositeMultiplePermissionsListener implements MultiplePermissions
     }
   }
 
-  @Override
-  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token) {
     for (MultiplePermissionsListener listener : listeners) {
       listener.onPermissionRationaleShouldBeShown(permissions, token);

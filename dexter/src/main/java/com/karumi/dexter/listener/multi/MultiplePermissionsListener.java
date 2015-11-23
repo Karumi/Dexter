@@ -16,10 +16,10 @@
 
 package com.karumi.dexter.listener.multi;
 
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface that listens to updates to the permission requests
@@ -42,6 +42,6 @@ public interface MultiplePermissionsListener {
    * @param token Token used to continue or cancel the permission request process. The permission
    * request process will remain blocked until one of the token methods is called
    */
-  void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+  void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token);
 }

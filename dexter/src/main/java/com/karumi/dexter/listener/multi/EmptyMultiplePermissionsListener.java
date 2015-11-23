@@ -16,14 +16,14 @@
 
 package com.karumi.dexter.listener.multi;
 
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
-import java.util.Collection;
+import java.util.List;
 
 /**
- * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement only the
- * required methods
+ * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement
+ * only the required methods
  */
 public class EmptyMultiplePermissionsListener implements MultiplePermissionsListener {
 
@@ -31,8 +31,7 @@ public class EmptyMultiplePermissionsListener implements MultiplePermissionsList
 
   }
 
-  @Override
-  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token) {
 
   }

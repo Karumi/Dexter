@@ -21,7 +21,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Adapter to translate calls to a {@link MultiplePermissionsListener} into @{PermissionListener}
@@ -37,21 +37,21 @@ final class MultiplePermissionsListenerToPermissionListenerAdapter
   }
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
-    Collection<PermissionDeniedResponse> deniedResponses = report.getDeniedPermissionResponses();
-    Collection<PermissionGrantedResponse> grantedResponses = report.getGrantedPermissionResponses();
+    List<PermissionDeniedResponse> deniedResponses = report.getDeniedPermissionResponses();
+    List<PermissionGrantedResponse> grantedResponses = report.getGrantedPermissionResponses();
 
     if (!deniedResponses.isEmpty()) {
-      PermissionDeniedResponse response = CollectionUtils.getFirstFromCollection(deniedResponses);
+      PermissionDeniedResponse response = deniedResponses.get(0);
       listener.onPermissionDenied(response);
     } else {
-      PermissionGrantedResponse response = CollectionUtils.getFirstFromCollection(grantedResponses);
+      PermissionGrantedResponse response = grantedResponses.get(0);
       listener.onPermissionGranted(response);
     }
   }
 
-  @Override public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> requests,
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> requests,
       PermissionToken token) {
-    PermissionRequest firstRequest = CollectionUtils.getFirstFromCollection(requests);
+    PermissionRequest firstRequest = requests.get(0);
     listener.onPermissionRationaleShouldBeShown(firstRequest, token);
   }
 }

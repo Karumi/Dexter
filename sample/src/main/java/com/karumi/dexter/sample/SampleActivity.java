@@ -38,7 +38,6 @@ import com.karumi.dexter.listener.single.CompositePermissionListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
-import java.util.Arrays;
 
 /**
  * Sample activity showing the permission request process with Dexter.
@@ -63,21 +62,20 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
-    Dexter.checkPermissions(
-        Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS,
-            Manifest.permission.RECORD_AUDIO), allPermissionsListener);
+    Dexter.checkPermissions(allPermissionsListener, Manifest.permission.CAMERA,
+        Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
   }
 
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
-    Dexter.checkPermission(Manifest.permission.CAMERA, cameraPermissionListener);
+    Dexter.checkPermission(cameraPermissionListener, Manifest.permission.CAMERA);
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
-    Dexter.checkPermission(Manifest.permission.READ_CONTACTS, contactsPermissionListener);
+    Dexter.checkPermission(contactsPermissionListener, Manifest.permission.READ_CONTACTS);
   }
 
   @OnClick(R.id.audio_permission_button) public void onAudioPermissionButtonClicked() {
-    Dexter.checkPermission(Manifest.permission.RECORD_AUDIO, audioPermissionListener);
+    Dexter.checkPermission(audioPermissionListener, Manifest.permission.RECORD_AUDIO);
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
