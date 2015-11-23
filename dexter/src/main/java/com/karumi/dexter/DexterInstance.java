@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -38,15 +36,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 final class DexterInstance {
 
+  private final Context context;
+  private final AndroidPermissionService androidPermissionService;
+  private final IntentProvider intentProvider;
   private Collection<String> pendingPermissions;
   private PermissionsReport permissionsReport;
-  private Context context;
   private Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
 
-  DexterInstance(Context context) {
+  DexterInstance(Context context, AndroidPermissionService androidPermissionService, IntentProvider intentProvider) {
     this.context = context;
+    this.androidPermissionService = androidPermissionService;
+    this.intentProvider = intentProvider;
   }
 
   /**
@@ -89,7 +91,7 @@ final class DexterInstance {
     Collection<String> grantedRequests = new LinkedList<>();
 
     for (String permission : pendingPermissions) {
-      int permissionState = ContextCompat.checkSelfPermission(activity, permission);
+      int permissionState = androidPermissionService.checkSelfPermission(activity, permission);
       switch (permissionState) {
         case PackageManager.PERMISSION_DENIED:
           deniedRequests.add(permission);
@@ -140,12 +142,12 @@ final class DexterInstance {
    */
   void requestPermissionsToSystem(Collection<String> permissions) {
     int requestCode = getRequestCodeForPermissions(permissions);
-    ActivityCompat.requestPermissions(activity, permissions.toArray(new String[permissions.size()]),
+    androidPermissionService.requestPermissions(activity, permissions.toArray(new String[permissions.size()]),
         requestCode);
   }
 
   private void startBackgroundActivity() {
-    Intent intent = new Intent(context, DexterActivity.class);
+    Intent intent = intentProvider.get(context, DexterActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
   }
@@ -158,7 +160,7 @@ final class DexterInstance {
     Collection<PermissionRequest> shouldShowRequestRationalePermissions = new LinkedList<>();
 
     for (String permission : permissions) {
-      if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+      if (androidPermissionService.shouldShowRequestPermissionRationale(activity, permission)) {
         shouldShowRequestRationalePermissions.add(new PermissionRequest(permission));
       }
     }
@@ -183,13 +185,17 @@ final class DexterInstance {
   private void updatePermissionsAsDenied(Collection<String> permissions) {
     for (String permission : permissions) {
       PermissionDeniedResponse response = PermissionDeniedResponse.from(permission,
-          !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission));
+          !androidPermissionService.shouldShowRequestPermissionRationale(activity, permission));
       permissionsReport.addDeniedPermissionResponse(response);
     }
     onPermissionsChecked(permissions);
   }
 
   private void onPermissionsChecked(Collection<String> permissions) {
+    if (pendingPermissions.isEmpty()) {
+      return;
+    }
+
     pendingPermissions.removeAll(permissions);
     if (pendingPermissions.isEmpty()) {
       activity.finish();

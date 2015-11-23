@@ -27,42 +27,56 @@ import java.util.List;
  */
 public final class PermissionsReport {
 
-  private List<PermissionGrantedResponse> grantedPermissionResponses;
-  private List<PermissionDeniedResponse> deniedPermissionResponses;
+  private final List<PermissionGrantedResponse> grantedPermissionResponses;
+  private final List<PermissionDeniedResponse> deniedPermissionResponses;
 
-  public PermissionsReport() {
+  PermissionsReport() {
     grantedPermissionResponses = new LinkedList<>();
     deniedPermissionResponses = new LinkedList<>();
   }
 
-  public boolean addGrantedPermissionResponse(PermissionGrantedResponse response) {
+  boolean addGrantedPermissionResponse(PermissionGrantedResponse response) {
     return grantedPermissionResponses.add(response);
   }
 
-  public boolean addDeniedPermissionResponse(PermissionDeniedResponse response) {
+  boolean addDeniedPermissionResponse(PermissionDeniedResponse response) {
     return deniedPermissionResponses.add(response);
   }
 
+  /**
+   * Returns a collection with all the permissions that has been granted
+   */
   public Collection<PermissionGrantedResponse> getGrantedPermissionResponses() {
     return grantedPermissionResponses;
   }
 
+  /**
+   * Returns a collection with all the permissions that has been denied
+   */
   public Collection<PermissionDeniedResponse> getDeniedPermissionResponses() {
     return deniedPermissionResponses;
   }
 
+  /**
+   * Returns whether the user has granted all the requested permission
+   */
   public boolean hasUserGrantedAllPermissions() {
     return deniedPermissionResponses.isEmpty();
   }
 
+  /**
+   * Returns whether the user has permanently denied any of the requested permissions
+   */
   public boolean hasPermanentlyDeniedAnyPermission() {
     boolean hasPermanentlyDeniedAnyPermission = false;
+
     for (PermissionDeniedResponse deniedResponse : deniedPermissionResponses) {
       if (deniedResponse.isPermanentlyDenied()) {
         hasPermanentlyDeniedAnyPermission = true;
         break;
       }
     }
+
     return hasPermanentlyDeniedAnyPermission;
   }
 }

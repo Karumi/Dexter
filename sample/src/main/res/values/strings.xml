@@ -19,7 +19,7 @@
   <string name="ask_for_camera_permission_button">Camera</string>
   <string name="ask_for_contacts_permission_button">Contacts</string>
   <string name="ask_for_audio_permission_button">Audio</string>
-  <string name="ask_for_all_permissions_button">All</string>
+  <string name="ask_for_all_permissions_button">Request all</string>
   <string name="permission_granted_feedback">GRANTED</string>
   <string name="permission_denied_feedback">DENIED</string>
   <string name="permission_permanently_denied_feedback">PERMA-DENIED</string>

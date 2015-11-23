@@ -31,10 +31,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.PermissionsReport;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
@@ -43,13 +39,11 @@ import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Sample activity showing the permission request process with Dexter.
  */
-public class SampleActivity extends Activity
-    implements PermissionListener, MultiplePermissionsListener {
+public class SampleActivity extends Activity {
 
   @Bind(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
   @Bind(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
@@ -86,63 +80,8 @@ public class SampleActivity extends Activity
     Dexter.checkPermission(Manifest.permission.RECORD_AUDIO, audioPermissionListener);
   }
 
-  @Override public void onPermissionsChecked(PermissionsReport report) {
-    for (PermissionGrantedResponse response : report.getGrantedPermissionResponses()) {
-      TextView feedbackView = getFeedbackViewForPermission(response.getPermissionName());
-      showPermissionGranted(feedbackView);
-    }
-
-    for (PermissionDeniedResponse response : report.getDeniedPermissionResponses()) {
-      TextView feedbackView = getFeedbackViewForPermission(response.getPermissionName());
-      showPermissionDenied(feedbackView, response.isPermanentlyDenied());
-    }
-  }
-
-  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-    switch (response.getPermissionName()) {
-      case Manifest.permission.CAMERA:
-        showPermissionGranted(cameraPermissionFeedbackView);
-        break;
-      case Manifest.permission.READ_CONTACTS:
-        showPermissionGranted(contactsPermissionFeedbackView);
-        break;
-      case Manifest.permission.RECORD_AUDIO:
-        showPermissionGranted(audioPermissionFeedbackView);
-        break;
-      default:
-        throw new RuntimeException("We didn't request this permission!");
-    }
-  }
-
-  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
-    switch (response.getPermissionName()) {
-      case Manifest.permission.CAMERA:
-        showPermissionDenied(cameraPermissionFeedbackView, response.isPermanentlyDenied());
-        break;
-      case Manifest.permission.READ_CONTACTS:
-        showPermissionDenied(contactsPermissionFeedbackView, response.isPermanentlyDenied());
-        break;
-      case Manifest.permission.RECORD_AUDIO:
-        showPermissionDenied(audioPermissionFeedbackView, response.isPermanentlyDenied());
-        break;
-      default:
-        throw new RuntimeException("We didn't request this permission!");
-    }
-  }
-
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
-      final PermissionToken token) {
-    showPermissionRationale(token);
-  }
-
-  @Override
-  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
-      final PermissionToken token) {
-    showPermissionRationale(token);
-  }
-
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-  private void showPermissionRationale(final PermissionToken token) {
+  public void showPermissionRationale(final PermissionToken token) {
     new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)
         .setMessage(R.string.permission_rationale_message)
         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -165,29 +104,36 @@ public class SampleActivity extends Activity
         .show();
   }
 
-  private void showPermissionGranted(TextView feedbackView) {
+  public void showPermissionGranted(String permission) {
+    TextView feedbackView = getFeedbackViewForPermission(permission);
     feedbackView.setText(R.string.permission_granted_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_granted));
   }
 
-  private void showPermissionDenied(TextView feedbackView, boolean isPermanentlyDenied) {
+  public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
+    TextView feedbackView = getFeedbackViewForPermission(permission);
     feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
 
   private void createPermissionListeners() {
-    allPermissionsListener = new CompositeMultiplePermissionsListener(this,
-        SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(rootView,
-            R.string.all_permissions_denied_feedback)
-            .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
-            .build());
-    cameraPermissionListener = new CompositePermissionListener(this,
+    PermissionListener feedbackViewPermissionListener = new SamplePermissionListener(this);
+    MultiplePermissionsListener feedbackViewMultiplePermissionListener =
+        new SampleMultiplePermissionListener(this);
+
+    allPermissionsListener =
+        new CompositeMultiplePermissionsListener(feedbackViewMultiplePermissionListener,
+            SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(rootView,
+                R.string.all_permissions_denied_feedback)
+                .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
+                .build());
+    cameraPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         SnackbarOnDeniedPermissionListener.Builder.with(rootView,
             R.string.camera_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .build());
-    contactsPermissionListener = new CompositePermissionListener(this,
+    contactsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         SnackbarOnDeniedPermissionListener.Builder.with(rootView,
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
@@ -200,8 +146,8 @@ public class SampleActivity extends Activity
             .withButtonText(android.R.string.ok)
             .withIcon(R.mipmap.ic_logo_karumi)
             .build();
-    audioPermissionListener =
-        new CompositePermissionListener(this, dialogOnDeniedPermissionListener);
+    audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
+        dialogOnDeniedPermissionListener);
   }
 
   private TextView getFeedbackViewForPermission(String name) {

@@ -17,28 +17,33 @@
 package com.karumi.dexter.sample;
 
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.PermissionsReport;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import java.util.Collection;
 
-public class SamplePermissionListener implements PermissionListener {
+public class SampleMultiplePermissionListener implements MultiplePermissionsListener {
 
   private final SampleActivity activity;
 
-  public SamplePermissionListener(SampleActivity activity) {
+  public SampleMultiplePermissionListener(SampleActivity activity) {
     this.activity = activity;
   }
 
-  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-    activity.showPermissionGranted(response.getPermissionName());
+  @Override public void onPermissionsChecked(PermissionsReport report) {
+    for (PermissionGrantedResponse response : report.getGrantedPermissionResponses()) {
+      activity.showPermissionGranted(response.getPermissionName());
+    }
+
+    for (PermissionDeniedResponse response : report.getDeniedPermissionResponses()) {
+      activity.showPermissionDenied(response.getPermissionName(), response.isPermanentlyDenied());
+    }
   }
 
-  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
-    activity.showPermissionDenied(response.getPermissionName(), response.isPermanentlyDenied());
-  }
-
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+  @Override
+  public void onPermissionRationaleShouldBeShown(Collection<PermissionRequest> permissions,
       PermissionToken token) {
     activity.showPermissionRationale(token);
   }

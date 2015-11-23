@@ -39,7 +39,9 @@ public final class Dexter {
    */
   public static void initialize(Context context) {
     if (instance == null) {
-      instance = new DexterInstance(context);
+      AndroidPermissionService androidPermissionService = new AndroidPermissionService();
+      IntentProvider intentProvider = new IntentProvider();
+      instance = new DexterInstance(context, androidPermissionService, intentProvider);
     }
   }
 
