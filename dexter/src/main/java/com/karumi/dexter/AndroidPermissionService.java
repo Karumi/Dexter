@@ -17,6 +17,7 @@
 package com.karumi.dexter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,15 +30,15 @@ class AndroidPermissionService {
   /**
    * @see ContextCompat#checkSelfPermission
    */
-  int checkSelfPermission(Activity activity, String permission) {
-    return ContextCompat.checkSelfPermission(activity, permission);
+  int checkSelfPermission(@NonNull Context context, @NonNull String permission) {
+    return ContextCompat.checkSelfPermission(context, permission);
   }
 
   /**
    * @see ActivityCompat#requestPermissions
    */
-  void requestPermissions(final @NonNull Activity activity, final @NonNull String[] permissions,
-      final int requestCode) {
+  void requestPermissions(@NonNull Activity activity, @NonNull String[] permissions,
+      int requestCode) {
     ActivityCompat.requestPermissions(activity, permissions, requestCode);
   }
 
