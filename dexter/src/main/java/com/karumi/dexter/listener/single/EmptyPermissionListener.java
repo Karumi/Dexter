@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.single;
 
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
 
 /**
  * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
- * required methods.
+ * required methods
  */
 public class EmptyPermissionListener implements PermissionListener {
 
@@ -32,7 +35,8 @@ public class EmptyPermissionListener implements PermissionListener {
 
   }
 
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+      PermissionToken token) {
 
   }
 }

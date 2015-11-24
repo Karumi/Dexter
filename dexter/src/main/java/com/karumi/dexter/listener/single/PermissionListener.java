@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.single;
 
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
 
 /**
  * Interface that listens to updates to the permission requests.
@@ -43,8 +46,8 @@ public interface PermissionListener {
    * Method called whenever Android asks the application to inform the user of the need for the
    * requested permission. The request process won't continue until the token is properly used.
    *
-   * @param permission The permission that has been requested. One of the values found in {@link
-   * android.Manifest.permission}
+   * @param permission The permission that has been requested. One of the values found in
+   * {@link android.Manifest.permission}
    * @param token Token used to continue or cancel the permission request process. The permission
    * request process will remain blocked until one of the token methods is called.
    */

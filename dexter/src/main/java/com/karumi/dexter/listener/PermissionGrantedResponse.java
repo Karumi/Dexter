@@ -40,4 +40,8 @@ public final class PermissionGrantedResponse {
   public PermissionRequest getRequestedPermission() {
     return requestedPermission;
   }
+
+  public String getPermissionName() {
+    return requestedPermission.getName();
+  }
 }

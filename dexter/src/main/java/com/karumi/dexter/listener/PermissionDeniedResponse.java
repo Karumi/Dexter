@@ -44,6 +44,10 @@ public final class PermissionDeniedResponse {
     return requestedPermission;
   }
 
+  public String getPermissionName() {
+    return requestedPermission.getName();
+  }
+
   public boolean isPermanentlyDenied() {
     return permanentlyDenied;
   }

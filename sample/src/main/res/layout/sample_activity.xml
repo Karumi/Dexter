@@ -85,4 +85,17 @@
       style="@style/PermissionFeedback"
       />
 
+  <Button
+      android:id="@+id/all_permissions_button"
+      android:layout_width="@dimen/button_width"
+      android:layout_height="@dimen/button_height"
+      android:text="@string/ask_for_all_permissions_button"
+      android:layout_toLeftOf="@id/contacts_permission_button"
+      android:layout_toStartOf="@id/contacts_permission_button"
+      android:layout_centerInParent="true"
+      android:layout_marginRight="@dimen/all_permission_button_margin_right"
+      android:layout_marginEnd="@dimen/all_permission_button_margin_right"
+      style="@style/PermissionButton"
+      />
+
 </RelativeLayout>

@@ -29,14 +29,17 @@ public MyApplication extends Application {
 }
 ```
 
-Once the library is initialized you can start checking permissions at will. For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
+Once the library is initialized you can start checking permissions at will. You have two options, you can either check for a single permission or check for multiple permissions at once.
+
+###Single permission 
+For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
-Dexter.checkPermission(Manifest.permission.CAMERA, new PermissionListener() {
-	@Override public void onPermissionGranted(String permission) {/* ... */}
-	@Override public void onPermissionDenied(String permission) {/* ... */}
-	@Override public void onPermissionRationaleShouldBeShown(String permission, PermissionToken token) {/* ... */}
-});
+Dexter.checkPermission(new PermissionListener() {
+	@Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
+	@Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+	@Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
+}, Manifest.permission.CAMERA);
 ```
 
 To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
@@ -46,33 +49,83 @@ To make your life easier we offer some ``PermissionListener`` implementations to
 
 ```java
 PermissionListener dialogPermissionListener =
-	DialogOnDeniedPermissionListener.Builder.withContext(context)
+	DialogOnDeniedPermissionListener.Builder
+		.withContext(context)
 		.withTitle("Camera permission")
 		.withMessage("Camera permission is needed to take pictures of your cat")
 		.withButtonText(android.R.string.ok)
 		.withIcon(R.mipmap.my_icon)
 		.build();
-Dexter.checkPermission(Manifest.permission.CAMERA, dialogPermissionListener);
+Dexter.checkPermission(dialogPermissionListener, Manifest.permission.CAMERA);
 ```
 
 * ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request:
 
 ```java
 PermissionListener snackbarPermissionListener =
-	SnackbarOnDeniedPermissionListener.Builder.with(rootView, "Camera access is needed to take pictures of your dog")
+	SnackbarOnDeniedPermissionListener.Builder
+		.with(rootView, "Camera access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
 		.build();
-Dexter.checkPermission(Manifest.permission.CAMERA, snackbarPermissionListener);
+Dexter.checkPermission(snackbarPermissionListener, Manifest.permission.CAMERA);
 ```
 
-* ``MultiPermissionListener`` to compound multiple listeners into one:
+* ``CompositePermissionListener`` to compound multiple listeners into one:
 
 ```java
 PermissionListener snackbarPermissionListener = /*...*/;
 PermissionListener dialogPermissionListener = /*...*/;
-Dexter.checkPermission(Manifest.permission.CAMERA, new MultiPermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/));
+Dexter.checkPermission(new CompositePermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/), Manifest.permission.CAMERA);
 ```
 
+###Multiple permissions
+If you want to request multiple permissions you just need to do the same but registering an implementation of ``MultiplePermissionsListener``:
+
+```java
+Collection<String> permissions = Arrays.asList(
+Dexter.checkPermissions(new MultiplePermissionsListener() {
+	@Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+	@Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+}, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+```
+
+The ``MultiplePermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
+
+As with the single permission listener, there are also some useful implementations for recurring patterns:
+
+* ``EmptyMultiplePermissionsListener`` to make it easier to implement only the methods you want.
+* ``DialogOnAnyDeniedMultiplePermissionsListener`` to show a configurable dialog whenever the user rejects at least one permission:
+
+```java
+MultiplePermissionsListener dialogMultiplePermissionsListener =
+	DialogOnAnyDeniedMultiplePermissionsListener.Builder
+		.withContext(context)
+		.withTitle("Camera & audio permission")
+		.withMessage("Both camera and audio permission are needed to take pictures of your cat")
+		.withButtonText(android.R.string.ok)
+		.withIcon(R.mipmap.my_icon)
+		.build();
+Dexter.checkPermissions(dialogMultiplePermissionsListener, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+```
+
+* ``SnackbarOnAnyDeniedMultiplePermissionsListener`` to show a snackbar message whenever the user rejects any of the requested permissions:
+
+```java
+MultiplePermissionsListener snackbarMultiplePermissionsListener =
+	SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+		.with(rootView, "Camera and audio access is needed to take pictures of your dog")
+		.withOpenSettingsButton("Settings")
+		.build();
+Dexter.checkPermissions(snackbarMultiplePermissionsListener, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+```
+
+* ``CompositePermissionListener`` to compound multiple listeners into one:
+
+```java
+MultiplePermissionsListener snackbarMultiplePermissionsListener = /*...*/;
+MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
+Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+```
 
 **IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 
@@ -129,6 +182,6 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[1]: ./art/screenshot.gif
+[1]: ./art/sample.gif
 [2]: http://www.google.es/design/spec/patterns/permissions.html
 [3]: https://github.com/JakeWharton/butterknife

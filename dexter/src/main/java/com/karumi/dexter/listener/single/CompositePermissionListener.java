@@ -14,36 +14,38 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener;
+package com.karumi.dexter.listener.single;
 
 import com.karumi.dexter.PermissionToken;
-
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Listener that composes multiple listeners into one.
+ * Listener that composes multiple listeners into one
  * All inner listeners will be called for a given event unless one of them throws an exception or
- * is blocked.
+ * is blocked
  */
-public class MultiPermissionListener implements PermissionListener {
+public class CompositePermissionListener implements PermissionListener {
 
   private final Collection<PermissionListener> listeners;
 
   /**
-   * Creates a {@link MultiPermissionListener} containing all the provided listeners.
+   * Creates a {@link CompositePermissionListener} containing all the provided listeners.
    * This constructor does not guaranty any calling order on inner listeners.
    */
-  public MultiPermissionListener(PermissionListener... listeners) {
+  public CompositePermissionListener(PermissionListener... listeners) {
     this(Arrays.asList(listeners));
   }
 
   /**
-   * Creates a {@link MultiPermissionListener} containing all the provided listeners.
+   * Creates a {@link CompositePermissionListener} containing all the provided listeners.
    * This constructor will guaranty that inner listeners are called following the iterator order
    * of the collection.
    */
-  public MultiPermissionListener(Collection<PermissionListener> listeners) {
+  public CompositePermissionListener(Collection<PermissionListener> listeners) {
     this.listeners = listeners;
   }
 
@@ -59,8 +61,8 @@ public class MultiPermissionListener implements PermissionListener {
     }
   }
 
-  @Override
-  public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+      PermissionToken token) {
     for (PermissionListener listener : listeners) {
       listener.onPermissionRationaleShouldBeShown(permission, token);
     }

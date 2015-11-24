@@ -16,26 +16,11 @@
 
 package com.karumi.dexter;
 
-final class PermissionRationaleToken implements PermissionToken {
+import android.content.Context;
+import android.content.Intent;
 
-  private final DexterInstance dexterInstance;
-  private boolean isTokenResolved = false;
-
-  public PermissionRationaleToken(DexterInstance dexterInstance) {
-    this.dexterInstance = dexterInstance;
-  }
-
-  @Override public void continuePermissionRequest() {
-    if (!isTokenResolved) {
-      dexterInstance.onContinuePermissionRequest();
-      isTokenResolved = true;
-    }
-  }
-
-  @Override public void cancelPermissionRequest() {
-    if (!isTokenResolved) {
-      dexterInstance.onCancelPermissionRequest();
-      isTokenResolved = true;
-    }
+class IntentProvider {
+  public Intent get(Context context, Class<?> clazz) {
+    return new Intent(context, clazz);
   }
 }

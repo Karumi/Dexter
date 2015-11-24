@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
+import java.util.Collection;
+import java.util.LinkedList;
 
 public final class DexterActivity extends Activity {
 
@@ -31,10 +33,18 @@ public final class DexterActivity extends Activity {
 
   @Override public void onRequestPermissionsResult(int requestCode, String[] permissions,
       int[] grantResults) {
-    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      Dexter.onPermissionRequestGranted();
-    } else {
-      Dexter.onPermissionRequestDenied();
+    Collection<String> grantedPermissions = new LinkedList<>();
+    Collection<String> deniedPermissions = new LinkedList<>();
+
+    for (int i = 0; i < permissions.length; i++) {
+      String permission = permissions[i];
+      if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+        deniedPermissions.add(permission);
+      } else {
+        grantedPermissions.add(permission);
+      }
     }
+
+    Dexter.onPermissionsRequested(grantedPermissions, deniedPermissions);
   }
 }
