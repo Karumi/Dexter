@@ -33,7 +33,6 @@
 
     <activity
         android:name=".SampleActivity"
-        android:configChanges="orientation"
         >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

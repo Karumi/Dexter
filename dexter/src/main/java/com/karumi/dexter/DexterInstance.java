@@ -44,10 +44,10 @@ final class DexterInstance {
   private final IntentProvider intentProvider;
   private final Collection<String> pendingPermissions;
   private final MultiplePermissionsReport multiplePermissionsReport;
-  private Activity activity;
+  private static Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
-  private AtomicBoolean rationaleShown = new AtomicBoolean(false);
+  private AtomicBoolean rationaleAccepted = new AtomicBoolean(false);
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -86,19 +86,30 @@ final class DexterInstance {
     multiplePermissionsReport.clear();
     this.listener = listener;
 
-    startTransparentActivity();
+    startTransparentActivityIfNeeded();
   }
 
   /**
-   * Check if there are some permissions pending to be confirmed by the user and restarts the request
-   * for permission process.
+   * Check if there are some permissions pending to be confirmed by the user and restarts the
+   * request for permission process.
    */
-  void checkPendingPermissions() {
+  void checkPendingPermissions(MultiplePermissionsListener listener) {
     boolean shouldContinueRequestingPendingPermissions =
-        !pendingPermissions.isEmpty() && !rationaleShown.get();
+        !pendingPermissions.isEmpty() && !rationaleAccepted.get();
+    this.listener = listener;
     if (shouldContinueRequestingPendingPermissions) {
-      startTransparentActivity();
+      onActivityCreated(activity);
     }
+  }
+
+  /**
+   * Check if there is a permission pending to be confirmed by the user and restarts the
+   * request for permission process.
+   */
+  void checkPendingPermission(PermissionListener listener) {
+    MultiplePermissionsListenerToPermissionListenerAdapter adapter =
+        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
+    checkPendingPermissions(adapter);
   }
 
   /**
@@ -145,7 +156,7 @@ final class DexterInstance {
    * with the permission request process
    */
   void onContinuePermissionRequest() {
-    rationaleShown.set(true);
+    rationaleAccepted.set(true);
     requestPermissionsToSystem(pendingPermissions);
   }
 
@@ -154,7 +165,7 @@ final class DexterInstance {
    * the permission request process
    */
   void onCancelPermissionRequest() {
-    rationaleShown.set(false);
+    rationaleAccepted.set(false);
     updatePermissionsAsDenied(pendingPermissions);
   }
 
@@ -166,10 +177,14 @@ final class DexterInstance {
         permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
   }
 
-  private void startTransparentActivity() {
-    Intent intent = intentProvider.get(context, DexterActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(intent);
+  private void startTransparentActivityIfNeeded() {
+    if (activity == null) {
+      Intent intent = intentProvider.get(context, DexterActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(intent);
+    } else {
+      onActivityCreated(activity);
+    }
   }
 
   private void handleDeniedPermissions(Collection<String> permissions) {
@@ -187,7 +202,7 @@ final class DexterInstance {
 
     if (shouldShowRequestRationalePermissions.isEmpty()) {
       requestPermissionsToSystem(permissions);
-    } else if (!rationaleShown.get()) {
+    } else if (!rationaleAccepted.get()) {
       PermissionRationaleToken permissionToken = new PermissionRationaleToken(this);
       listener.onPermissionRationaleShouldBeShown(shouldShowRequestRationalePermissions,
           permissionToken);
@@ -218,9 +233,8 @@ final class DexterInstance {
 
     pendingPermissions.removeAll(permissions);
     if (pendingPermissions.isEmpty()) {
-      activity.finish();
       isRequestingPermission.set(false);
-      rationaleShown.set(false);
+      rationaleAccepted.set(false);
       listener.onPermissionsChecked(multiplePermissionsReport);
     }
   }

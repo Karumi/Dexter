@@ -64,7 +64,7 @@ public class SampleActivity extends Activity {
      * to start with the check permission process without keep in an Android Bundle the state of
      * the request permission process.
      */
-    Dexter.checkPendingPermissions();
+    Dexter.checkPendingPermissions(allPermissionsListener);
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
