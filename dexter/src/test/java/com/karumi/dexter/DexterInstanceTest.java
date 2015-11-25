@@ -140,7 +140,7 @@ import static org.mockito.Mockito.when;
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
     dexter.checkPermission(permissionListener, permission);
-    dexter.onActivityCreated(activity);
+    dexter.onActivityReady(activity);
   }
 
   private void whenContinueWithTheCheckPermissionProcess() {

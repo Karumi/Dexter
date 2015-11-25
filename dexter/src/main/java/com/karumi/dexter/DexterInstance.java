@@ -44,7 +44,7 @@ final class DexterInstance {
   private final IntentProvider intentProvider;
   private final Collection<String> pendingPermissions;
   private final MultiplePermissionsReport multiplePermissionsReport;
-  private static Activity activity;
+  private Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
   private AtomicBoolean rationaleAccepted = new AtomicBoolean(false);
@@ -90,19 +90,6 @@ final class DexterInstance {
   }
 
   /**
-   * Check if there are some permissions pending to be confirmed by the user and restarts the
-   * request for permission process.
-   */
-  void checkPendingPermissions(MultiplePermissionsListener listener) {
-    boolean shouldContinueRequestingPendingPermissions =
-        !pendingPermissions.isEmpty() && !rationaleAccepted.get();
-    this.listener = listener;
-    if (shouldContinueRequestingPendingPermissions) {
-      onActivityCreated(activity);
-    }
-  }
-
-  /**
    * Check if there is a permission pending to be confirmed by the user and restarts the
    * request for permission process.
    */
@@ -113,9 +100,23 @@ final class DexterInstance {
   }
 
   /**
-   * Method called whenever the inner activity has been created and is ready to be used
+   * Check if there are some permissions pending to be confirmed by the user and restarts the
+   * request for permission process.
    */
-  void onActivityCreated(Activity activity) {
+  void checkPendingPermissions(MultiplePermissionsListener listener) {
+    boolean shouldContinueRequestingPendingPermissions =
+        !pendingPermissions.isEmpty() && !rationaleAccepted.get();
+    this.listener = listener;
+    if (shouldContinueRequestingPendingPermissions) {
+      onActivityReady(activity);
+    }
+  }
+
+  /**
+   * Method called whenever the inner activity has been created or restarted and is ready to be
+   * used.
+   */
+  void onActivityReady(Activity activity) {
     this.activity = activity;
     Collection<String> deniedRequests = new LinkedList<>();
     Collection<String> grantedRequests = new LinkedList<>();
@@ -178,13 +179,9 @@ final class DexterInstance {
   }
 
   private void startTransparentActivityIfNeeded() {
-    if (activity == null) {
-      Intent intent = intentProvider.get(context, DexterActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      context.startActivity(intent);
-    } else {
-      onActivityCreated(activity);
-    }
+    Intent intent = intentProvider.get(context, DexterActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(intent);
   }
 
   private void handleDeniedPermissions(Collection<String> permissions) {
@@ -233,6 +230,7 @@ final class DexterInstance {
 
     pendingPermissions.removeAll(permissions);
     if (pendingPermissions.isEmpty()) {
+      activity.finish();
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
       listener.onPermissionsChecked(multiplePermissionsReport);

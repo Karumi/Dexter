@@ -82,7 +82,8 @@ public final class Dexter {
 
   /**
    * Requests pending permissions if there were some permissions lost. This method can be used to
-   * recover the Dexter state during a configuration change, for example when the device is rotated.
+   * recover the Dexter state during a configuration change, for example when the device is
+   * rotated.
    */
   public static void checkPendingPermissions(MultiplePermissionsListener listener) {
     instance.checkPendingPermissions(listener);
@@ -90,17 +91,19 @@ public final class Dexter {
 
   /**
    * Requests pending permission if there was a permissions lost. This method can be used to
-   * recover the Dexter state during a configuration change, for example when the device is rotated.
+   * recover the Dexter state during a configuration change, for example when the device is
+   * rotated.
    */
   public static void checkPendingPermission(PermissionListener listener) {
     instance.checkPendingPermission(listener);
   }
 
   /**
-   * Method called whenever the DexterActivity has been created and is ready to be used
+   * Method called whenever the DexterActivity has been created or recreated and is ready to be
+   * used.
    */
-  static void onActivityCreated(Activity activity) {
-    instance.onActivityCreated(activity);
+  static void onActivityReady(Activity activity) {
+    instance.onActivityReady(activity);
   }
 
   /**
