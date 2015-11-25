@@ -44,11 +44,11 @@ final class DexterInstance {
   private final IntentProvider intentProvider;
   private final Collection<String> pendingPermissions;
   private final MultiplePermissionsReport multiplePermissionsReport;
+  private final AtomicBoolean isRequestingPermission;
+  private final AtomicBoolean rationaleAccepted;
   private Activity activity;
   private MultiplePermissionsListener listener;
-  private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
-  private AtomicBoolean rationaleAccepted = new AtomicBoolean(false);
-
+  
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
     this.context = context;
@@ -56,6 +56,8 @@ final class DexterInstance {
     this.intentProvider = intentProvider;
     this.pendingPermissions = new TreeSet<>();
     this.multiplePermissionsReport = new MultiplePermissionsReport();
+    this.isRequestingPermission = new AtomicBoolean();
+    this.rationaleAccepted = new AtomicBoolean();
   }
 
   /**
