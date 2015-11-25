@@ -81,6 +81,14 @@ public final class Dexter {
   }
 
   /**
+   * Requests pending permissions if there was some permissions lost during the rotate screen
+   * process.
+   */
+  public static void checkPendingPermissions() {
+    instance.checkPendingPermissions();
+  }
+
+  /**
    * Method called whenever the DexterActivity has been created and is ready to be used
    */
   static void onActivityCreated(Activity activity) {
