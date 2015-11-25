@@ -47,6 +47,7 @@ final class DexterInstance {
   private Activity activity;
   private MultiplePermissionsListener listener;
   private AtomicBoolean isRequestingPermission = new AtomicBoolean(false);
+  private AtomicBoolean rationaleShown = new AtomicBoolean(false);
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -89,11 +90,22 @@ final class DexterInstance {
   }
 
   /**
+   * Check if there is some permission pending to be confirmed by the user and restarts the request
+   * for permission process.
+   */
+  void checkPendingPermissions() {
+    boolean shouldContinueRequestingPendingPermissions =
+        !pendingPermissions.isEmpty() && !rationaleShown.get();
+    if (shouldContinueRequestingPendingPermissions) {
+      startTransparentActivity();
+    }
+  }
+
+  /**
    * Method called whenever the inner activity has been created and is ready to be used
    */
   void onActivityCreated(Activity activity) {
     this.activity = activity;
-
     Collection<String> deniedRequests = new LinkedList<>();
     Collection<String> grantedRequests = new LinkedList<>();
 
@@ -133,6 +145,7 @@ final class DexterInstance {
    * with the permission request process
    */
   void onContinuePermissionRequest() {
+    rationaleShown.set(true);
     requestPermissionsToSystem(pendingPermissions);
   }
 
@@ -141,6 +154,7 @@ final class DexterInstance {
    * the permission request process
    */
   void onCancelPermissionRequest() {
+    rationaleShown.set(false);
     updatePermissionsAsDenied(pendingPermissions);
   }
 
@@ -173,7 +187,7 @@ final class DexterInstance {
 
     if (shouldShowRequestRationalePermissions.isEmpty()) {
       requestPermissionsToSystem(permissions);
-    } else {
+    } else if (!rationaleShown.get()) {
       PermissionRationaleToken permissionToken = new PermissionRationaleToken(this);
       listener.onPermissionRationaleShouldBeShown(shouldShowRequestRationalePermissions,
           permissionToken);
@@ -206,6 +220,7 @@ final class DexterInstance {
     if (pendingPermissions.isEmpty()) {
       activity.finish();
       isRequestingPermission.set(false);
+      rationaleShown.set(false);
       listener.onPermissionsChecked(multiplePermissionsReport);
     }
   }
