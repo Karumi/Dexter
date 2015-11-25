@@ -90,7 +90,7 @@ final class DexterInstance {
   }
 
   /**
-   * Check if there is some permission pending to be confirmed by the user and restarts the request
+   * Check if there are some permissions pending to be confirmed by the user and restarts the request
    * for permission process.
    */
   void checkPendingPermissions() {
