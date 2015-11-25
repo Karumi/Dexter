@@ -110,9 +110,9 @@ import static org.mockito.Mockito.when;
     givenShouldShowRationaleForPermission(ANY_PERMISSION);
 
     whenCheckPermission(permissionListener, ANY_PERMISSION);
-    whenContinueWithTheCheckPermissionProcess();
+    whenContinueWithTheCheckPermissionProcess(permissionListener);
 
-    thenPermissionRationaleIsShown(1);
+    thenPermissionRationaleIsShown(2);
   }
 
   private void givenPermissionIsAlreadyDenied(String permission) {
@@ -143,8 +143,8 @@ import static org.mockito.Mockito.when;
     dexter.onActivityReady(activity);
   }
 
-  private void whenContinueWithTheCheckPermissionProcess() {
-    dexter.checkPendingPermissions();
+  private void whenContinueWithTheCheckPermissionProcess(PermissionListener permissionListener) {
+    dexter.checkPendingPermission(permissionListener);
   }
 
   private void thenPermissionIsGranted(String permission) {
