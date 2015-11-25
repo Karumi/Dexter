@@ -127,6 +127,16 @@ MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
 Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
 ```
 
+** If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:**
+
+```java
+  @Override protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.sample_activity);
+    Dexter.checkPendingPermissions();
+  }
+```
+
 **IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 
 Add it to your project
