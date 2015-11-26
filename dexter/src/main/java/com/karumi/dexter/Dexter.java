@@ -47,8 +47,9 @@ public final class Dexter {
   }
 
   /**
-   * Checks the permission and notifies the listener of its state
-   * It is important to note that permissions still have to be declared in the manifest
+   * Checks the permission and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
@@ -58,8 +59,9 @@ public final class Dexter {
   }
 
   /**
-   * Checks the permissions and notifies the listener of its state
-   * It is important to note that permissions still have to be declared in the manifest
+   * Checks the permissions and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
@@ -78,6 +80,15 @@ public final class Dexter {
   public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
     instance.checkPermissions(listener, permissions);
+  }
+
+  /**
+   * Checks is there is any permission request still ongoing.
+   * If so, state of permissions must not be checked until it is resolved
+   * or it will cause an exception.
+   */
+  public static boolean isRequestOngoing() {
+    return instance.isRequestOngoing();
   }
 
   /**
