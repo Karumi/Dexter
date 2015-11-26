@@ -145,6 +145,15 @@ final class DexterInstance {
   }
 
   /**
+   * Is a request for permission currently ongoing?
+   * If so, state of permissions must not be checked until the request is resolved
+   * or it will cause an exception
+   */
+  boolean isRequestOngoing() {
+    return isRequestingPermission.get();
+  }
+
+  /**
    * Starts the native request permissions process
    */
   void requestPermissionsToSystem(Collection<String> permissions) {
