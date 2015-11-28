@@ -68,19 +68,31 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
+    if (Dexter.isRequestOngoing()) {
+      return;
+    }
     Dexter.checkPermissions(allPermissionsListener, Manifest.permission.CAMERA,
         Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
   }
 
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
+    if (Dexter.isRequestOngoing()) {
+      return;
+    }
     Dexter.checkPermission(cameraPermissionListener, Manifest.permission.CAMERA);
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
+    if (Dexter.isRequestOngoing()) {
+      return;
+    }
     Dexter.checkPermission(contactsPermissionListener, Manifest.permission.READ_CONTACTS);
   }
 
   @OnClick(R.id.audio_permission_button) public void onAudioPermissionButtonClicked() {
+    if (Dexter.isRequestOngoing()) {
+      return;
+    }
     Dexter.checkPermission(audioPermissionListener, Manifest.permission.RECORD_AUDIO);
   }
 
