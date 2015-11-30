@@ -127,9 +127,21 @@ MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
 Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
 ```
 
-**IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
+###Showing a rationale
+Android will notify you when you are requesting a permission that needs an additional explanation for its usage, either because it is considered dangerous, or because the user has already declined that permission once.
 
-**If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:**
+Dexter will call the method ``onPermissionRationaleShouldBeShown`` implemented in your listener with a ``PermissionToken``. It's important to keep in mind that the request process will pause until the token is used, therefore, you won't be able to call Dexter again or request any other permissions if the token has not been used.
+
+The most simple implementation of your ``onPermissionRationaleShouldBeShown`` method could be:
+
+```java
+@Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+		token.continuePermissionRequest();
+  }
+```
+
+###Screen rotation
+If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:
 
 ```java
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +150,8 @@ Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissi
     Dexter.continuePendingRequestsIfPossible(permissionsListener);
   }
 ```
+
+**IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 
 Add it to your project
 ----------------------
