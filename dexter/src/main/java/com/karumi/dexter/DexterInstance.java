@@ -25,7 +25,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -46,7 +45,7 @@ final class DexterInstance {
   private final Collection<String> pendingPermissions;
   private final MultiplePermissionsReport multiplePermissionsReport;
   private final AtomicBoolean isRequestingPermission;
-  private WeakReference<Activity> activityWeakReference;
+  private Activity activity;
   private MultiplePermissionsListener listener;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
@@ -91,10 +90,10 @@ final class DexterInstance {
   }
 
   /**
-   * Method called whenever the inner activityWeakReference has been created and is ready to be used
+   * Method called whenever the inner activity has been created and is ready to be used
    */
   void onActivityCreated(Activity activity) {
-    this.activityWeakReference = new WeakReference<>(activity);
+    this.activity = activity;
 
     Collection<String> deniedRequests = new LinkedList<>();
     Collection<String> grantedRequests = new LinkedList<>();
@@ -159,7 +158,7 @@ final class DexterInstance {
    * Starts the native request permissions process
    */
   void requestPermissionsToSystem(Collection<String> permissions) {
-    androidPermissionService.requestPermissions(activityWeakReference.get(),
+    androidPermissionService.requestPermissions(activity,
         permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
   }
 
@@ -177,7 +176,7 @@ final class DexterInstance {
     List<PermissionRequest> shouldShowRequestRationalePermissions = new LinkedList<>();
 
     for (String permission : permissions) {
-      if (androidPermissionService.shouldShowRequestPermissionRationale(activityWeakReference.get(), permission)) {
+      if (androidPermissionService.shouldShowRequestPermissionRationale(activity, permission)) {
         shouldShowRequestRationalePermissions.add(new PermissionRequest(permission));
       }
     }
@@ -202,7 +201,7 @@ final class DexterInstance {
   private void updatePermissionsAsDenied(Collection<String> permissions) {
     for (String permission : permissions) {
       PermissionDeniedResponse response = PermissionDeniedResponse.from(permission,
-          !androidPermissionService.shouldShowRequestPermissionRationale(activityWeakReference.get(), permission));
+          !androidPermissionService.shouldShowRequestPermissionRationale(activity, permission));
       multiplePermissionsReport.addDeniedPermissionResponse(response);
     }
     onPermissionsChecked(permissions);
@@ -215,7 +214,7 @@ final class DexterInstance {
 
     pendingPermissions.removeAll(permissions);
     if (pendingPermissions.isEmpty()) {
-      activityWeakReference.get().finish();
+      activity.finish();
       isRequestingPermission.set(false);
       listener.onPermissionsChecked(multiplePermissionsReport);
     }
