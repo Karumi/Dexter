@@ -35,6 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,6 +105,16 @@ import static org.mockito.Mockito.when;
     thenPermissionIsPermanentlyDenied(ANY_PERMISSION);
   }
 
+  @Test public void onPermissionsPendingThenShouldNotShowPermissionRationaleTwice() {
+    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
+    givenShouldShowRationaleForPermission(ANY_PERMISSION);
+
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+    whenContinueWithTheCheckPermissionProcess(permissionListener);
+
+    thenPermissionRationaleIsShown(2);
+  }
+
   private void givenPermissionIsAlreadyDenied(String permission) {
     givenPermissionIsChecked(permission, PackageManager.PERMISSION_DENIED);
   }
@@ -129,7 +140,11 @@ import static org.mockito.Mockito.when;
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
     dexter.checkPermission(permissionListener, permission);
-    dexter.onActivityCreated(activity);
+    dexter.onActivityReady(activity);
+  }
+
+  private void whenContinueWithTheCheckPermissionProcess(PermissionListener permissionListener) {
+    dexter.continuePendingRequestIfPossible(permissionListener);
   }
 
   private void thenPermissionIsGranted(String permission) {
@@ -151,6 +166,11 @@ import static org.mockito.Mockito.when;
     verify(permissionListener).onPermissionRationaleShouldBeShown(
         argThat(getPermissionRequestShouldShowTokenMatcher(permission)),
         isA(PermissionToken.class));
+  }
+
+  private void thenPermissionRationaleIsShown(int times) {
+    verify(permissionListener, times(times)).onPermissionRationaleShouldBeShown(
+        isA(PermissionRequest.class), isA(PermissionToken.class));
   }
 
   private static ArgumentMatcher<PermissionGrantedResponse> getPermissionGrantedResponseMatcher(
