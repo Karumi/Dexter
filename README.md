@@ -135,7 +135,7 @@ Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissi
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
-    Dexter.checkPendingPermissions(permissionsListener);
+    Dexter.continuePendingRequestsIfPossible(permissionsListener);
   }
 ```
 

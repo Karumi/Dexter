@@ -98,21 +98,20 @@ final class DexterInstance {
    * Check if there is a permission pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void checkPendingPermission(PermissionListener listener) {
+  void continuePendingRequestIfPossible(PermissionListener listener) {
     MultiplePermissionsListenerToPermissionListenerAdapter adapter =
         new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    checkPendingPermissions(adapter);
+    continuePendingRequestsIfPossible(adapter);
   }
 
   /**
    * Check if there are some permissions pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void checkPendingPermissions(MultiplePermissionsListener listener) {
-    boolean shouldContinueRequestingPendingPermissions =
-        !pendingPermissions.isEmpty() && !rationaleAccepted.get();
+  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
+    boolean isShowingRationale = !pendingPermissions.isEmpty() && !rationaleAccepted.get();
     this.listener = listener;
-    if (shouldContinueRequestingPendingPermissions) {
+    if (isShowingRationale) {
       onActivityReady(activity);
     }
   }
