@@ -23,6 +23,7 @@ import android.content.pm.PackageManager;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Collection;
@@ -38,6 +39,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class DexterInstance {
 
   private static final int PERMISSIONS_REQUEST_CODE = 42;
+  private static final MultiplePermissionsListener EMPTY_LISTENER =
+      new EmptyMultiplePermissionsListener();
 
   private final Context context;
   private final AndroidPermissionService androidPermissionService;
@@ -47,7 +50,7 @@ final class DexterInstance {
   private final AtomicBoolean isRequestingPermission;
   private final AtomicBoolean rationaleAccepted;
   private Activity activity;
-  private MultiplePermissionsListener listener;
+  private MultiplePermissionsListener listener = EMPTY_LISTENER;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -245,6 +248,7 @@ final class DexterInstance {
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
       listener.onPermissionsChecked(multiplePermissionsReport);
+      listener = EMPTY_LISTENER;
     }
   }
 
