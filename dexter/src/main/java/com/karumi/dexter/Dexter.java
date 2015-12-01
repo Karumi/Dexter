@@ -116,8 +116,9 @@ public final class Dexter {
   }
 
   private static void assertInstanceNotNull() {
-    if (instance == null)
+    if (instance == null) {
       throw new NullPointerException("context == null \n Must call \"initialize\" on Dexter");
+    }
   }
 
   /**
