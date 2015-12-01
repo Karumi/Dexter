@@ -55,7 +55,7 @@ public final class Dexter {
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
   public static void checkPermission(PermissionListener listener, String permission) {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     instance.checkPermission(listener, permission);
   }
 
@@ -68,7 +68,7 @@ public final class Dexter {
    * @param permissions Array of values found in {@link android.Manifest.permission}
    */
   public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     instance.checkPermissions(listener, Arrays.asList(permissions));
   }
 
@@ -81,7 +81,7 @@ public final class Dexter {
    */
   public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     instance.checkPermissions(listener, permissions);
   }
 
@@ -91,7 +91,7 @@ public final class Dexter {
    * or it will cause an exception.
    */
   public static boolean isRequestOngoing() {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     return instance.isRequestOngoing();
   }
 
@@ -101,7 +101,7 @@ public final class Dexter {
    * rotated.
    */
   public static void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     instance.continuePendingRequestsIfPossible(listener);
   }
 
@@ -111,11 +111,11 @@ public final class Dexter {
    * rotated.
    */
   public static void continuePendingRequestIfPossible(PermissionListener listener) {
-    assertInstanceNotNull();
+    checkInstanceNotNull();
     instance.continuePendingRequestIfPossible(listener);
   }
 
-  private static void assertInstanceNotNull() {
+  private static void checkInstanceNotNull() {
     if (instance == null) {
       throw new NullPointerException("context == null \n Must call \"initialize\" on Dexter");
     }
