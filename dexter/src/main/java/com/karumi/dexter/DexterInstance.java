@@ -109,10 +109,11 @@ final class DexterInstance {
    * request for permission process.
    */
   void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
-    boolean isShowingRationale = !pendingPermissions.isEmpty() && !rationaleAccepted.get();
-    this.listener = listener;
-    if (isShowingRationale) {
-      onActivityReady(activity);
+    if (!pendingPermissions.isEmpty()) {
+      this.listener = listener;
+      if (!rationaleAccepted.get()) {
+        onActivityReady(activity);
+      }
     }
   }
 
