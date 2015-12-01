@@ -54,7 +54,7 @@ final class DexterInstance {
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
-    this.context = context;
+    this.context = context.getApplicationContext();
     this.androidPermissionService = androidPermissionService;
     this.intentProvider = intentProvider;
     this.pendingPermissions = new TreeSet<>();

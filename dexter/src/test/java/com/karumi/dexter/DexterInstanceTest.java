@@ -36,6 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,6 +55,8 @@ import static org.mockito.Mockito.when;
 
   @Before public void setUp() {
     IntentProvider intentProvider = new IntentMockProvider(intent);
+    Context mockApplicationContext = mock(Context.class);
+    when(context.getApplicationContext()).thenReturn(mockApplicationContext);
     dexter = new DexterInstance(context, androidPermissionService, intentProvider);
   }
 
