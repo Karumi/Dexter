@@ -191,6 +191,8 @@ Libraries used in this project
 ------------------------------
 
 * [Butterknife] [3]
+* [JUnit] [4]
+* [Mockito] [5]
 
 License
 -------
@@ -212,3 +214,5 @@ License
 [1]: ./art/sample.gif
 [2]: http://www.google.es/design/spec/patterns/permissions.html
 [3]: https://github.com/JakeWharton/butterknife
+[4]: https://github.com/junit-team/junit
+[5]: https://github.com/mockito/mockito
