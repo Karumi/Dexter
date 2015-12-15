@@ -247,8 +247,9 @@ final class DexterInstance {
       activity.finish();
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
-      listener.onPermissionsChecked(multiplePermissionsReport);
+      MultiplePermissionsListener currentListener = listener;
       listener = EMPTY_LISTENER;
+      currentListener.onPermissionsChecked(multiplePermissionsReport);
     }
   }
 
