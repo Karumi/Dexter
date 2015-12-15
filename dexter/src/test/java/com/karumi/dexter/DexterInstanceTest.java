@@ -117,7 +117,7 @@ import static org.mockito.Mockito.when;
 
   @Test public void onPermissionPermanentlyDeniedThenNotifiesListener() {
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
-    givenShouldShowNotRationaleForPermission(ANY_PERMISSION);
+    givenShouldNotShowRationaleForPermission(ANY_PERMISSION);
 
     whenCheckPermission(permissionListener, ANY_PERMISSION);
     dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
@@ -153,7 +153,7 @@ import static org.mockito.Mockito.when;
         permission)).thenReturn(true);
   }
 
-  private void givenShouldShowNotRationaleForPermission(String permission) {
+  private void givenShouldNotShowRationaleForPermission(String permission) {
     when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
         permission)).thenReturn(false);
   }
