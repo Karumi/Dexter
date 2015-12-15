@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import com.karumi.dexter.RetryCheckPermissionOnDeniedPermissionListener.CheckPermissionAction;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -35,8 +36,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,12 +52,14 @@ import static org.mockito.Mockito.when;
   @Mock MultiplePermissionsListener multiplePermissionsListener;
   @Mock PermissionListener permissionListener;
 
-  private DexterInstance dexter;
+  protected DexterInstance dexter;
+  protected AsyncExecutor asyncExecutor;
 
   @Before public void setUp() {
     IntentProvider intentProvider = new IntentMockProvider(intent);
     Context mockApplicationContext = mock(Context.class);
     when(context.getApplicationContext()).thenReturn(mockApplicationContext);
+    asyncExecutor = new AsyncExecutor();
     dexter = new DexterInstance(context, androidPermissionService, intentProvider);
   }
 
@@ -95,6 +98,20 @@ import static org.mockito.Mockito.when;
     whenCheckPermission(permissionListener, ANY_PERMISSION);
     dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
 
+    thenPermissionIsDenied(ANY_PERMISSION);
+  }
+
+  @Test public void onPermissionDeniedDoSequentialCheckPermissionThenNotifiesListener()
+      throws InterruptedException {
+    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
+    givenShouldShowRationaleForPermission(ANY_PERMISSION);
+    PermissionListener checkPermissionOnDeniedPermissionListener =
+        givenARetryCheckPermissionOnDeniedPermissionListener(permissionListener);
+
+    whenCheckPermission(checkPermissionOnDeniedPermissionListener, ANY_PERMISSION);
+    dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
+
+    asyncExecutor.waitForExecution();
     thenPermissionIsDenied(ANY_PERMISSION);
   }
 
@@ -139,6 +156,12 @@ import static org.mockito.Mockito.when;
   private void givenShouldShowNotRationaleForPermission(String permission) {
     when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
         permission)).thenReturn(false);
+  }
+
+  private PermissionListener givenARetryCheckPermissionOnDeniedPermissionListener(
+      PermissionListener permissionListener) {
+    return new RetryCheckPermissionOnDeniedPermissionListener(permissionListener,
+        new CheckPermissionWithOnActivityReadyInBackground());
   }
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
@@ -216,6 +239,18 @@ import static org.mockito.Mockito.when;
 
     @Override public Intent get(Context context, Class<?> clazz) {
       return intent;
+    }
+  }
+
+  private class CheckPermissionWithOnActivityReadyInBackground implements CheckPermissionAction {
+    @Override public void check(final PermissionListener listener, final String permission) {
+      dexter.checkPermission(listener, permission);
+      asyncExecutor.execute(new Runnable() {
+        @Override public void run() {
+          dexter.onActivityReady(activity);
+          dexter.onPermissionRequestDenied(Collections.singletonList(permission));
+        }
+      });
     }
   }
 }
