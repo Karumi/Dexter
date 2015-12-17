@@ -245,6 +245,7 @@ final class DexterInstance {
     pendingPermissions.removeAll(permissions);
     if (pendingPermissions.isEmpty()) {
       activity.finish();
+      activity = null;
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
       MultiplePermissionsListener currentListener = listener;
