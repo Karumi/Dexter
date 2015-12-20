@@ -6,12 +6,12 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.util.List;
 
-public class PermissionListenerThreadDecorator implements MultiplePermissionsListener {
+public class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
 
   private final MultiplePermissionsListener listener;
   private final ThreadSpec threadSpec;
 
-  public PermissionListenerThreadDecorator(MultiplePermissionsListener listener,
+  public MultiplePermissionListenerThreadDecorator(MultiplePermissionsListener listener,
       ThreadSpec threadSpec) {
     this.threadSpec = threadSpec;
     this.listener = listener;

@@ -25,16 +25,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.MainThreadSpec;
-import com.karumi.dexter.listener.threaddecorator.PermissionListenerThreadDecorator;
-import com.karumi.dexter.listener.threaddecorator.SameThreadSpec;
+import com.karumi.dexter.listener.threaddecorator.MultiplePermissionListenerThreadDecorator;
 import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
+import com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory.makeMainThread;
 
 /**
  * Inner implementation of a dexter instance holding the state of the permissions request
@@ -51,7 +52,7 @@ final class DexterInstance {
   private final AtomicBoolean isRequestingPermission;
   private final AtomicBoolean rationaleAccepted;
   private Activity activity;
-  private PermissionListenerThreadDecorator listener;
+  private MultiplePermissionListenerThreadDecorator listener;
   private ThreadSpec threadSpec;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
@@ -74,7 +75,7 @@ final class DexterInstance {
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
   void checkPermissionOnSameThread(PermissionListener listener, String permission) {
-    checkSinglePermission(listener, permission, new SameThreadSpec());
+    checkSinglePermission(listener, permission, ThreadSpecFactory.makeSameThread());
   }
 
   /**
@@ -84,7 +85,7 @@ final class DexterInstance {
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
   void checkPermission(PermissionListener listener, String permission) {
-    checkSinglePermission(listener, permission, new MainThreadSpec());
+    checkSinglePermission(listener, permission, makeMainThread());
   }
 
   /**
@@ -97,7 +98,7 @@ final class DexterInstance {
    */
   void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
       Collection<String> permissions) {
-    checkMultiplePermissions(listener, permissions, new SameThreadSpec());
+    checkMultiplePermissions(listener, permissions, ThreadSpecFactory.makeSameThread());
   }
 
   /**
@@ -108,7 +109,7 @@ final class DexterInstance {
    * @param permissions Array of values found in {@link android.Manifest.permission}
    */
   void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions) {
-    checkMultiplePermissions(listener, permissions, new MainThreadSpec());
+    checkMultiplePermissions(listener, permissions, ThreadSpecFactory.makeMainThread());
   }
 
   /**
@@ -127,7 +128,7 @@ final class DexterInstance {
    */
   void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     if (!pendingPermissions.isEmpty()) {
-      this.listener = new PermissionListenerThreadDecorator(listener, threadSpec);
+      this.listener = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
       if (!rationaleAccepted.get()) {
         onActivityReady(activity);
       }
@@ -296,7 +297,7 @@ final class DexterInstance {
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
     this.threadSpec = threadSpec;
-    this.listener = new PermissionListenerThreadDecorator(listener, threadSpec);
+    this.listener = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
 
     startTransparentActivityIfNeeded();
 

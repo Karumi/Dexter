@@ -7,13 +7,17 @@ public class SameThreadSpec implements ThreadSpec {
 
   private Handler handler;
 
-  public SameThreadSpec() {
+  SameThreadSpec() {
     prepareLooperIfNotMainThread();
-    handler = new Handler();
+    handler = new Handler(Looper.myLooper());
   }
 
   @Override public void execute(Runnable runnable) {
-    handler.post(runnable);
+    if (runningBackgroundThread()) {
+      handler.post(runnable);
+    } else {
+      runnable.run();
+    }
   }
 
   @Override public void onChangingThread() {
