@@ -46,9 +46,19 @@ public final class Dexter {
     }
   }
 
-  public static void checkPermissionBlocking(PermissionListener listener, String permission) {
+  /**
+   * Checks the permission and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * Listener.onPermissionGranted and Listener.onPermissionDenied are called on the same thread
+   * that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of the permission is ready
+   * @param permission One of the values found in {@link android.Manifest.permission}
+   */
+  public static void checkPermissionOnSameThread(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermissionBlocking(listener, permission);
+    instance.checkPermissionOnSameThread(listener, permission);
   }
 
   /**
@@ -62,6 +72,22 @@ public final class Dexter {
   public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
     instance.checkPermission(listener, permission);
+  }
+
+  /**
+   * Checks the permissions and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * Listener.onPermissionGranted and Listener.onPermissionDenied are called on the same thread
+   * that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of the permissions are ready
+   * @param permissions Array of values found in {@link android.Manifest.permission}
+   */
+  public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
+      String... permissions) {
+    checkInstanceNotNull();
+    instance.checkPermissionsOnSameThread(listener, Arrays.asList(permissions));
   }
 
   /**

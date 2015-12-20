@@ -20,14 +20,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.os.Looper;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.karumi.dexter.listener.threaddecorator.MainThreadSpec;
+import com.karumi.dexter.listener.threaddecorator.PermissionListenerThreadDecorator;
+import com.karumi.dexter.listener.threaddecorator.SameThreadSpec;
+import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -41,8 +42,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class DexterInstance {
 
   private static final int PERMISSIONS_REQUEST_CODE = 42;
-  private static final MultiplePermissionsListener EMPTY_LISTENER =
-      new EmptyMultiplePermissionsListener();
 
   private final Context context;
   private final AndroidPermissionService androidPermissionService;
@@ -52,10 +51,8 @@ final class DexterInstance {
   private final AtomicBoolean isRequestingPermission;
   private final AtomicBoolean rationaleAccepted;
   private Activity activity;
-  private MultiplePermissionsListener listener = EMPTY_LISTENER;
-  private Handler handler;
-  private final Object lock = new Object();
-  private Runnable runnable;
+  private PermissionListenerThreadDecorator listener;
+  private ThreadSpec threadSpec;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -68,12 +65,16 @@ final class DexterInstance {
     this.rationaleAccepted = new AtomicBoolean();
   }
 
-  void checkPermissionBlocking(PermissionListener listener, String permission) {
-    if (Looper.getMainLooper() != Looper.myLooper()) {
-      Looper.prepare();
-    }
-    handler = new Handler();
-    checkPermission(listener, permission);
+  /**
+   * Checks the state of a specific permission reporting it when ready to the listener.
+   * Listener.onPermissionGranted and Listener.onPermissionDenied are called on the same thread
+   * that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of the permission is ready
+   * @param permission One of the values found in {@link android.Manifest.permission}
+   */
+  void checkPermissionOnSameThread(PermissionListener listener, String permission) {
+    checkSinglePermission(listener, permission, new SameThreadSpec());
   }
 
   /**
@@ -83,9 +84,20 @@ final class DexterInstance {
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
   void checkPermission(PermissionListener listener, String permission) {
-    MultiplePermissionsListener adapter =
-        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    checkPermissions(adapter, Collections.singleton(permission));
+    checkSinglePermission(listener, permission, new MainThreadSpec());
+  }
+
+  /**
+   * Checks the state of a collection of permissions reporting their state to the listener when all
+   * of them are resolved. Listener.onPermissionGranted and Listener.onPermissionDenied are called
+   * on the same thread that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of all the permissions is ready
+   * @param permissions Array of values found in {@link android.Manifest.permission}
+   */
+  void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
+      Collection<String> permissions) {
+    checkMultiplePermissions(listener, permissions, new SameThreadSpec());
   }
 
   /**
@@ -96,15 +108,7 @@ final class DexterInstance {
    * @param permissions Array of values found in {@link android.Manifest.permission}
    */
   void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions) {
-    checkNoDexterRequestOngoing();
-    checkRequestSomePermission(permissions);
-
-    pendingPermissions.clear();
-    pendingPermissions.addAll(permissions);
-    multiplePermissionsReport.clear();
-    this.listener = listener;
-
-    startTransparentActivityIfNeeded();
+    checkMultiplePermissions(listener, permissions, new MainThreadSpec());
   }
 
   /**
@@ -123,7 +127,7 @@ final class DexterInstance {
    */
   void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     if (!pendingPermissions.isEmpty()) {
-      this.listener = listener;
+      this.listener = new PermissionListenerThreadDecorator(listener, threadSpec);
       if (!rationaleAccepted.get()) {
         onActivityReady(activity);
       }
@@ -209,17 +213,6 @@ final class DexterInstance {
     Intent intent = intentProvider.get(context, DexterActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
-    if (handler != null) {
-      try {
-        synchronized (lock) {
-          lock.wait();
-          handler.post(runnable);
-          Looper.loop();
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
   }
 
   private void handleDeniedPermissions(Collection<String> permissions) {
@@ -271,24 +264,8 @@ final class DexterInstance {
       activity.finish();
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
-      if (handler != null) {
-        runnable = new Runnable() {
-          @Override public void run() {
-            notifyListener();
-          }
-        };
-        synchronized (lock) {
-          lock.notify();
-        }
-      } else {
-        notifyListener();
-      }
+      listener.onPermissionsChecked(multiplePermissionsReport);
     }
-  }
-
-  private void notifyListener() {
-    listener.onPermissionsChecked(multiplePermissionsReport);
-    listener = EMPTY_LISTENER;
   }
 
   private void checkNoDexterRequestOngoing() {
@@ -301,5 +278,28 @@ final class DexterInstance {
     if (permissions.isEmpty()) {
       throw new IllegalStateException("Dexter has to be called with at least one permission");
     }
+  }
+
+  private void checkSinglePermission(PermissionListener listener, String permission,
+      ThreadSpec threadSpec) {
+    MultiplePermissionsListener adapter =
+        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
+    checkMultiplePermissions(adapter, Collections.singleton(permission), threadSpec);
+  }
+
+  private void checkMultiplePermissions(MultiplePermissionsListener listener,
+      Collection<String> permissions, ThreadSpec threadSpec) {
+    checkNoDexterRequestOngoing();
+    checkRequestSomePermission(permissions);
+
+    pendingPermissions.clear();
+    pendingPermissions.addAll(permissions);
+    multiplePermissionsReport.clear();
+    this.threadSpec = threadSpec;
+    this.listener = new PermissionListenerThreadDecorator(listener, threadSpec);
+
+    startTransparentActivityIfNeeded();
+
+    this.listener.onChangingThread();
   }
 }

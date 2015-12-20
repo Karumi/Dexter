@@ -81,7 +81,7 @@ public class SampleActivity extends Activity {
     }
     new Thread(new Runnable() {
       @Override public void run() {
-        Dexter.checkPermissionBlocking(cameraPermissionListener, Manifest.permission.CAMERA);
+        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
       }
     }).start();
   }
