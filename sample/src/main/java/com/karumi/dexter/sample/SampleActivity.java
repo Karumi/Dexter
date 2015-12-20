@@ -79,7 +79,11 @@ public class SampleActivity extends Activity {
     if (Dexter.isRequestOngoing()) {
       return;
     }
-    Dexter.checkPermission(cameraPermissionListener, Manifest.permission.CAMERA);
+    new Thread(new Runnable() {
+      @Override public void run() {
+        Dexter.checkPermissionBlocking(cameraPermissionListener, Manifest.permission.CAMERA);
+      }
+    }).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
@@ -128,7 +132,8 @@ public class SampleActivity extends Activity {
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
     TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
+    feedbackView.setText(isPermanentlyDenied
+        ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }

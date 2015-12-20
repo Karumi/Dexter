@@ -46,6 +46,11 @@ public final class Dexter {
     }
   }
 
+  public static void checkPermissionBlocking(PermissionListener listener, String permission) {
+    checkInstanceNotNull();
+    instance.checkPermissionBlocking(listener, permission);
+  }
+
   /**
    * Checks the permission and notifies the listener of its state.
    * It is important to note that permissions still have to be declared in the manifest.

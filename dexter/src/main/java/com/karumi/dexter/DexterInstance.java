@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -51,6 +53,9 @@ final class DexterInstance {
   private final AtomicBoolean rationaleAccepted;
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
+  private Handler handler;
+  private final Object lock = new Object();
+  private Runnable runnable;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -61,6 +66,14 @@ final class DexterInstance {
     this.multiplePermissionsReport = new MultiplePermissionsReport();
     this.isRequestingPermission = new AtomicBoolean();
     this.rationaleAccepted = new AtomicBoolean();
+  }
+
+  void checkPermissionBlocking(PermissionListener listener, String permission) {
+    if (Looper.getMainLooper() != Looper.myLooper()) {
+      Looper.prepare();
+    }
+    handler = new Handler();
+    checkPermission(listener, permission);
   }
 
   /**
@@ -196,6 +209,17 @@ final class DexterInstance {
     Intent intent = intentProvider.get(context, DexterActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
+    if (handler != null) {
+      try {
+        synchronized (lock) {
+          lock.wait();
+          handler.post(runnable);
+          Looper.loop();
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private void handleDeniedPermissions(Collection<String> permissions) {
@@ -247,9 +271,24 @@ final class DexterInstance {
       activity.finish();
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
-      listener.onPermissionsChecked(multiplePermissionsReport);
-      listener = EMPTY_LISTENER;
+      if (handler != null) {
+        runnable = new Runnable() {
+          @Override public void run() {
+            notifyListener();
+          }
+        };
+        synchronized (lock) {
+          lock.notify();
+        }
+      } else {
+        notifyListener();
+      }
     }
+  }
+
+  private void notifyListener() {
+    listener.onPermissionsChecked(multiplePermissionsReport);
+    listener = EMPTY_LISTENER;
   }
 
   private void checkNoDexterRequestOngoing() {
