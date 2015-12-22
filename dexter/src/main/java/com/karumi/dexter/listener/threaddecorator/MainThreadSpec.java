@@ -19,10 +19,6 @@ public class MainThreadSpec implements ThreadSpec {
     }
   }
 
-  @Override public void onChangingThread() {
-
-  }
-
   private boolean runningMainThread() {
     return Looper.getMainLooper() == Looper.myLooper();
   }

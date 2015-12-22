@@ -4,15 +4,11 @@ import android.os.Looper;
 
 public class ThreadSpecFactory {
 
-  public static ThreadSpec makeMainThread() {
-    return new MainThreadSpec();
-  }
-
-  public static ThreadSpec makeSameThread() {
+  public static ThreadSpec makeThreadSpec() {
     if (runningMainThread()) {
       return new MainThreadSpec();
     } else {
-      return new SameThreadSpec();
+      return new WorkerThreadSpec();
     }
   }
 

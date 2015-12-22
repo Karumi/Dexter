@@ -32,7 +32,4 @@ public class MultiplePermissionListenerThreadDecorator implements MultiplePermis
     listener.onPermissionRationaleShouldBeShown(permissions, token);
   }
 
-  public void onChangingThread() {
-    threadSpec.onChangingThread();
-  }
 }
