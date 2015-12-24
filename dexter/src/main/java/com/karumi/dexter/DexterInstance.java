@@ -26,6 +26,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.threaddecorator.MultiplePermissionListenerThreadDecorator;
+import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
 import com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory;
 import java.util.Collection;
 import java.util.Collections;
@@ -291,7 +292,9 @@ final class DexterInstance {
     pendingPermissions.clear();
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
-    this.listener = new MultiplePermissionListenerThreadDecorator(listener, ThreadSpecFactory.makeThreadSpec());
+    ThreadSpec threadSpec = ThreadSpecFactory.makeThreadSpec();
+    this.listener = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
     startTransparentActivityIfNeeded();
+    threadSpec.loop();
   }
 }
