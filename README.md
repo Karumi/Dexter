@@ -160,7 +160,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:2.1.2'
+    compile 'com.karumi:dexter:2.1.4'
 }
 ```
 
@@ -170,14 +170,14 @@ or to your ``pom.xml`` if you are using Maven
 <dependency>
     <groupId>com.karumi</groupId>
     <artifactId>dexter</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.4</version>
     <type>aar</type>
 </dependency>
 
 ```
 Caveats
 -------
-* Persmission that does not exists before API Level 16, should check the OS version and use *ContextCompat.checkSelfPermission*. See [You Cannot Hold Non-Existent Permissions](https://commonsware.com/blog/2015/11/09/you-cannot-hold-nonexistent-permissions.html).
+* For permissions that did not exist before API Level 16, you should check the OS version and use *ContextCompat.checkSelfPermission*. See [You Cannot Hold Non-Existent Permissions](https://commonsware.com/blog/2015/11/09/you-cannot-hold-nonexistent-permissions.html).
 
 Do you want to contribute?
 --------------------------
