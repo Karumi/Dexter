@@ -6,7 +6,7 @@ import android.os.Looper;
 /**
  * A thread specification to execute passed runnable objects in a worker thread
  */
-public class WorkerThreadSpec implements ThreadSpec {
+class WorkerThreadSpec implements ThreadSpec {
 
   private final Handler handler;
 
