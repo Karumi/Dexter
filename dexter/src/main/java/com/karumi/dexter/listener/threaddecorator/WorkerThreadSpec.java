@@ -8,11 +8,11 @@ public class WorkerThreadSpec implements ThreadSpec {
   private final Handler handler;
 
   WorkerThreadSpec() {
+    Looper.prepare();
     handler = new Handler(Looper.myLooper());
   }
 
   @Override public void execute(Runnable runnable) {
-    Looper.prepare();
     handler.post(runnable);
     Looper.loop();
   }
