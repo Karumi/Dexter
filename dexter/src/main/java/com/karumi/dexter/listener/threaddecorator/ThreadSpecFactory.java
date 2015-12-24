@@ -13,6 +13,6 @@ public class ThreadSpecFactory {
   }
 
   private static boolean runningMainThread() {
-    return Looper.getMainLooper() != Looper.myLooper();
+    return Looper.getMainLooper() == Looper.myLooper();
   }
 }
