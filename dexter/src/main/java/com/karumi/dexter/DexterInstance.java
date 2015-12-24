@@ -125,7 +125,8 @@ final class DexterInstance {
    */
   void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     if (!pendingPermissions.isEmpty()) {
-      this.listener = new MultiplePermissionListenerThreadDecorator(listener, ThreadSpecFactory.makeThreadSpec());
+      this.listener = new MultiplePermissionListenerThreadDecorator(listener,
+          ThreadSpecFactory.makeThreadSpec());
       if (!rationaleAccepted.get()) {
         onActivityReady(activity);
       }
