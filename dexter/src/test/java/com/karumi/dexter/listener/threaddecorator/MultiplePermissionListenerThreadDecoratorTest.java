@@ -15,7 +15,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class) public class MultiplePermissionListenerThreadDecoratorTest {
 
@@ -36,13 +36,21 @@ import static org.mockito.Mockito.verify;
   @Test public void onPermissionCheckedThenDecorateListenerOnPermissionCheckedWithThreadSpec() {
     decorator.onPermissionsChecked(null);
 
-    verify(listener).onPermissionsChecked(any(MultiplePermissionsReport.class));
-    assertTrue(threadSpec.decorated);
+    thenDecorateOnPermissionsCheckedWithThreadSpec();
   }
 
   @Test public void onPermissionRationaleShouldBeShownThenDoNoDecorateListener() {
     decorator.onPermissionRationaleShouldBeShown(PERMISSIONS, TOKEN);
 
+    thenNoDecorateOnPermissionRationaleShouldBeShown();
+  }
+
+  private void thenDecorateOnPermissionsCheckedWithThreadSpec() {
+    verify(listener).onPermissionsChecked(any(MultiplePermissionsReport.class));
+    assertTrue(threadSpec.decorated);
+  }
+
+  private void thenNoDecorateOnPermissionRationaleShouldBeShown() {
     verify(listener).onPermissionRationaleShouldBeShown(PERMISSIONS, TOKEN);
     assertFalse(threadSpec.decorated);
   }
