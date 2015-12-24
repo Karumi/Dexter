@@ -54,7 +54,6 @@ final class DexterInstance {
   private final AtomicBoolean rationaleAccepted;
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
-  private ThreadSpec threadSpec;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
