@@ -1,7 +1,7 @@
 package com.karumi.dexter.listener.threaddecorator;
 
 /**
- * Interface that represent a thread spec to execute passed runnable objects
+ * A thread specification to execute passed runnable objects in a certain thread
  */
 public interface ThreadSpec {
   void execute(Runnable runnable);
