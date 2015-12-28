@@ -26,7 +26,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
+import com.karumi.dexter.listener.threaddecorator.Thread;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class) public class DexterInstanceTest {
 
   private static final String ANY_PERMISSION = "noissimrep yna";
-  private static final ThreadSpec THREAD_SPEC = new TestThreadSpec();
+  private static final Thread THREAD_SPEC = new TestThread();
 
   @Mock AndroidPermissionService androidPermissionService;
   @Mock Context context;
@@ -257,7 +257,7 @@ import static org.mockito.Mockito.when;
     }
   }
 
-  private static class TestThreadSpec implements ThreadSpec {
+  private static class TestThread implements Thread {
 
     @Override public void execute(Runnable runnable) {
       runnable.run();

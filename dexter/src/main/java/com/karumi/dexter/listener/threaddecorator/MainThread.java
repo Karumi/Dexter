@@ -22,9 +22,9 @@ import android.os.Looper;
 /**
  * A thread specification to execute passed runnable objects in the main thread
  */
-class MainThreadSpec implements ThreadSpec {
+class MainThread implements Thread {
 
-  MainThreadSpec() {
+  MainThread() {
   }
 
   @Override public void execute(Runnable runnable) {
@@ -39,6 +39,6 @@ class MainThreadSpec implements ThreadSpec {
   }
 
   private static boolean runningMainThread() {
-    return Looper.getMainLooper().getThread() == Thread.currentThread();
+    return Looper.getMainLooper().getThread() == java.lang.Thread.currentThread();
   }
 }

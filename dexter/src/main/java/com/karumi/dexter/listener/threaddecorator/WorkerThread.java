@@ -16,32 +16,26 @@
 
 package com.karumi.dexter.listener.threaddecorator;
 
+import android.os.Handler;
 import android.os.Looper;
 
 /**
- * Factory to create the different thread specifications
+ * A thread specification to execute passed runnable objects in a worker thread
  */
-public class ThreadSpecFactory {
+class WorkerThread implements Thread {
 
-  /**
-   * Create a thread spec to execute on the main thread
-   */
-  public static ThreadSpec makeMainThreadSpec() {
-    return new MainThreadSpec();
+  private final Handler handler;
+
+  WorkerThread() {
+    Looper.prepare();
+    handler = new Handler();
   }
 
-  /**
-   * Create a thread spec to execute on the same thread that this method is executed on
-   */
-  public static ThreadSpec makeSameThreadSpec() {
-    if (runningMainThread()) {
-      return new MainThreadSpec();
-    } else {
-      return new WorkerThreadSpec();
-    }
+  @Override public void execute(final Runnable runnable) {
+    handler.post(runnable);
   }
 
-  private static boolean runningMainThread() {
-    return Looper.getMainLooper().getThread() == Thread.currentThread();
+  @Override public void loop() {
+    Looper.loop();
   }
 }

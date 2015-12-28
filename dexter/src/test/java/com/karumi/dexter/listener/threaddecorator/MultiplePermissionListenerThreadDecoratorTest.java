@@ -40,11 +40,11 @@ import static org.mockito.Mockito.verify;
 
   @Mock MultiplePermissionsListener listener;
 
-  private SpyThreadSpec threadSpec;
+  private SpyThread threadSpec;
   private MultiplePermissionListenerThreadDecorator decorator;
 
   @Before public void setUp() {
-    threadSpec = new SpyThreadSpec();
+    threadSpec = new SpyThread();
     decorator = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
   }
 
@@ -73,7 +73,7 @@ import static org.mockito.Mockito.verify;
     }
   }
 
-  private static class SpyThreadSpec implements ThreadSpec {
+  private static class SpyThread implements Thread {
 
     public boolean decorated;
 

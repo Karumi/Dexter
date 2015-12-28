@@ -28,11 +28,11 @@ import java.util.List;
 public class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
 
   private final MultiplePermissionsListener listener;
-  private final ThreadSpec threadSpec;
+  private final Thread thread;
 
   public MultiplePermissionListenerThreadDecorator(MultiplePermissionsListener listener,
-      ThreadSpec threadSpec) {
-    this.threadSpec = threadSpec;
+      Thread thread) {
+    this.thread = thread;
     this.listener = listener;
   }
 
@@ -42,7 +42,7 @@ public class MultiplePermissionListenerThreadDecorator implements MultiplePermis
    * @param report In detail report with all the permissions that has been denied and granted
    */
   @Override public void onPermissionsChecked(final MultiplePermissionsReport report) {
-    threadSpec.execute(new Runnable() {
+    thread.execute(new Runnable() {
       @Override public void run() {
         listener.onPermissionsChecked(report);
       }
@@ -59,7 +59,7 @@ public class MultiplePermissionListenerThreadDecorator implements MultiplePermis
    */
   @Override public void onPermissionRationaleShouldBeShown(
       final List<PermissionRequest> permissions, final PermissionToken token) {
-    threadSpec.execute(new Runnable() {
+    thread.execute(new Runnable() {
       @Override public void run() {
         listener.onPermissionRationaleShouldBeShown(permissions, token);
       }

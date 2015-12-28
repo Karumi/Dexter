@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory;
+import com.karumi.dexter.listener.threaddecorator.ThreadFactory;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -58,7 +58,7 @@ public final class Dexter {
    */
   public static void checkPermissionOnSameThread(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermission(listener, permission, ThreadSpecFactory.makeSameThreadSpec());
+    instance.checkPermission(listener, permission, ThreadFactory.makeSameThreadSpec());
   }
 
   /**
@@ -72,7 +72,7 @@ public final class Dexter {
    */
   public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermission(listener, permission, ThreadSpecFactory.makeMainThreadSpec());
+    instance.checkPermission(listener, permission, ThreadFactory.makeMainThreadSpec());
   }
 
   /**
@@ -88,7 +88,7 @@ public final class Dexter {
       String... permissions) {
     checkInstanceNotNull();
     instance.checkPermissions(listener, Arrays.asList(permissions),
-        ThreadSpecFactory.makeSameThreadSpec());
+        ThreadFactory.makeSameThreadSpec());
   }
 
   /**
@@ -103,7 +103,7 @@ public final class Dexter {
   public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
     checkInstanceNotNull();
     instance.checkPermissions(listener, Arrays.asList(permissions),
-        ThreadSpecFactory.makeMainThreadSpec());
+        ThreadFactory.makeMainThreadSpec());
   }
 
   /**
@@ -116,7 +116,7 @@ public final class Dexter {
   public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, permissions, ThreadSpecFactory.makeMainThreadSpec());
+    instance.checkPermissions(listener, permissions, ThreadFactory.makeMainThreadSpec());
   }
 
   /**
@@ -136,7 +136,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestsIfPossible(listener, ThreadSpecFactory.makeMainThreadSpec());
+    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThreadSpec());
   }
 
   /**
@@ -146,7 +146,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestIfPossible(PermissionListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestIfPossible(listener, ThreadSpecFactory.makeMainThreadSpec());
+    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThreadSpec());
   }
 
   private static void checkInstanceNotNull() {
