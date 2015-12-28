@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -58,7 +59,7 @@ public final class Dexter {
    */
   public static void checkPermissionOnSameThread(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermissionOnSameThread(listener, permission);
+    instance.checkPermission(listener, permission, ThreadSpecFactory.makeSameThreadSpec());
   }
 
   /**
@@ -71,7 +72,7 @@ public final class Dexter {
    */
   public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermission(listener, permission);
+    instance.checkPermission(listener, permission, ThreadSpecFactory.makeMainThreadSpec());
   }
 
   /**
@@ -87,7 +88,8 @@ public final class Dexter {
   public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
       String... permissions) {
     checkInstanceNotNull();
-    instance.checkPermissionsOnSameThread(listener, Arrays.asList(permissions));
+    instance.checkPermissions(listener, Arrays.asList(permissions),
+        ThreadSpecFactory.makeSameThreadSpec());
   }
 
   /**
@@ -100,7 +102,8 @@ public final class Dexter {
    */
   public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, Arrays.asList(permissions));
+    instance.checkPermissions(listener, Arrays.asList(permissions),
+        ThreadSpecFactory.makeMainThreadSpec());
   }
 
   /**
@@ -113,7 +116,7 @@ public final class Dexter {
   public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, permissions);
+    instance.checkPermissions(listener, permissions, ThreadSpecFactory.makeMainThreadSpec());
   }
 
   /**

@@ -26,6 +26,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class) public class DexterInstanceTest {
 
   private static final String ANY_PERMISSION = "noissimrep yna";
+  private static final ThreadSpec THREAD_SPEC = new TestThreadSpec();
 
   @Mock AndroidPermissionService androidPermissionService;
   @Mock Context context;
@@ -65,13 +67,14 @@ import static org.mockito.Mockito.when;
 
   @Test(expected = IllegalStateException.class)
   public void onNoPermissionCheckedThenThrowException() {
-    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList());
+    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(),
+        THREAD_SPEC);
   }
 
   @Test(expected = IllegalStateException.class)
   public void onCheckPermissionMoreThanOnceThenThrowException() {
-    dexter.checkPermission(permissionListener, ANY_PERMISSION);
-    dexter.checkPermission(permissionListener, ANY_PERMISSION);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD_SPEC);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD_SPEC);
   }
 
   @Test public void onPermissionAlreadyGrantedThenNotifiesListener() {
@@ -165,7 +168,7 @@ import static org.mockito.Mockito.when;
   }
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
-    dexter.checkPermission(permissionListener, permission);
+    dexter.checkPermission(permissionListener, permission, THREAD_SPEC);
     dexter.onActivityReady(activity);
   }
 
@@ -244,13 +247,24 @@ import static org.mockito.Mockito.when;
 
   private class CheckPermissionWithOnActivityReadyInBackground implements CheckPermissionAction {
     @Override public void check(final PermissionListener listener, final String permission) {
-      dexter.checkPermission(listener, permission);
+      dexter.checkPermission(listener, permission, THREAD_SPEC);
       asyncExecutor.execute(new Runnable() {
         @Override public void run() {
           dexter.onActivityReady(activity);
           dexter.onPermissionRequestDenied(Collections.singletonList(permission));
         }
       });
+    }
+  }
+
+  private static class TestThreadSpec implements ThreadSpec {
+
+    @Override public void execute(Runnable runnable) {
+      runnable.run();
+    }
+
+    @Override public void loop() {
+
     }
   }
 }

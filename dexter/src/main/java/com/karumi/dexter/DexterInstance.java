@@ -68,38 +68,15 @@ final class DexterInstance {
 
   /**
    * Checks the state of a specific permission reporting it when ready to the listener.
-   * Listener.onPermissionGranted and Listener.onPermissionDenied are called on the same thread
-   * that fired the permission request.
+   * .
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
+   * @param threadSpec A thread spec that represent on what thread the Listener methods will be
+   * called
    */
-  void checkPermissionOnSameThread(PermissionListener listener, String permission) {
-    checkSinglePermission(listener, permission, ThreadSpecFactory.makeSameThreadSpec());
-  }
-
-  /**
-   * Checks the state of a specific permission reporting it when ready to the listener.
-   * Listener methods will be called on the main thread.
-   *
-   * @param listener The class that will be reported when the state of the permission is ready
-   * @param permission One of the values found in {@link android.Manifest.permission}
-   */
-  void checkPermission(PermissionListener listener, String permission) {
-    checkSinglePermission(listener, permission, ThreadSpecFactory.makeMainThreadSpec());
-  }
-
-  /**
-   * Checks the state of a collection of permissions reporting their state to the listener when all
-   * of them are resolved. Listener.onPermissionGranted and Listener.onPermissionDenied are called
-   * on the same thread that fired the permission request.
-   *
-   * @param listener The class that will be reported when the state of all the permissions is ready
-   * @param permissions Array of values found in {@link android.Manifest.permission}
-   */
-  void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
-      Collection<String> permissions) {
-    checkMultiplePermissions(listener, permissions, ThreadSpecFactory.makeSameThreadSpec());
+  void checkPermission(PermissionListener listener, String permission, ThreadSpec threadSpec) {
+    checkSinglePermission(listener, permission, threadSpec);
   }
 
   /**
@@ -108,9 +85,12 @@ final class DexterInstance {
    *
    * @param listener The class that will be reported when the state of all the permissions is ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
+   * @param threadSpec A thread spec that represent on what thread the Listener methods will be
+   * called
    */
-  void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions) {
-    checkMultiplePermissions(listener, permissions, ThreadSpecFactory.makeMainThreadSpec());
+  void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions,
+      ThreadSpec threadSpec) {
+    checkMultiplePermissions(listener, permissions, threadSpec);
   }
 
   /**
