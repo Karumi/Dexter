@@ -49,26 +49,18 @@ import static org.mockito.Mockito.verify;
     decorator = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
   }
 
-  @Test public void onPermissionCheckedThenDecorateListenerOnPermissionCheckedWithThreadSpec() {
+  @Test public void onPermissionCheckedThenListenerIsDecorated() {
     decorator.onPermissionsChecked(null);
 
-    thenDecorateOnPermissionsCheckedWithThreadSpec();
-  }
-
-  @Test public void onPermissionRationaleShouldBeShownThenDoNoDecorateListener() {
-    decorator.onPermissionRationaleShouldBeShown(PERMISSIONS, TOKEN);
-
-    thenNoDecorateOnPermissionRationaleShouldBeShown();
-  }
-
-  private void thenDecorateOnPermissionsCheckedWithThreadSpec() {
     verify(listener).onPermissionsChecked(any(MultiplePermissionsReport.class));
     assertTrue(threadSpec.decorated);
   }
 
-  private void thenNoDecorateOnPermissionRationaleShouldBeShown() {
+  @Test public void onPermissionRationaleShouldBeShownThenListenerIsDecorated() {
+    decorator.onPermissionRationaleShouldBeShown(PERMISSIONS, TOKEN);
+
     verify(listener).onPermissionRationaleShouldBeShown(PERMISSIONS, TOKEN);
-    assertFalse(threadSpec.decorated);
+    assertTrue(threadSpec.decorated);
   }
 
   private static class DummyPermissionToken implements PermissionToken {

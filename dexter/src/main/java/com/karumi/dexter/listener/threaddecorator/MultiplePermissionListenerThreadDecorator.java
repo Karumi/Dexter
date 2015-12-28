@@ -50,8 +50,7 @@ public class MultiplePermissionListenerThreadDecorator implements MultiplePermis
   }
 
   /**
-   * The method is intended to do some UI modification, therefore the method is not decorated with a
-   * thread spec and will execute on the main thread.
+   * Decorates de permission listener execution with a given thread spec
    *
    * @param permissions The permissions that has been requested. Collections of values found in
    * {@link android.Manifest.permission}
@@ -60,6 +59,10 @@ public class MultiplePermissionListenerThreadDecorator implements MultiplePermis
    */
   @Override public void onPermissionRationaleShouldBeShown(
       final List<PermissionRequest> permissions, final PermissionToken token) {
-    listener.onPermissionRationaleShouldBeShown(permissions, token);
+    threadSpec.execute(new Runnable() {
+      @Override public void run() {
+        listener.onPermissionRationaleShouldBeShown(permissions, token);
+      }
+    });
   }
 }
