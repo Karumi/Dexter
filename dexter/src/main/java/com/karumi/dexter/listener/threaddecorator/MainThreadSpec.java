@@ -16,6 +16,9 @@
 
 package com.karumi.dexter.listener.threaddecorator;
 
+import android.os.Handler;
+import android.os.Looper;
+
 /**
  * A thread specification to execute passed runnable objects in the main thread
  */
@@ -25,10 +28,17 @@ class MainThreadSpec implements ThreadSpec {
   }
 
   @Override public void execute(Runnable runnable) {
-    runnable.run();
+    if (runningMainThread()) {
+      runnable.run();
+    } else {
+      new Handler(Looper.getMainLooper()).post(runnable);
+    }
   }
 
   @Override public void loop() {
   }
 
+  private static boolean runningMainThread() {
+    return Looper.getMainLooper().getThread() == Thread.currentThread();
+  }
 }
