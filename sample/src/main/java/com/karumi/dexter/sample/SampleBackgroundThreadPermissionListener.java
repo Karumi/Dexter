@@ -5,6 +5,9 @@ import android.os.Looper;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 
+/**
+ * Sample listener that shows how to handle permission request callbacks on a background thread
+ */
 public class SampleBackgroundThreadPermissionListener extends SamplePermissionListener {
 
   private Handler handler = new Handler(Looper.getMainLooper());
@@ -14,7 +17,6 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
   }
 
   @Override public void onPermissionGranted(final PermissionGrantedResponse response) {
-    //DO SOME HEAVY WORK
     handler.post(new Runnable() {
       @Override public void run() {
         SampleBackgroundThreadPermissionListener.super.onPermissionGranted(response);
@@ -23,7 +25,6 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
   }
 
   @Override public void onPermissionDenied(final PermissionDeniedResponse response) {
-    //DO SOME HEAVY WORK
     handler.post(new Runnable() {
       @Override public void run() {
         SampleBackgroundThreadPermissionListener.super.onPermissionDenied(response);
