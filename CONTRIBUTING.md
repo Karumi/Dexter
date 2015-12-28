@@ -16,7 +16,7 @@ Some tips that will help you to contribute to this repository:
 * Write clean code and test it.
 * Follow the repository code style.
 * Write good commit messages.
-* Do not send pull requests without check if the project build is OK in Travis-CI.
+* Do not send pull requests without checking if the project build is OK in Travis-CI.
 * Review if your changes affects the repository documentation and update it.
 * Describe the PR content and don't hesitate to add comments to explain us why you've added or changed something.
 
@@ -35,4 +35,4 @@ This code of conduct applies both within project spaces and in public spaces whe
 
 Instances of abusive, harassing, or otherwise unacceptable behavior can be reported by emailing hello@karumi.com.
 
-This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/1/0/), version 1.1.0, available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
+This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/3/0/), version 1.3.0, available at [http://contributor-covenant.org/version/1/3/0/](http://contributor-covenant.org/version/1/3/0/).
