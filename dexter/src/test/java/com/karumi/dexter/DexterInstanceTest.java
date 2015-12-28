@@ -173,7 +173,7 @@ import static org.mockito.Mockito.when;
   }
 
   private void whenContinueWithTheCheckPermissionProcess(PermissionListener permissionListener) {
-    dexter.continuePendingRequestIfPossible(permissionListener);
+    dexter.continuePendingRequestIfPossible(permissionListener, THREAD_SPEC);
   }
 
   private void thenPermissionIsGranted(String permission) {

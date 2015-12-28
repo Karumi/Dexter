@@ -136,7 +136,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestsIfPossible(listener);
+    instance.continuePendingRequestsIfPossible(listener, ThreadSpecFactory.makeMainThreadSpec());
   }
 
   /**
@@ -146,7 +146,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestIfPossible(PermissionListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestIfPossible(listener);
+    instance.continuePendingRequestIfPossible(listener, ThreadSpecFactory.makeMainThreadSpec());
   }
 
   private static void checkInstanceNotNull() {

@@ -28,7 +28,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.threaddecorator.MultiplePermissionListenerThreadDecorator;
 import com.karumi.dexter.listener.threaddecorator.ThreadSpec;
-import com.karumi.dexter.listener.threaddecorator.ThreadSpecFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -97,20 +96,20 @@ final class DexterInstance {
    * Check if there is a permission pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void continuePendingRequestIfPossible(PermissionListener listener) {
+  void continuePendingRequestIfPossible(PermissionListener listener, ThreadSpec threadSpec) {
     MultiplePermissionsListenerToPermissionListenerAdapter adapter =
         new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    continuePendingRequestsIfPossible(adapter);
+    continuePendingRequestsIfPossible(adapter, threadSpec);
   }
 
   /**
    * Check if there are some permissions pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
+  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener,
+      ThreadSpec threadSpec) {
     if (!pendingPermissions.isEmpty()) {
-      this.listener = new MultiplePermissionListenerThreadDecorator(listener,
-          ThreadSpecFactory.makeMainThreadSpec());
+      this.listener = new MultiplePermissionListenerThreadDecorator(listener, threadSpec);
       if (!rationaleAccepted.get()) {
         onActivityReady(activity);
       }
