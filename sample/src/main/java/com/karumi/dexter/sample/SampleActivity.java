@@ -79,7 +79,11 @@ public class SampleActivity extends Activity {
     if (Dexter.isRequestOngoing()) {
       return;
     }
-    checkCameraPermissionOnBackgroundThread();
+    new Thread(new Runnable() {
+      @Override public void run() {
+        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
+      }
+    }).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
@@ -181,13 +185,5 @@ public class SampleActivity extends Activity {
     }
 
     return feedbackView;
-  }
-
-  private void checkCameraPermissionOnBackgroundThread() {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
-      }
-    }).start();
   }
 }
