@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.threaddecorator;
+package com.karumi.dexter;
 
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.util.List;
@@ -25,7 +23,7 @@ import java.util.List;
 /**
  * Decorator to execute the permission updates on a given thread specification
  */
-public class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
+final class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
 
   private final MultiplePermissionsListener listener;
   private final Thread thread;

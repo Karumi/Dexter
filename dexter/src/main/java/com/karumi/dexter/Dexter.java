@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.ThreadFactory;
 import java.util.Arrays;
 import java.util.Collection;
 

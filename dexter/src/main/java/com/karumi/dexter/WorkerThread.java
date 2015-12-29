@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.threaddecorator;
+package com.karumi.dexter;
 
 import android.os.Handler;
 import android.os.Looper;
 
 /**
- * A thread specification to execute passed runnable objects in the main thread
+ * A thread specification to execute passed runnable objects in a worker thread
  */
-class MainThread implements Thread {
+final class WorkerThread implements Thread {
 
-  MainThread() {
+  private final Handler handler;
+
+  WorkerThread() {
+    Looper.prepare();
+    handler = new Handler();
   }
 
-  @Override public void execute(Runnable runnable) {
-    if (runningMainThread()) {
-      runnable.run();
-    } else {
-      new Handler(Looper.getMainLooper()).post(runnable);
-    }
+  @Override public void execute(final Runnable runnable) {
+    handler.post(runnable);
   }
 
   @Override public void loop() {
-  }
-
-  private static boolean runningMainThread() {
-    return Looper.getMainLooper() == Looper.myLooper();
+    Looper.loop();
   }
 }

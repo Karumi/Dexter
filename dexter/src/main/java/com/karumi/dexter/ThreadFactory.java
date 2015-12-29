@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.threaddecorator;
+package com.karumi.dexter;
 
 import android.os.Looper;
 
 /**
  * Factory to create the different thread specifications
  */
-public class ThreadFactory {
+final class ThreadFactory {
 
   /**
    * Create a thread spec to execute on the main thread

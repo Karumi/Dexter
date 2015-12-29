@@ -26,8 +26,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.MultiplePermissionListenerThreadDecorator;
-import com.karumi.dexter.listener.threaddecorator.Thread;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;

@@ -26,7 +26,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.karumi.dexter.listener.threaddecorator.Thread;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
