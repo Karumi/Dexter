@@ -39,6 +39,6 @@ class MainThread implements Thread {
   }
 
   private static boolean runningMainThread() {
-    return Looper.getMainLooper().getThread() == java.lang.Thread.currentThread();
+    return Looper.getMainLooper() == Looper.myLooper();
   }
 }
