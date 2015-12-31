@@ -28,7 +28,7 @@ final class MultiplePermissionListenerThreadDecorator implements MultiplePermiss
   private final MultiplePermissionsListener listener;
   private final Thread thread;
 
-  public MultiplePermissionListenerThreadDecorator(MultiplePermissionsListener listener,
+  MultiplePermissionListenerThreadDecorator(MultiplePermissionsListener listener,
       Thread thread) {
     this.thread = thread;
     this.listener = listener;
