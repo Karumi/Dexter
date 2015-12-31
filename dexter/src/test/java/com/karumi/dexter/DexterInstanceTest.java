@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class) public class DexterInstanceTest {
 
   private static final String ANY_PERMISSION = "noissimrep yna";
-  private static final Thread THREAD_SPEC = new TestThread();
+  private static final Thread THREAD = new TestThread();
 
   @Mock AndroidPermissionService androidPermissionService;
   @Mock Context context;
@@ -66,14 +66,13 @@ import static org.mockito.Mockito.when;
 
   @Test(expected = IllegalStateException.class)
   public void onNoPermissionCheckedThenThrowException() {
-    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(),
-        THREAD_SPEC);
+    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(), THREAD);
   }
 
   @Test(expected = IllegalStateException.class)
   public void onCheckPermissionMoreThanOnceThenThrowException() {
-    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD_SPEC);
-    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD_SPEC);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
   }
 
   @Test public void onPermissionAlreadyGrantedThenNotifiesListener() {
@@ -167,12 +166,12 @@ import static org.mockito.Mockito.when;
   }
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
-    dexter.checkPermission(permissionListener, permission, THREAD_SPEC);
+    dexter.checkPermission(permissionListener, permission, THREAD);
     dexter.onActivityReady(activity);
   }
 
   private void whenContinueWithTheCheckPermissionProcess(PermissionListener permissionListener) {
-    dexter.continuePendingRequestIfPossible(permissionListener, THREAD_SPEC);
+    dexter.continuePendingRequestIfPossible(permissionListener, THREAD);
   }
 
   private void thenPermissionIsGranted(String permission) {
@@ -246,7 +245,7 @@ import static org.mockito.Mockito.when;
 
   private class CheckPermissionWithOnActivityReadyInBackground implements CheckPermissionAction {
     @Override public void check(final PermissionListener listener, final String permission) {
-      dexter.checkPermission(listener, permission, THREAD_SPEC);
+      dexter.checkPermission(listener, permission, THREAD);
       asyncExecutor.execute(new Runnable() {
         @Override public void run() {
           dexter.onActivityReady(activity);
