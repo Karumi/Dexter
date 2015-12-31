@@ -27,8 +27,6 @@ import com.karumi.dexter.listener.PermissionRequest;
  */
 public class SampleBackgroundThreadPermissionListener extends SamplePermissionListener {
 
-  private static final int HEAVY_WORK_DURATION = 2000;
-
   private Handler handler = new Handler(Looper.getMainLooper());
 
   public SampleBackgroundThreadPermissionListener(SampleActivity activity) {
@@ -36,7 +34,6 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
   }
 
   @Override public void onPermissionGranted(final PermissionGrantedResponse response) {
-    doSomeHeavyWork();
     handler.post(new Runnable() {
       @Override public void run() {
         SampleBackgroundThreadPermissionListener.super.onPermissionGranted(response);
@@ -45,7 +42,6 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
   }
 
   @Override public void onPermissionDenied(final PermissionDeniedResponse response) {
-    doSomeHeavyWork();
     handler.post(new Runnable() {
       @Override public void run() {
         SampleBackgroundThreadPermissionListener.super.onPermissionDenied(response);
@@ -55,20 +51,11 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
 
   @Override public void onPermissionRationaleShouldBeShown(final PermissionRequest permission,
       final PermissionToken token) {
-    doSomeHeavyWork();
     handler.post(new Runnable() {
       @Override public void run() {
         SampleBackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(
             permission, token);
       }
     });
-  }
-
-  private void doSomeHeavyWork() {
-    try {
-      Thread.sleep(HEAVY_WORK_DURATION);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 }
