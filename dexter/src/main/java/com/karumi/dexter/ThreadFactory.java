@@ -19,21 +19,21 @@ package com.karumi.dexter;
 import android.os.Looper;
 
 /**
- * Factory to create the different thread specifications
+ * Factory to create the different thread implementations
  */
 final class ThreadFactory {
 
   /**
-   * Create a thread spec to execute on the main thread
+   * Create a thread to execute on the main thread
    */
-  public static Thread makeMainThreadSpec() {
+  public static Thread makeMainThread() {
     return new MainThread();
   }
 
   /**
-   * Create a thread spec to execute on the same thread that this method is executed on
+   * Create a thread to execute on the same thread that this method is executed on
    */
-  public static Thread makeSameThreadSpec() {
+  public static Thread makeSameThread() {
     if (runningMainThread()) {
       return new MainThread();
     } else {

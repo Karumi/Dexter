@@ -21,7 +21,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.util.List;
 
 /**
- * Decorator to execute the permission updates on a given thread specification
+ * Decorator to execute the permission updates on a given thread
  */
 final class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
 
@@ -35,7 +35,7 @@ final class MultiplePermissionListenerThreadDecorator implements MultiplePermiss
   }
 
   /**
-   * Decorates de permission listener execution with a given thread spec
+   * Decorates de permission listener execution with a given thread
    *
    * @param report In detail report with all the permissions that has been denied and granted
    */
@@ -48,7 +48,7 @@ final class MultiplePermissionListenerThreadDecorator implements MultiplePermiss
   }
 
   /**
-   * Decorates de permission listener execution with a given thread spec
+   * Decorates de permission listener execution with a given thread
    *
    * @param permissions The permissions that has been requested. Collections of values found in
    * {@link android.Manifest.permission}

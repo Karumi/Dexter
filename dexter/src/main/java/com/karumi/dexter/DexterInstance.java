@@ -69,8 +69,7 @@ final class DexterInstance {
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
-   * @param thread A thread spec that represent on what thread the Listener methods will be
-   * called
+   * @param thread thread the Listener methods will be called on
    */
   void checkPermission(PermissionListener listener, String permission, Thread thread) {
     checkSinglePermission(listener, permission, thread);
@@ -82,8 +81,7 @@ final class DexterInstance {
    *
    * @param listener The class that will be reported when the state of all the permissions is ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
-   * @param thread A thread spec that represent on what thread the Listener methods will be
-   * called
+   * @param thread thread the Listener methods will be called on
    */
   void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions,
       Thread thread) {

@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * A thread specification to execute passed runnable objects in a worker thread
+ * A thread to execute passed runnable objects on a worker thread
  */
 final class WorkerThread implements Thread {
 

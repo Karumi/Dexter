@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * A thread specification to execute passed runnable objects in the main thread
+ * A thread to execute passed runnable objects in the main thread
  */
 final class MainThread implements Thread {
 

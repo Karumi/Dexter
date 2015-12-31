@@ -17,7 +17,7 @@
 package com.karumi.dexter;
 
 /**
- * A thread specification to execute passed runnable objects in a certain thread
+ * Abstraction around threads to execute passed runnable objects in a certain thread
  */
 interface Thread {
   void execute(Runnable runnable);
