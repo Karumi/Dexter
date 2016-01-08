@@ -124,7 +124,7 @@ Dexter.checkPermissions(snackbarMultiplePermissionsListener, Manifest.permission
 ```java
 MultiplePermissionsListener snackbarMultiplePermissionsListener = /*...*/;
 MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
-Dexter.checkPermissions(new CompositePermissionListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+Dexter.checkPermissions(new CompositeMultiplePermissionsListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
 ```
 
 ###Showing a rationale
