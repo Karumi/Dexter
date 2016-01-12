@@ -83,11 +83,10 @@ If you want to request multiple permissions you just need to do the same but reg
 
 ```java
 Collection<String> permissions = Arrays.asList(
-        	Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 Dexter.checkPermissions(new MultiplePermissionsListener() {
-        	@Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
-        	@Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
-        }, permissions);
+    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+}, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 ```
 
 The ``MultiplePermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
