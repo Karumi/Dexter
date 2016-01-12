@@ -82,10 +82,9 @@ Dexter.checkPermission(new CompositePermissionListener(snackbarPermissionListene
 If you want to request multiple permissions you just need to do the same but registering an implementation of ``MultiplePermissionsListener``:
 
 ```java
-Collection<String> permissions = Arrays.asList(
 Dexter.checkPermissions(new MultiplePermissionsListener() {
-	@Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
-	@Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
 }, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 ```
 
