@@ -50,26 +50,59 @@ public final class Dexter {
    * Checks the permission and notifies the listener of its state.
    * It is important to note that permissions still have to be declared in the manifest.
    * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * All listener methods are called on the same thread that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of the permission is ready
+   * @param permission One of the values found in {@link android.Manifest.permission}
+   */
+  public static void checkPermissionOnSameThread(PermissionListener listener, String permission) {
+    checkInstanceNotNull();
+    instance.checkPermission(listener, permission, ThreadFactory.makeSameThread());
+  }
+
+  /**
+   * Checks the permission and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * All listener methods are called on the main thread that fired the permission request.
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
    */
   public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
-    instance.checkPermission(listener, permission);
+    instance.checkPermission(listener, permission, ThreadFactory.makeMainThread());
   }
 
   /**
    * Checks the permissions and notifies the listener of its state.
    * It is important to note that permissions still have to be declared in the manifest.
    * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * All listener methods are called on the same thread that fired the permission request.
+   *
+   * @param listener The class that will be reported when the state of the permissions are ready
+   * @param permissions Array of values found in {@link android.Manifest.permission}
+   */
+  public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
+      String... permissions) {
+    checkInstanceNotNull();
+    instance.checkPermissions(listener, Arrays.asList(permissions),
+        ThreadFactory.makeSameThread());
+  }
+
+  /**
+   * Checks the permissions and notifies the listener of its state.
+   * It is important to note that permissions still have to be declared in the manifest.
+   * Calling this method will result in an exception if {@link #isRequestOngoing()} returns true.
+   * All listener methods are called on the main thread that fired the permission request.
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
    */
   public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, Arrays.asList(permissions));
+    instance.checkPermissions(listener, Arrays.asList(permissions),
+        ThreadFactory.makeMainThread());
   }
 
   /**
@@ -82,7 +115,7 @@ public final class Dexter {
   public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, permissions);
+    instance.checkPermissions(listener, permissions, ThreadFactory.makeMainThread());
   }
 
   /**
@@ -102,7 +135,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestsIfPossible(listener);
+    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
   /**
@@ -112,7 +145,7 @@ public final class Dexter {
    */
   public static void continuePendingRequestIfPossible(PermissionListener listener) {
     checkInstanceNotNull();
-    instance.continuePendingRequestIfPossible(listener);
+    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
   private static void checkInstanceNotNull() {

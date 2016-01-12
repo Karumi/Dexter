@@ -64,15 +64,15 @@ final class DexterInstance {
   }
 
   /**
-   * Checks the state of a specific permission reporting it when ready to the listener
+   * Checks the state of a specific permission reporting it when ready to the listener.
+   * .
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
+   * @param thread thread the Listener methods will be called on
    */
-  void checkPermission(PermissionListener listener, String permission) {
-    MultiplePermissionsListener adapter =
-        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    checkPermissions(adapter, Collections.singleton(permission));
+  void checkPermission(PermissionListener listener, String permission, Thread thread) {
+    checkSinglePermission(listener, permission, thread);
   }
 
   /**
@@ -81,36 +81,31 @@ final class DexterInstance {
    *
    * @param listener The class that will be reported when the state of all the permissions is ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
+   * @param thread thread the Listener methods will be called on
    */
-  void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions) {
-    checkNoDexterRequestOngoing();
-    checkRequestSomePermission(permissions);
-
-    pendingPermissions.clear();
-    pendingPermissions.addAll(permissions);
-    multiplePermissionsReport.clear();
-    this.listener = listener;
-
-    startTransparentActivityIfNeeded();
+  void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions,
+      Thread thread) {
+    checkMultiplePermissions(listener, permissions, thread);
   }
 
   /**
    * Check if there is a permission pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void continuePendingRequestIfPossible(PermissionListener listener) {
+  void continuePendingRequestIfPossible(PermissionListener listener, Thread thread) {
     MultiplePermissionsListenerToPermissionListenerAdapter adapter =
         new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    continuePendingRequestsIfPossible(adapter);
+    continuePendingRequestsIfPossible(adapter, thread);
   }
 
   /**
    * Check if there are some permissions pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
+  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener,
+      Thread thread) {
     if (!pendingPermissions.isEmpty()) {
-      this.listener = listener;
+      this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
       if (!rationaleAccepted.get()) {
         onActivityReady(activity);
       }
@@ -264,5 +259,26 @@ final class DexterInstance {
     if (permissions.isEmpty()) {
       throw new IllegalStateException("Dexter has to be called with at least one permission");
     }
+  }
+
+  private void checkSinglePermission(PermissionListener listener, String permission,
+      Thread thread) {
+    MultiplePermissionsListener adapter =
+        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
+    checkMultiplePermissions(adapter, Collections.singleton(permission), thread);
+  }
+
+  private void checkMultiplePermissions(MultiplePermissionsListener listener,
+      Collection<String> permissions, Thread thread) {
+    checkNoDexterRequestOngoing();
+    checkRequestSomePermission(permissions);
+
+    pendingPermissions.clear();
+    pendingPermissions.addAll(permissions);
+    multiplePermissionsReport.clear();
+    this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
+
+    startTransparentActivityIfNeeded();
+    thread.loop();
   }
 }

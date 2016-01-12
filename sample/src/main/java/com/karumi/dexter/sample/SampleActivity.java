@@ -79,7 +79,11 @@ public class SampleActivity extends Activity {
     if (Dexter.isRequestOngoing()) {
       return;
     }
-    Dexter.checkPermission(cameraPermissionListener, Manifest.permission.CAMERA);
+    new Thread(new Runnable() {
+      @Override public void run() {
+        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
+      }
+    }).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
@@ -128,7 +132,8 @@ public class SampleActivity extends Activity {
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
     TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
+    feedbackView.setText(isPermanentlyDenied
+        ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
@@ -144,11 +149,6 @@ public class SampleActivity extends Activity {
                 R.string.all_permissions_denied_feedback)
                 .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
                 .build());
-    cameraPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-        SnackbarOnDeniedPermissionListener.Builder.with(rootView,
-            R.string.camera_permission_denied_feedback)
-            .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
-            .build());
     contactsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         SnackbarOnDeniedPermissionListener.Builder.with(rootView,
             R.string.contacts_permission_denied_feedback)
@@ -164,6 +164,7 @@ public class SampleActivity extends Activity {
             .build();
     audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         dialogOnDeniedPermissionListener);
+    cameraPermissionListener = new SampleBackgroundThreadPermissionListener(this);
   }
 
   private TextView getFeedbackViewForPermission(String name) {

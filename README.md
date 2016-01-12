@@ -126,6 +126,12 @@ MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
 Dexter.checkPermissions(new CompositeMultiplePermissionsListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
 ```
 
+###Handling listener threads
+If you want to receive permission listener callbacks on the same thread that fired the permission request, you just need to use the ``OnSameThread`` version of the single and multiple permissions methods.
+
+* ``checkPermissionOnSameThread`` to request a single permission and receive callbacks in the thread that fired the request
+* ``checkPermissionsOnSameThread`` to request multiple permissions and receive callbacks in the thread that fired the request
+
 ###Showing a rationale
 Android will notify you when you are requesting a permission that needs an additional explanation for its usage, either because it is considered dangerous, or because the user has already declined that permission once.
 
