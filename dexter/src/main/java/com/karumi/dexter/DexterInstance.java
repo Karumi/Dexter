@@ -49,6 +49,8 @@ final class DexterInstance {
   private final MultiplePermissionsReport multiplePermissionsReport;
   private final AtomicBoolean isRequestingPermission;
   private final AtomicBoolean rationaleAccepted;
+  private final Object pendingPermissionsMutex = new Object();
+
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
 
@@ -118,24 +120,18 @@ final class DexterInstance {
    */
   void onActivityReady(Activity activity) {
     this.activity = activity;
-    Collection<String> deniedRequests = new LinkedList<>();
-    Collection<String> grantedRequests = new LinkedList<>();
 
-    for (String permission : pendingPermissions) {
-      int permissionState = androidPermissionService.checkSelfPermission(activity, permission);
-      switch (permissionState) {
-        case PackageManager.PERMISSION_DENIED:
-          deniedRequests.add(permission);
-          break;
-        case PackageManager.PERMISSION_GRANTED:
-        default:
-          grantedRequests.add(permission);
-          break;
+    PermissionStates permissionStates = null;
+    synchronized (pendingPermissionsMutex) {
+      if (activity != null) {
+        permissionStates = getPermissionStates(pendingPermissions);
       }
     }
 
-    handleDeniedPermissions(deniedRequests);
-    updatePermissionsAsGranted(grantedRequests);
+    if (permissionStates != null) {
+      handleDeniedPermissions(permissionStates.getDeniedPermissions());
+      updatePermissionsAsGranted(permissionStates.getGrantedPermissions());
+    }
   }
 
   /**
@@ -185,6 +181,23 @@ final class DexterInstance {
   void requestPermissionsToSystem(Collection<String> permissions) {
     androidPermissionService.requestPermissions(activity,
         permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
+  }
+
+  private PermissionStates getPermissionStates(Collection<String> pendingPermissions) {
+    PermissionStates permissionStates = new PermissionStates();
+    for (String permission : pendingPermissions) {
+      int permissionState = androidPermissionService.checkSelfPermission(activity, permission);
+      switch (permissionState) {
+        case PackageManager.PERMISSION_DENIED:
+          permissionStates.addDeniedPermission(permission);
+          break;
+        case PackageManager.PERMISSION_GRANTED:
+        default:
+          permissionStates.addGrantedPermission(permission);
+          break;
+      }
+    }
+    return permissionStates;
   }
 
   private void startTransparentActivityIfNeeded() {
@@ -237,15 +250,17 @@ final class DexterInstance {
       return;
     }
 
-    pendingPermissions.removeAll(permissions);
-    if (pendingPermissions.isEmpty()) {
-      activity.finish();
-      activity = null;
-      isRequestingPermission.set(false);
-      rationaleAccepted.set(false);
-      MultiplePermissionsListener currentListener = listener;
-      listener = EMPTY_LISTENER;
-      currentListener.onPermissionsChecked(multiplePermissionsReport);
+    synchronized(pendingPermissionsMutex) {
+      pendingPermissions.removeAll(permissions);
+      if (pendingPermissions.isEmpty()) {
+        activity.finish();
+        activity = null;
+        isRequestingPermission.set(false);
+        rationaleAccepted.set(false);
+        MultiplePermissionsListener currentListener = listener;
+        listener = EMPTY_LISTENER;
+        currentListener.onPermissionsChecked(multiplePermissionsReport);
+      }
     }
   }
 
@@ -280,5 +295,26 @@ final class DexterInstance {
 
     startTransparentActivityIfNeeded();
     thread.loop();
+  }
+
+  private final class PermissionStates {
+    private final Collection<String> deniedPermissions = new LinkedList<>();
+    private final Collection<String> grantedPermissions = new LinkedList<>();
+
+    private void addDeniedPermission(String permission) {
+      deniedPermissions.add(permission);
+    }
+
+    private void addGrantedPermission(String permission) {
+      grantedPermissions.add(permission);
+    }
+
+    private Collection<String> getDeniedPermissions() {
+      return deniedPermissions;
+    }
+
+    private Collection<String> getGrantedPermissions() {
+      return grantedPermissions;
+    }
   }
 }
