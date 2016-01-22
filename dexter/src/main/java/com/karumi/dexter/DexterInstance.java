@@ -185,6 +185,7 @@ final class DexterInstance {
 
   private PermissionStates getPermissionStates(Collection<String> pendingPermissions) {
     PermissionStates permissionStates = new PermissionStates();
+
     for (String permission : pendingPermissions) {
       int permissionState = androidPermissionService.checkSelfPermission(activity, permission);
       switch (permissionState) {
@@ -197,6 +198,7 @@ final class DexterInstance {
           break;
       }
     }
+
     return permissionStates;
   }
 
@@ -250,7 +252,7 @@ final class DexterInstance {
       return;
     }
 
-    synchronized(pendingPermissionsMutex) {
+    synchronized (pendingPermissionsMutex) {
       pendingPermissions.removeAll(permissions);
       if (pendingPermissions.isEmpty()) {
         activity.finish();
