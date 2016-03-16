@@ -27,7 +27,9 @@ final class WorkerThread implements Thread {
   private final Handler handler;
 
   WorkerThread() {
-    Looper.prepare();
+    if (Looper.myLooper() == null) {
+      Looper.prepare();
+    }
     handler = new Handler();
   }
 
