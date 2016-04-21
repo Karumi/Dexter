@@ -24,6 +24,10 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+
+import java.util.List;
 
 /**
  * Utility listener that shows a {@link Dialog} with a minimum configuration when the user rejects
@@ -52,6 +56,11 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends EmptyMultipleP
     if (!report.areAllPermissionsGranted()) {
       showDialog();
     }
+  }
+
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                           PermissionToken token) {
+    token.continuePermissionRequest();
   }
 
   private void showDialog() {
