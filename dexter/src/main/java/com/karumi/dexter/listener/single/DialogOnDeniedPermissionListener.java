@@ -22,7 +22,10 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+
+import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
 
 /**
  * Utility listener that shows a {@link android.app.Dialog} with a minimum configuration when the
@@ -58,6 +61,11 @@ public class DialogOnDeniedPermissionListener extends EmptyPermissionListener {
         })
         .setIcon(icon)
         .show();
+  }
+
+  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+                                                           PermissionToken token) {
+    token.continuePermissionRequest();
   }
 
   /**
