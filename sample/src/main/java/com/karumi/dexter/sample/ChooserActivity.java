@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- *  Activity to choose applications options.
+ * Activity to choose applications options.
  */
 public class ChooserActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +34,10 @@ public class ChooserActivity extends Activity {
   @OnClick(R.id.bt_common_sample)
   public void openCommonSample() {
     SampleActivity.open(this);
+  }
+
+  @OnClick(R.id.bt_oncreate_sample)
+  public void openOncreateSample() {
+    OnCreateSampleActivity.open(this);
   }
 }

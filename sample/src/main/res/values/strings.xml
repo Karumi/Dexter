@@ -35,4 +35,5 @@
   <string name="common_sample_title">Sample</string>
   <string name="oncreate_sample_title">onCreate sample</string>
   <string name="application_sample_title">Application sample</string>
+  <string name="feedback_permission_on_create">Testing camera permission in on create:</string>
 </resources>
