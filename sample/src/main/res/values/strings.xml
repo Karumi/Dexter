@@ -32,4 +32,7 @@
   <string name="permission_rationale_title">We need this permission</string>
   <string name="permission_rationale_message">This permission is needed for doing some fancy stuff so please, allow it!</string>
   <string name="permission_rationale_settings_button_text">SETTINGS</string>
+  <string name="common_sample_title">Sample</string>
+  <string name="oncreate_sample_title">onCreate sample</string>
+  <string name="application_sample_title">Application sample</string>
 </resources>
