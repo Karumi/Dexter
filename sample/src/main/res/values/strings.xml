@@ -24,16 +24,31 @@
   <string name="permission_denied_feedback">DENIED</string>
   <string name="permission_permanently_denied_feedback">PERMANENTLY DENIED</string>
   <string name="permission_unknown_feedback">UNKNOWN</string>
-  <string name="all_permissions_denied_feedback">All those permissions are needed for doing some magic</string>
-  <string name="camera_permission_denied_feedback">Camera permission is needed for doing some magic</string>
-  <string name="contacts_permission_denied_feedback">Contacts permission is needed for doing some magic</string>
+  <string name="all_permissions_denied_feedback">All those permissions are needed for doing some
+    magic
+  </string>
+  <string name="camera_permission_denied_feedback">Camera permission is needed for doing some
+    magic
+  </string>
+  <string name="contacts_permission_denied_feedback">Contacts permission is needed for doing some
+    magic
+  </string>
   <string name="audio_permission_denied_dialog_title">Audio permission request</string>
-  <string name="audio_permission_denied_dialog_feedback">Audio recording will not be available until you accept the permission request</string>
+  <string name="audio_permission_denied_dialog_feedback">Audio recording will not be available until
+    you accept the permission request
+  </string>
   <string name="permission_rationale_title">We need this permission</string>
-  <string name="permission_rationale_message">This permission is needed for doing some fancy stuff so please, allow it!</string>
+  <string name="permission_rationale_message">This permission is needed for doing some fancy stuff
+    so please, allow it!
+  </string>
   <string name="permission_rationale_settings_button_text">SETTINGS</string>
   <string name="common_sample_title">Sample</string>
   <string name="oncreate_sample_title">onCreate sample</string>
-  <string name="application_sample_title">Application sample</string>
+  <string name="application_sample_title">Application sample \n(this will reset the app. Don\'t be
+    afraid)
+  </string>
   <string name="feedback_permission_on_create">Testing camera permission in on create:</string>
+  <string name="feedback_permission_on_application">This is a test of invoke permission on
+    application.
+  </string>
 </resources>

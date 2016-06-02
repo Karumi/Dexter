@@ -16,8 +16,10 @@
 
 package com.karumi.dexter.sample;
 
+import android.Manifest;
 import android.app.Application;
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.listener.single.EmptyPermissionListener;
 
 /**
  * Sample application that initializes the Dexter library.
@@ -27,5 +29,14 @@ public class SampleApplication extends Application {
   @Override public void onCreate() {
     super.onCreate();
     Dexter.initialize(this);
+    boolean launchDexterOnApplication = DexterApplicationMode.isEnable(this);
+    if (launchDexterOnApplication) {
+      DexterApplicationMode.clear(this);
+      requestDexterOnApplication();
+    }
+  }
+
+  private void requestDexterOnApplication() {
+    Dexter.checkPermission(new EmptyPermissionListener(), Manifest.permission.RECORD_AUDIO);
   }
 }

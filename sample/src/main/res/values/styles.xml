@@ -35,6 +35,7 @@
     <item name="android:textSize">@dimen/button_text_size</item>
     <item name="android:layout_marginTop">@dimen/permission_button_margin_vertical</item>
     <item name="android:layout_marginBottom">@dimen/permission_button_margin_vertical</item>
+    <item name="android:padding">@dimen/all_permission_button_margin_right</item>
   </style>
 
   <style name="PermissionFeedback">

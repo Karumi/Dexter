@@ -37,6 +37,9 @@
     <activity
         android:name=".OnCreateSampleActivity"
     />
+    <activity
+        android:name=".ApplicationSampleActivity"
+    />
 
     <activity
         android:name=".ChooserActivity"

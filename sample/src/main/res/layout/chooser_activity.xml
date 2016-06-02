@@ -44,8 +44,10 @@
 
   <Button
       android:id="@+id/bt_application_sample"
-      android:layout_width="@dimen/button_width"
-      android:layout_height="@dimen/button_height"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/min_button_margin"
+      android:layout_marginRight="@dimen/min_button_margin"
       android:text="@string/application_sample_title"
       android:layout_below="@id/bt_oncreate_sample"
       android:layout_centerHorizontal="true"
