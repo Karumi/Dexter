@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -153,6 +154,16 @@ public class SampleActivity extends Activity {
         SnackbarOnDeniedPermissionListener.Builder.with(rootView,
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
+            .withCallback(new Snackbar.Callback() {
+              @Override
+              public void onShown(Snackbar snackbar) {
+                super.onShown(snackbar);
+              }
+              @Override
+              public void onDismissed(Snackbar snackbar, int event) {
+                super.onDismissed(snackbar, event);
+              }
+            })
             .build());
 
     PermissionListener dialogOnDeniedPermissionListener =
