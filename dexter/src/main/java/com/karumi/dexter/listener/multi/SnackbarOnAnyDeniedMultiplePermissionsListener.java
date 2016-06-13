@@ -36,6 +36,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
   private final String text;
   private final String buttonText;
   private final View.OnClickListener onButtonClickListener;
+  private final Snackbar.Callback snackbarCallback;
 
   /**
    * @param rootView Parent view to show the snackbar
@@ -44,11 +45,12 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnAnyDeniedMultiplePermissionsListener(ViewGroup rootView, String text,
-      String buttonText, View.OnClickListener onButtonClickListener) {
+      String buttonText, View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
+    this.snackbarCallback = snackbarCallback;
   }
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -64,6 +66,9 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
     if (buttonText != null && onButtonClickListener != null) {
       snackbar.setAction(buttonText, onButtonClickListener);
     }
+    if (snackbarCallback != null) {
+      snackbar.setCallback(snackbarCallback);
+    }
     snackbar.show();
   }
 
@@ -76,6 +81,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
     private final String text;
     private String buttonText;
     private View.OnClickListener onClickListener;
+    private Snackbar.Callback snackbarCallback;
 
     private Builder(ViewGroup rootView, String text) {
       this.rootView = rootView;
@@ -133,10 +139,19 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
     }
 
     /**
+     * Adds a callback to handle the snackbar {@code onDismissed} and {@code onShown} events.
+     */
+    public Builder withCallback(Snackbar.Callback callback) {
+      this.snackbarCallback = callback;
+      return this;
+    }
+
+    /**
      * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
      */
     public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
-      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText, onClickListener);
+      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText, onClickListener,
+              snackbarCallback);
     }
   }
 }

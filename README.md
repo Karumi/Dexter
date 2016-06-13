@@ -66,6 +66,16 @@ PermissionListener snackbarPermissionListener =
 	SnackbarOnDeniedPermissionListener.Builder
 		.with(rootView, "Camera access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
+        .withCallback(new Snackbar.Callback() {
+            @Override
+            public void onShown(Snackbar snackbar) {
+                // Event handler for when the given Snackbar has been dismissed
+            }
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                // Event handler for when the given Snackbar is visible
+            }
+        })
 		.build();
 Dexter.checkPermission(snackbarPermissionListener, Manifest.permission.CAMERA);
 ```
@@ -114,6 +124,16 @@ MultiplePermissionsListener snackbarMultiplePermissionsListener =
 	SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
 		.with(rootView, "Camera and audio access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
+        .withCallback(new Snackbar.Callback() {
+            @Override
+            public void onShown(Snackbar snackbar) {
+                // Event handler for when the given Snackbar has been dismissed
+            }
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                // Event handler for when the given Snackbar is visible
+            }
+        })
 		.build();
 Dexter.checkPermissions(snackbarMultiplePermissionsListener, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 ```
