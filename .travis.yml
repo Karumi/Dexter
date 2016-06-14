@@ -10,5 +10,5 @@ android:
     - extra-android-m2repository
 
 script:
-  ./gradlew checkstyle build
-  cat /home/travis/build/Karumi/Dexter/dexter/build/outputs/lint-results-debug.xml
+  - ./gradlew checkstyle build
+  - cat /home/travis/build/Karumi/Dexter/dexter/build/outputs/lint-results-debug.xml
