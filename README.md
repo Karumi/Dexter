@@ -69,11 +69,11 @@ PermissionListener snackbarPermissionListener =
         .withCallback(new Snackbar.Callback() {
             @Override
             public void onShown(Snackbar snackbar) {
-                // Event handler for when the given Snackbar has been dismissed
+                // Event handler for when the given Snackbar is visible
             }
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
-                // Event handler for when the given Snackbar is visible
+                // Event handler for when the given Snackbar has been dismissed
             }
         })
 		.build();
