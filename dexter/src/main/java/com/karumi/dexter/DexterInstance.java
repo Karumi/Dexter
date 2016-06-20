@@ -320,7 +320,7 @@ final class DexterInstance {
 
   private boolean everyPermissionIsGranted(Collection<String> permissions) {
     for (String permission : permissions) {
-      int permissionState = ContextCompat.checkSelfPermission(context, permission);
+      int permissionState = androidPermissionService.checkSelfPermission(context, permission);
       if (permissionState != PackageManager.PERMISSION_GRANTED) {
         return false;
       }
