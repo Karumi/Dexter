@@ -67,7 +67,6 @@ final class DexterInstance {
 
   /**
    * Checks the state of a specific permission reporting it when ready to the listener.
-   * .
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
