@@ -33,10 +33,12 @@ public final class Dexter {
   private static DexterInstance instance;
 
   /**
-   * Initializes the library
+   * Initializes the library.
    *
    * @param context Context used by Dexter. Use your {@link android.app.Application} to make sure
-   * the instance is not cleaned up during your app lifetime
+   * the instance is not cleaned up during your app lifetime.
+   * @deprecated use the initialize overloaded method using an {@link android.app.Activity} instance
+   * as param instead of this one. This method will be removed in the next major release.
    */
   public static void initialize(Context context) {
     if (instance == null) {
@@ -44,6 +46,24 @@ public final class Dexter {
       IntentProvider intentProvider = new IntentProvider();
       instance = new DexterInstance(context, androidPermissionService, intentProvider);
     }
+  }
+
+  /**
+   * Initializes the library.
+   *
+   * @param activity context used by Dexter. Remember to invoke {@link com.karumi.dexter.Dexter}
+   * stop method to avoid memory leaks.
+   */
+  public static void initialize(Activity activity) {
+    if (instance == null) {
+      AndroidPermissionService androidPermissionService = new AndroidPermissionService();
+      IntentProvider intentProvider = new IntentProvider();
+      instance = new DexterInstance(activity, androidPermissionService, intentProvider);
+    }
+  }
+
+  public static void stop() {
+    instance = null;
   }
 
   /**
@@ -86,8 +106,7 @@ public final class Dexter {
   public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
       String... permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, Arrays.asList(permissions),
-        ThreadFactory.makeSameThread());
+    instance.checkPermissions(listener, Arrays.asList(permissions), ThreadFactory.makeSameThread());
   }
 
   /**
@@ -101,8 +120,7 @@ public final class Dexter {
    */
   public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
     checkInstanceNotNull();
-    instance.checkPermissions(listener, Arrays.asList(permissions),
-        ThreadFactory.makeMainThread());
+    instance.checkPermissions(listener, Arrays.asList(permissions), ThreadFactory.makeMainThread());
   }
 
   /**

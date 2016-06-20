@@ -18,7 +18,7 @@ Screenshots
 Usage
 -----
 
-To start using the library you just need to initialize Dexter with a ``Context``, preferably your ``Application`` as it won't be destroyed during your app lifetime:
+To start using the library you just need to initialize Dexter with an ``Activity``. Remember to stop Dexter during the ``onDestroy`` stage to avoid memory leaks.
 
 ```java
 public MyApplication extends Application {
@@ -26,6 +26,11 @@ public MyApplication extends Application {
 		super.onCreate();
 		Dexter.initialize(context);
 	}
+}
+
+@Override protected void onDestroy() {
+  Dexter.stop();
+  super.onDestroy();
 }
 ```
 
