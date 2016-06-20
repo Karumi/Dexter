@@ -22,7 +22,7 @@
     <activity
         android:name=".DexterActivity"
         android:theme="@style/Theme.Transparent"
-        android:launchMode="singleTask"
+        android:launchMode="singleInstance"
         />
   </application>
 

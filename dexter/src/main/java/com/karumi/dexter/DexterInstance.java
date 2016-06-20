@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -57,7 +56,7 @@ final class DexterInstance {
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
-    this.context = context.getApplicationContext();
+    this.context = context;
     this.androidPermissionService = androidPermissionService;
     this.intentProvider = intentProvider;
     this.pendingPermissions = new TreeSet<>();
@@ -203,7 +202,6 @@ final class DexterInstance {
 
   private void startTransparentActivityIfNeeded() {
     Intent intent = intentProvider.get(context, DexterActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
   }
 
