@@ -47,6 +47,9 @@ class AndroidPermissionService {
    */
   boolean shouldShowRequestPermissionRationale(@NonNull Activity activity,
       @NonNull String permission) {
+    if (activity == null) {
+      return false;
+    }
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
   }
 }
