@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -103,8 +104,7 @@ final class DexterInstance {
    * Check if there are some permissions pending to be confirmed by the user and restarts the
    * request for permission process.
    */
-  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener,
-      Thread thread) {
+  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener, Thread thread) {
     if (!pendingPermissions.isEmpty()) {
       this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
       if (!rationaleAccepted.get()) {
@@ -284,8 +284,8 @@ final class DexterInstance {
     checkMultiplePermissions(adapter, Collections.singleton(permission), thread);
   }
 
-  private void checkMultiplePermissions(MultiplePermissionsListener listener,
-      Collection<String> permissions, Thread thread) {
+  private void checkMultiplePermissions(final MultiplePermissionsListener listener,
+      final Collection<String> permissions, Thread thread) {
     checkNoDexterRequestOngoing();
     checkRequestSomePermission(permissions);
 
@@ -293,9 +293,39 @@ final class DexterInstance {
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
     this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-
-    startTransparentActivityIfNeeded();
+    if (!everyPermissionIsGranted(permissions) || !contextIsInstanceOfActivity()) {
+      startTransparentActivityIfNeeded();
+    } else {
+      thread.execute(new Runnable() {
+        @Override public void run() {
+          MultiplePermissionsReport report = new MultiplePermissionsReport();
+          for (String permission : permissions) {
+            report.addGrantedPermissionResponse(PermissionGrantedResponse.from(permission));
+          }
+          isRequestingPermission.set(false);
+          listener.onPermissionsChecked(report);
+        }
+      });
+    }
     thread.loop();
+  }
+
+  /**
+   * To be able to provide backward compatibility with the Dexter's 2.X.X version we need to check
+   * at some point if the context instance is an instance of {@link android.app.Activity}.
+   */
+  private boolean contextIsInstanceOfActivity() {
+    return context instanceof Activity;
+  }
+
+  private boolean everyPermissionIsGranted(Collection<String> permissions) {
+    for (String permission : permissions) {
+      int permissionState = ContextCompat.checkSelfPermission(context, permission);
+      if (permissionState != PackageManager.PERMISSION_GRANTED) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private final class PermissionStates {

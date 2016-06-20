@@ -59,6 +59,7 @@ public class SampleActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
     ButterKnife.bind(this);
+    Dexter.initialize(this);
     createPermissionListeners();
     /*
      * If during the rotate screen process the activity has been restarted you can call this method
@@ -66,6 +67,11 @@ public class SampleActivity extends Activity {
      * the request permission process.
      */
     Dexter.continuePendingRequestsIfPossible(allPermissionsListener);
+  }
+
+  @Override protected void onDestroy() {
+    Dexter.stop();
+    super.onDestroy();
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
@@ -133,8 +139,7 @@ public class SampleActivity extends Activity {
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
     TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied
-        ? R.string.permission_permanently_denied_feedback
+    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
@@ -155,12 +160,11 @@ public class SampleActivity extends Activity {
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .withCallback(new Snackbar.Callback() {
-              @Override
-              public void onShown(Snackbar snackbar) {
+              @Override public void onShown(Snackbar snackbar) {
                 super.onShown(snackbar);
               }
-              @Override
-              public void onDismissed(Snackbar snackbar, int event) {
+
+              @Override public void onDismissed(Snackbar snackbar, int event) {
                 super.onDismissed(snackbar, event);
               }
             })
