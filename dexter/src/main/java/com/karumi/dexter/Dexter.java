@@ -62,10 +62,6 @@ public final class Dexter {
     }
   }
 
-  public static void stop() {
-    instance = null;
-  }
-
   /**
    * Checks the permission and notifies the listener of its state.
    * It is important to note that permissions still have to be declared in the manifest.
