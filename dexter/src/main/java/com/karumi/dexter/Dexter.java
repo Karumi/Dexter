@@ -40,7 +40,7 @@ public final class Dexter {
    * @deprecated use the initialize overloaded method using an {@link android.app.Activity} instance
    * as param instead of this one. This method will be removed in the next major release.
    */
-  public static void initialize(Context context) {
+  @Deprecated public static void initialize(Context context) {
     if (instance == null) {
       AndroidPermissionService androidPermissionService = new AndroidPermissionService();
       IntentProvider intentProvider = new IntentProvider();
