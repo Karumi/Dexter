@@ -307,9 +307,7 @@ final class DexterInstance {
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
     this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-    if (!everyPermissionIsGranted(permissions, context.get()) || !contextIsInstanceOfActivity()) {
-      startTransparentActivityIfNeeded();
-    } else {
+    if (isEveryPermissionGranted(permissions, context.get()) && isContextInstanceOfActivity()) {
       thread.execute(new Runnable() {
         @Override public void run() {
           MultiplePermissionsReport report = new MultiplePermissionsReport();
@@ -320,6 +318,8 @@ final class DexterInstance {
           listener.onPermissionsChecked(report);
         }
       });
+    } else {
+      startTransparentActivityIfNeeded();
     }
     thread.loop();
   }
@@ -328,11 +328,11 @@ final class DexterInstance {
    * To be able to provide backward compatibility with the Dexter's 2.X.X version we need to check
    * at some point if the context instance is an instance of {@link android.app.Activity}.
    */
-  private boolean contextIsInstanceOfActivity() {
+  private boolean isContextInstanceOfActivity() {
     return context.get() != null && context.get() instanceof Activity;
   }
 
-  private boolean everyPermissionIsGranted(Collection<String> permissions, Context context) {
+  private boolean isEveryPermissionGranted(Collection<String> permissions, Context context) {
     for (String permission : permissions) {
       int permissionState = androidPermissionService.checkSelfPermission(context, permission);
       if (permissionState != PackageManager.PERMISSION_GRANTED) {
