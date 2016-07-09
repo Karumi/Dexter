@@ -27,9 +27,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
@@ -67,11 +69,6 @@ public class SampleActivity extends Activity {
      * the request permission process.
      */
     Dexter.continuePendingRequestsIfPossible(allPermissionsListener);
-  }
-
-  @Override protected void onDestroy() {
-    Dexter.stop();
-    super.onDestroy();
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
