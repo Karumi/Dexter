@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
@@ -54,6 +55,7 @@ public class SampleActivity extends Activity {
   private PermissionListener cameraPermissionListener;
   private PermissionListener contactsPermissionListener;
   private PermissionListener audioPermissionListener;
+  private PermissionRequestErrorListener errorListener;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -61,8 +63,8 @@ public class SampleActivity extends Activity {
     ButterKnife.bind(this);
     createPermissionListeners();
     /*
-     * If during the rotate screen process the activity has been restarted you can call this method
-     * to start with the check permission process without keeping the state of the request
+     * If during the screen rotation process the activity has been restarted you can call this
+     * method to start with the check permission process without keeping the state of the request
      * permission process in an Android Bundle.
      */
     Dexter.withActivity(this).continueRequestingPendingPermissions(allPermissionsListener);
@@ -73,6 +75,7 @@ public class SampleActivity extends Activity {
         .withPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS,
             Manifest.permission.RECORD_AUDIO)
         .withListener(allPermissionsListener)
+        .withErrorListener(errorListener)
         .check();
   }
 
@@ -82,6 +85,7 @@ public class SampleActivity extends Activity {
         Dexter.withActivity(SampleActivity.this)
             .withPermission(Manifest.permission.CAMERA)
             .withListener(cameraPermissionListener)
+            .withErrorListener(errorListener)
             .onSameThread()
             .check();
       }
@@ -92,6 +96,7 @@ public class SampleActivity extends Activity {
     Dexter.withActivity(this)
         .withPermission(Manifest.permission.READ_CONTACTS)
         .withListener(contactsPermissionListener)
+        .withErrorListener(errorListener)
         .check();
   }
 
@@ -99,6 +104,7 @@ public class SampleActivity extends Activity {
     Dexter.withActivity(this)
         .withPermission(Manifest.permission.RECORD_AUDIO)
         .withListener(audioPermissionListener)
+        .withErrorListener(errorListener)
         .check();
   }
 
@@ -175,6 +181,8 @@ public class SampleActivity extends Activity {
     audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         dialogOnDeniedPermissionListener);
     cameraPermissionListener = new SampleBackgroundThreadPermissionListener(this);
+
+    errorListener = new SampleErrorListener();
   }
 
   private TextView getFeedbackViewForPermission(String name) {

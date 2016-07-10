@@ -16,10 +16,12 @@
 
 package com.karumi.dexter.listener;
 
+/**
+ * Listener to be notified when a Dexter error occurs.
+ */
 public interface PermissionRequestErrorListener {
-    /**
-     * Method called whenever the client request permissions before another request
-     * has finished.
-     */
-    void onPermissionsAlreadyBeingRequested();
+  /**
+   * Method called whenever Dexter fails.
+   */
+  void onError(DexterError error);
 }

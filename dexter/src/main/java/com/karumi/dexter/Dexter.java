@@ -100,8 +100,8 @@ public final class Dexter
     try {
       Thread thread = getThread();
       instance.checkPermissions(listener, permissions, thread);
-    } catch (IllegalStateException e) {
-      errorListener.onPermissionsAlreadyBeingRequested();
+    } catch (DexterException e) {
+      errorListener.onError(e.error);
     }
   }
 
@@ -262,7 +262,7 @@ public final class Dexter
     instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
-  private static void checkInstanceNotNull() {
+  @Deprecated private static void checkInstanceNotNull() {
     if (instance == null) {
       throw new NullPointerException("context == null \n Must call \"initialize\" on Dexter");
     }

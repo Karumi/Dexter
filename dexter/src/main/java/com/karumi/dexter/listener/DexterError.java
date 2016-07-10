@@ -16,6 +16,15 @@
 
 package com.karumi.dexter.listener;
 
-public class EmptyPermissionRequestErrorListener implements PermissionRequestErrorListener {
-  @Override public void onError(DexterError error) {}
+public enum DexterError {
+  /**
+   * Error code used when the user tries to request permissions before all previous
+   * requests has finished.
+   */
+  REQUEST_ONGOING,
+
+  /**
+   * Error code used when Dexter is called with no permissions.
+   */
+  NO_PERMISSIONS_REQUESTED
 }
