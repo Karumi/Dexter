@@ -23,6 +23,7 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,40 +34,55 @@ import java.util.Collections;
  * #initialize(Activity)}
  */
 public final class Dexter
-    implements DexterBuilder, DexterBuilder.SinglePermission, DexterBuilder.MultiPermission {
+    implements DexterBuilder, DexterBuilder.Permission, DexterBuilder.SinglePermissionListener,
+    DexterBuilder.MultiPermissionListener {
 
   private static DexterInstance instance;
-
-  private final DexterInstance dexterInstance;
 
   private Collection<String> permissions;
   private MultiplePermissionsListener listener = new EmptyMultiplePermissionsListener();
   private PermissionRequestErrorListener errorListener = new EmptyPermissionRequestErrorListener();
   private boolean shouldExecuteOnSameThread = false;
 
-  public Dexter(Activity activity) {
-    AndroidPermissionService androidPermissionService = new AndroidPermissionService();
-    IntentProvider intentProvider = new IntentProvider();
-    dexterInstance = new DexterInstance(activity, androidPermissionService, intentProvider);
+  private Dexter(Activity activity) {
+    initialize(activity);
   }
 
-  @Override public DexterBuilder.SinglePermission withPermission(String permission) {
+  public static DexterBuilder.Permission withActivity(Activity activity) {
+    return new Dexter(activity);
+  }
+
+  @Override public DexterBuilder.SinglePermissionListener withPermission(String permission) {
     permissions = Collections.singletonList(permission);
     return this;
   }
 
-  @Override public DexterBuilder.MultiPermission withPermissions(String... permissions) {
+  @Override public DexterBuilder.MultiPermissionListener withPermissions(String... permissions) {
     this.permissions = Arrays.asList(permissions);
+    return this;
+  }
+
+  @Override
+  public DexterBuilder.MultiPermissionListener withPermissions(Collection<String> permissions) {
+    this.permissions = new ArrayList<>(permissions);
+    return this;
+  }
+
+  @Override public void continueRequestingPendingPermissions(PermissionListener listener) {
+    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
+  }
+
+  @Override public void continueRequestingPendingPermissions(MultiplePermissionsListener listener) {
+    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
+  }
+
+  @Override public DexterBuilder withListener(PermissionListener listener) {
+    this.listener = new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
     return this;
   }
 
   @Override public DexterBuilder withListener(MultiplePermissionsListener listener) {
     this.listener = listener;
-    return this;
-  }
-
-  @Override public DexterBuilder withListener(PermissionListener listener) {
-    this.listener = new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
     return this;
   }
 
@@ -83,7 +99,7 @@ public final class Dexter
   @Override public void check() {
     try {
       Thread thread = getThread();
-      dexterInstance.checkPermissions(listener, permissions, thread);
+      instance.checkPermissions(listener, permissions, thread);
     } catch (IllegalStateException e) {
       errorListener.onPermissionsAlreadyBeingRequested();
     }

@@ -20,12 +20,9 @@ package com.karumi.dexter;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import java.util.Collection;
 
 public interface DexterBuilder {
-
-  DexterBuilder.SinglePermission withPermission(String permission);
-
-  DexterBuilder.MultiPermission withPermissions(String... permissions);
 
   DexterBuilder onSameThread();
 
@@ -33,11 +30,23 @@ public interface DexterBuilder {
 
   void check();
 
-  interface SinglePermission {
+  interface Permission {
+    DexterBuilder.SinglePermissionListener withPermission(String permission);
+
+    DexterBuilder.MultiPermissionListener withPermissions(String... permissions);
+
+    DexterBuilder.MultiPermissionListener withPermissions(Collection<String> permissions);
+
+    void continueRequestingPendingPermissions(PermissionListener listener);
+
+    void continueRequestingPendingPermissions(MultiplePermissionsListener listener);
+  }
+
+  interface SinglePermissionListener {
     DexterBuilder withListener(PermissionListener listener);
   }
 
-  interface MultiPermission {
+  interface MultiPermissionListener {
     DexterBuilder withListener(MultiplePermissionsListener listener);
   }
 }

@@ -27,11 +27,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
@@ -61,47 +59,47 @@ public class SampleActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
     ButterKnife.bind(this);
-    Dexter.initialize(this);
     createPermissionListeners();
     /*
      * If during the rotate screen process the activity has been restarted you can call this method
-     * to start with the check permission process without keep in an Android Bundle the state of
-     * the request permission process.
+     * to start with the check permission process without keeping the state of the request
+     * permission process in an Android Bundle.
      */
-    Dexter.continuePendingRequestsIfPossible(allPermissionsListener);
+    Dexter.withActivity(this).continueRequestingPendingPermissions(allPermissionsListener);
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermissions(allPermissionsListener, Manifest.permission.CAMERA,
-        Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+    Dexter.withActivity(this)
+        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS,
+            Manifest.permission.RECORD_AUDIO)
+        .withListener(allPermissionsListener)
+        .check();
   }
 
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
     new Thread(new Runnable() {
       @Override public void run() {
-        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
+        Dexter.withActivity(SampleActivity.this)
+            .withPermission(Manifest.permission.CAMERA)
+            .withListener(cameraPermissionListener)
+            .onSameThread()
+            .check();
       }
     }).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermission(contactsPermissionListener, Manifest.permission.READ_CONTACTS);
+    Dexter.withActivity(this)
+        .withPermission(Manifest.permission.READ_CONTACTS)
+        .withListener(contactsPermissionListener)
+        .check();
   }
 
   @OnClick(R.id.audio_permission_button) public void onAudioPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermission(audioPermissionListener, Manifest.permission.RECORD_AUDIO);
+    Dexter.withActivity(this)
+        .withPermission(Manifest.permission.RECORD_AUDIO)
+        .withListener(audioPermissionListener)
+        .check();
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
