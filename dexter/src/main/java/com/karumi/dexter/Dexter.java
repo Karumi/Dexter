@@ -18,19 +18,88 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
+import com.karumi.dexter.listener.EmptyPermissionRequestErrorListener;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Class to simplify the management of Android runtime permissions
  * Dexter needs to be initialized before checking for a permission using {@link
- * #initialize(Context)}
+ * #initialize(Activity)}
  */
-public final class Dexter {
+public final class Dexter
+    implements DexterBuilder, DexterBuilder.SinglePermission, DexterBuilder.MultiPermission {
 
   private static DexterInstance instance;
+
+  private final DexterInstance dexterInstance;
+
+  private Collection<String> permissions;
+  private MultiplePermissionsListener listener = new EmptyMultiplePermissionsListener();
+  private PermissionRequestErrorListener errorListener = new EmptyPermissionRequestErrorListener();
+  private boolean shouldExecuteOnSameThread = false;
+
+  public Dexter(Activity activity) {
+    AndroidPermissionService androidPermissionService = new AndroidPermissionService();
+    IntentProvider intentProvider = new IntentProvider();
+    dexterInstance = new DexterInstance(activity, androidPermissionService, intentProvider);
+  }
+
+  @Override public DexterBuilder.SinglePermission withPermission(String permission) {
+    permissions = Collections.singletonList(permission);
+    return this;
+  }
+
+  @Override public DexterBuilder.MultiPermission withPermissions(String... permissions) {
+    this.permissions = Arrays.asList(permissions);
+    return this;
+  }
+
+  @Override public DexterBuilder withListener(MultiplePermissionsListener listener) {
+    this.listener = listener;
+    return this;
+  }
+
+  @Override public DexterBuilder withListener(PermissionListener listener) {
+    this.listener = new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
+    return this;
+  }
+
+  @Override public DexterBuilder onSameThread() {
+    shouldExecuteOnSameThread = true;
+    return this;
+  }
+
+  @Override public DexterBuilder withErrorListener(PermissionRequestErrorListener errorListener) {
+    this.errorListener = errorListener;
+    return this;
+  }
+
+  @Override public void check() {
+    try {
+      Thread thread = getThread();
+      dexterInstance.checkPermissions(listener, permissions, thread);
+    } catch (IllegalStateException e) {
+      errorListener.onPermissionsAlreadyBeingRequested();
+    }
+  }
+
+  private Thread getThread() {
+    Thread thread;
+
+    if (shouldExecuteOnSameThread) {
+      thread = ThreadFactory.makeSameThread();
+    } else {
+      thread = ThreadFactory.makeMainThread();
+    }
+
+    return thread;
+  }
 
   /**
    * Initializes the library.
@@ -53,8 +122,9 @@ public final class Dexter {
    *
    * @param activity context used by Dexter. Remember to invoke {@link com.karumi.dexter.Dexter}
    * stop method to avoid memory leaks.
+   * @deprecated Use the non static constructor: new Dexter(Activity activity)
    */
-  public static void initialize(Activity activity) {
+  @Deprecated public static void initialize(Activity activity) {
     if (instance == null) {
       AndroidPermissionService androidPermissionService = new AndroidPermissionService();
       IntentProvider intentProvider = new IntentProvider();
@@ -70,8 +140,10 @@ public final class Dexter {
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
+   * @deprecated
    */
-  public static void checkPermissionOnSameThread(PermissionListener listener, String permission) {
+  @Deprecated public static void checkPermissionOnSameThread(PermissionListener listener,
+      String permission) {
     checkInstanceNotNull();
     instance.checkPermission(listener, permission, ThreadFactory.makeSameThread());
   }
@@ -84,8 +156,9 @@ public final class Dexter {
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
+   * @deprecated
    */
-  public static void checkPermission(PermissionListener listener, String permission) {
+  @Deprecated public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
     instance.checkPermission(listener, permission, ThreadFactory.makeMainThread());
   }
@@ -98,8 +171,9 @@ public final class Dexter {
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
+   * @deprecated
    */
-  public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
+  @Deprecated public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
       String... permissions) {
     checkInstanceNotNull();
     instance.checkPermissions(listener, Arrays.asList(permissions), ThreadFactory.makeSameThread());
@@ -113,8 +187,10 @@ public final class Dexter {
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
+   * @deprecated
    */
-  public static void checkPermissions(MultiplePermissionsListener listener, String... permissions) {
+  @Deprecated public static void checkPermissions(MultiplePermissionsListener listener,
+      String... permissions) {
     checkInstanceNotNull();
     instance.checkPermissions(listener, Arrays.asList(permissions), ThreadFactory.makeMainThread());
   }
@@ -125,8 +201,9 @@ public final class Dexter {
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Collection of values found in {@link android.Manifest.permission}
+   * @deprecated
    */
-  public static void checkPermissions(MultiplePermissionsListener listener,
+  @Deprecated public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
     checkInstanceNotNull();
     instance.checkPermissions(listener, permissions, ThreadFactory.makeMainThread());
@@ -136,8 +213,10 @@ public final class Dexter {
    * Checks is there is any permission request still ongoing.
    * If so, state of permissions must not be checked until it is resolved
    * or it will cause an exception.
+   *
+   * @deprecated
    */
-  public static boolean isRequestOngoing() {
+  @Deprecated public static boolean isRequestOngoing() {
     checkInstanceNotNull();
     return instance.isRequestOngoing();
   }
@@ -146,8 +225,11 @@ public final class Dexter {
    * Requests pending permissions if there were permissions lost. This method can be used to
    * recover the Dexter state during a configuration change, for example when the device is
    * rotated.
+   *
+   * @deprecated
    */
-  public static void continuePendingRequestsIfPossible(MultiplePermissionsListener listener) {
+  @Deprecated public static void continuePendingRequestsIfPossible(
+      MultiplePermissionsListener listener) {
     checkInstanceNotNull();
     instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
   }
@@ -156,8 +238,10 @@ public final class Dexter {
    * Requests pending permission if there was a permissions lost. This method can be used to
    * recover the Dexter state during a configuration change, for example when the device is
    * rotated.
+   *
+   * @deprecated
    */
-  public static void continuePendingRequestIfPossible(PermissionListener listener) {
+  @Deprecated public static void continuePendingRequestIfPossible(PermissionListener listener) {
     checkInstanceNotNull();
     instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
   }
