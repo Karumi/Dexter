@@ -122,8 +122,8 @@ public final class Dexter
    *
    * @param context Context used by Dexter. Use your {@link android.app.Application} to make sure
    * the instance is not cleaned up during your app lifetime.
-   * @deprecated use the initialize overloaded method using an {@link android.app.Activity} instance
-   * as param instead of this one. This method will be removed in the next major release.
+   * @deprecated There is no need to initialize Dexter anymore. Use `Dexter.withActivity()` to
+   * perform any permission check.
    */
   @Deprecated public static void initialize(Context context) {
     if (instance == null) {
@@ -138,7 +138,8 @@ public final class Dexter
    *
    * @param activity context used by Dexter. Remember to invoke {@link com.karumi.dexter.Dexter}
    * stop method to avoid memory leaks.
-   * @deprecated Use the non static constructor: new Dexter(Activity activity)
+   * @deprecated There is no need to initialize Dexter anymore. Use `Dexter.withActivity()` to
+   * perform any permission check.
    */
   @Deprecated public static void initialize(Activity activity) {
     if (instance == null) {
@@ -156,7 +157,12 @@ public final class Dexter
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
-   * @deprecated
+   * @deprecated Use the builder instead:
+   * Dexter.withActivity(activity)
+   * .withPermission(permission)
+   * .withListener(listener)
+   * .onSameThread()
+   * .check()
    */
   @Deprecated public static void checkPermissionOnSameThread(PermissionListener listener,
       String permission) {
@@ -172,7 +178,11 @@ public final class Dexter
    *
    * @param listener The class that will be reported when the state of the permission is ready
    * @param permission One of the values found in {@link android.Manifest.permission}
-   * @deprecated
+   * @deprecated Use the builder instead:
+   * Dexter.withActivity(activity)
+   * .withPermission(permission)
+   * .withListener(listener)
+   * .check()
    */
   @Deprecated public static void checkPermission(PermissionListener listener, String permission) {
     checkInstanceNotNull();
@@ -187,7 +197,13 @@ public final class Dexter
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
-   * @deprecated
+   * @deprecated Use the builder instead:
+   *
+   * Dexter.withActivity(activity)
+   * .withPermissions(permissionA, permissionB)
+   * .withListener(listener)
+   * .onSameThread()
+   * .check()
    */
   @Deprecated public static void checkPermissionsOnSameThread(MultiplePermissionsListener listener,
       String... permissions) {
@@ -203,7 +219,12 @@ public final class Dexter
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Array of values found in {@link android.Manifest.permission}
-   * @deprecated
+   * @deprecated Use the builder instead:
+   *
+   * Dexter.withActivity(activity)
+   * .withPermissions(permissionA, permissionB)
+   * .withListener(listener)
+   * .check()
    */
   @Deprecated public static void checkPermissions(MultiplePermissionsListener listener,
       String... permissions) {
@@ -217,7 +238,13 @@ public final class Dexter
    *
    * @param listener The class that will be reported when the state of the permissions are ready
    * @param permissions Collection of values found in {@link android.Manifest.permission}
-   * @deprecated
+   * @deprecated Use the builder instead:
+   *
+   * Dexter.withActivity(activity)
+   * .withPermissions(permissions)
+   * .withListener(listener)
+   * .onSameThread()
+   * .check()
    */
   @Deprecated public static void checkPermissions(MultiplePermissionsListener listener,
       Collection<String> permissions) {
@@ -230,7 +257,10 @@ public final class Dexter
    * If so, state of permissions must not be checked until it is resolved
    * or it will cause an exception.
    *
-   * @deprecated
+   * @deprecated There is no need to check if there is any pending request ongoing. If there is any,
+   * Dexter won't throw an exception anymore. Instead you can subscribe an
+   * {@link PermissionRequestErrorListener} instance to be notified whenever two
+   * requests are being processed at the same time.
    */
   @Deprecated public static boolean isRequestOngoing() {
     checkInstanceNotNull();
@@ -242,7 +272,10 @@ public final class Dexter
    * recover the Dexter state during a configuration change, for example when the device is
    * rotated.
    *
-   * @deprecated
+   * @deprecated Use the builder instead:
+   *
+   * Dexter.withActivity(activity)
+   * .continueRequestingPendingPermissions(listener)
    */
   @Deprecated public static void continuePendingRequestsIfPossible(
       MultiplePermissionsListener listener) {
@@ -255,14 +288,17 @@ public final class Dexter
    * recover the Dexter state during a configuration change, for example when the device is
    * rotated.
    *
-   * @deprecated
+   * @deprecated Use the builder instead:
+   *
+   * Dexter.withActivity(activity)
+   * .continueRequestingPendingPermissions(listener)
    */
   @Deprecated public static void continuePendingRequestIfPossible(PermissionListener listener) {
     checkInstanceNotNull();
     instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
-  @Deprecated private static void checkInstanceNotNull() {
+  private static void checkInstanceNotNull() {
     if (instance == null) {
       throw new NullPointerException("context == null \n Must call \"initialize\" on Dexter");
     }
