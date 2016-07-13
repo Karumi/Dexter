@@ -18,7 +18,7 @@ Screenshots
 Usage
 -----
 
-To start using the library you just need to initialize Dexter with an ``Activity``. Remember to stop Dexter during the ``onDestroy`` stage to avoid memory leaks.
+To start using the library you just need to initialize Dexter with an ``Activity``.
 
 ```java
 public MyApplication extends Application {
@@ -27,12 +27,6 @@ public MyApplication extends Application {
 		Dexter.initialize(context);
 	}
 }
-
-@Override protected void onDestroy() {
-  Dexter.stop();
-  super.onDestroy();
-}
-```
 
 Once the library is initialized you can start checking permissions at will. You have two options, you can either check for a single permission or check for multiple permissions at once.
 
