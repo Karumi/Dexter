@@ -17,9 +17,11 @@
 package com.karumi.dexter;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -208,12 +210,16 @@ final class DexterInstance {
   }
 
   private void startTransparentActivityIfNeeded() {
-    if (context.get() == null) {
+    Context context = this.context.get();
+    if (context == null) {
       return;
     }
 
-    Intent intent = intentProvider.get(context.get(), DexterActivity.class);
-    context.get().startActivity(intent);
+    Intent intent = intentProvider.get(context, DexterActivity.class);
+    if (context instanceof Application) {
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+    context.startActivity(intent);
   }
 
   private void handleDeniedPermissions(Collection<String> permissions) {
