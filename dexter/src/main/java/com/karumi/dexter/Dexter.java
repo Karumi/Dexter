@@ -30,8 +30,13 @@ import java.util.Collections;
 
 /**
  * Class to simplify the management of Android runtime permissions
- * Dexter needs to be initialized before checking for a permission using {@link
- * #initialize(Activity)}
+ * You can use this class directly using the provided fluent API like:
+ *
+ * Dexter.withActivity(activity)
+ *       .withPermission(permission)
+ *       .withListener(listener)
+ *       .onSameThread()
+ *       .check()
  */
 public final class Dexter
     implements DexterBuilder, DexterBuilder.Permission, DexterBuilder.SinglePermissionListener,
@@ -130,22 +135,6 @@ public final class Dexter
       AndroidPermissionService androidPermissionService = new AndroidPermissionService();
       IntentProvider intentProvider = new IntentProvider();
       instance = new DexterInstance(context, androidPermissionService, intentProvider);
-    }
-  }
-
-  /**
-   * Initializes the library.
-   *
-   * @param activity context used by Dexter. Remember to invoke {@link com.karumi.dexter.Dexter}
-   * stop method to avoid memory leaks.
-   * @deprecated There is no need to initialize Dexter anymore. Use `Dexter.withActivity()` to
-   * perform any permission check.
-   */
-  @Deprecated public static void initialize(Activity activity) {
-    if (instance == null) {
-      AndroidPermissionService androidPermissionService = new AndroidPermissionService();
-      IntentProvider intentProvider = new IntentProvider();
-      instance = new DexterInstance(activity, androidPermissionService, intentProvider);
     }
   }
 
