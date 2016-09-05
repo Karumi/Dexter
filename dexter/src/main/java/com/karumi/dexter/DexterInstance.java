@@ -21,14 +21,13 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
+import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
@@ -185,7 +184,7 @@ final class DexterInstance {
   void requestPermissionsToSystem(Collection<String> permissions) {
     if (!isShowingNativeDialog.get()) {
       androidPermissionService.requestPermissions(activity,
-              permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
+          permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
     }
     isShowingNativeDialog.set(true);
   }
@@ -297,13 +296,15 @@ final class DexterInstance {
 
   private void checkNoDexterRequestOngoing() {
     if (isRequestingPermission.getAndSet(true)) {
-      throw new IllegalStateException("Only one Dexter request at a time is allowed");
+      throw new DexterException("Only one Dexter request at a time is allowed",
+          DexterError.REQUEST_ONGOING);
     }
   }
 
   private void checkRequestSomePermission(Collection<String> permissions) {
     if (permissions.isEmpty()) {
-      throw new IllegalStateException("Dexter has to be called with at least one permission");
+      throw new DexterException("Dexter has to be called with at least one permission",
+          DexterError.NO_PERMISSIONS_REQUESTED);
     }
   }
 
