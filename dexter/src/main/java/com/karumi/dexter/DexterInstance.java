@@ -194,7 +194,7 @@ final class DexterInstance {
     PermissionStates permissionStates = new PermissionStates();
 
     for (String permission : pendingPermissions) {
-      int permissionState = androidPermissionService.checkSelfPermission(activity, permission);
+      int permissionState = checkSelfPermission(activity, permission);
       switch (permissionState) {
         case PackageManager.PERMISSION_DENIED:
           permissionStates.addDeniedPermission(permission);
@@ -207,6 +207,20 @@ final class DexterInstance {
     }
 
     return permissionStates;
+  }
+
+  /*
+   * Workaround for RuntimeException of Parcel#readException.
+   *
+   * For additional details:
+   * https://github.com/Karumi/Dexter/issues/86
+   */
+  private int checkSelfPermission(Activity activity, String permission) {
+    try {
+      return androidPermissionService.checkSelfPermission(activity, permission);
+    } catch (RuntimeException ignored) {
+      return PackageManager.PERMISSION_DENIED;
+    }
   }
 
   private void startTransparentActivityIfNeeded() {

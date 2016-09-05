@@ -136,6 +136,16 @@ import static org.mockito.Mockito.when;
     thenPermissionRationaleIsShown(2);
   }
 
+  @Test public void onPermissionFailedByRuntimeExceptionThenNotifiesListener() {
+    givenARuntimeExceptionIsThrownWhenPermissionIsChecked(ANY_PERMISSION);
+    givenShouldShowRationaleForPermission(ANY_PERMISSION);
+
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+    dexter.onPermissionRequestDenied(Collections.singletonList(ANY_PERMISSION));
+
+    thenPermissionIsDenied(ANY_PERMISSION);
+  }
+
   private void givenPermissionIsAlreadyDenied(String permission) {
     givenPermissionIsChecked(permission, PackageManager.PERMISSION_DENIED);
   }
@@ -163,6 +173,11 @@ import static org.mockito.Mockito.when;
       PermissionListener permissionListener) {
     return new RetryCheckPermissionOnDeniedPermissionListener(permissionListener,
         new CheckPermissionWithOnActivityReadyInBackground());
+  }
+
+  private void givenARuntimeExceptionIsThrownWhenPermissionIsChecked(String permission) {
+    when(androidPermissionService.checkSelfPermission(activity, permission)).thenThrow(
+        new RuntimeException());
   }
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
