@@ -185,7 +185,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:2.2.2'
+    compile 'com.karumi:dexter:2.3.1'
 }
 ```
 
@@ -195,7 +195,7 @@ or to your ``pom.xml`` if you are using Maven
 <dependency>
     <groupId>com.karumi</groupId>
     <artifactId>dexter</artifactId>
-    <version>2.2.2</version>
+    <version>2.3.1</version>
     <type>aar</type>
 </dependency>
 
