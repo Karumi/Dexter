@@ -20,7 +20,9 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -196,5 +198,10 @@ public class SampleActivity extends Activity {
     }
 
     return feedbackView;
+  }
+
+  public static void open(Context context) {
+    Intent intent = new Intent(context, SampleActivity.class);
+    context.startActivity(intent);
   }
 }

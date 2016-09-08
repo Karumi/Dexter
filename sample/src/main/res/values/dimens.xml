@@ -27,4 +27,5 @@
   <dimen name="feedback_height">@dimen/button_height</dimen>
   <dimen name="feedback_margin_left">10dp</dimen>
   <dimen name="all_permission_button_margin_right">10dp</dimen>
+  <dimen name="min_button_margin">60dp</dimen>
 </resources>
