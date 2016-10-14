@@ -27,9 +27,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
@@ -59,6 +61,7 @@ public class SampleActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
     ButterKnife.bind(this);
+    Dexter.initialize(this);
     createPermissionListeners();
     /*
      * If during the rotate screen process the activity has been restarted you can call this method
@@ -133,8 +136,7 @@ public class SampleActivity extends Activity {
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
     TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied
-        ? R.string.permission_permanently_denied_feedback
+    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
@@ -155,12 +157,11 @@ public class SampleActivity extends Activity {
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .withCallback(new Snackbar.Callback() {
-              @Override
-              public void onShown(Snackbar snackbar) {
+              @Override public void onShown(Snackbar snackbar) {
                 super.onShown(snackbar);
               }
-              @Override
-              public void onDismissed(Snackbar snackbar, int event) {
+
+              @Override public void onDismissed(Snackbar snackbar, int event) {
                 super.onDismissed(snackbar, event);
               }
             })
