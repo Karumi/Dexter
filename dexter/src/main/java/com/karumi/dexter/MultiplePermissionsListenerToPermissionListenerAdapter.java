@@ -21,6 +21,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**
@@ -30,10 +32,10 @@ import java.util.List;
 final class MultiplePermissionsListenerToPermissionListenerAdapter
     implements MultiplePermissionsListener {
 
-  private final PermissionListener listener;
+    private final SoftReference<PermissionListener> listenerSoftReference;
 
   public MultiplePermissionsListenerToPermissionListenerAdapter(PermissionListener listener) {
-    this.listener = listener;
+    this.listenerSoftReference = new SoftReference<PermissionListener>(listener);
   }
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -42,16 +44,23 @@ final class MultiplePermissionsListenerToPermissionListenerAdapter
 
     if (!deniedResponses.isEmpty()) {
       PermissionDeniedResponse response = deniedResponses.get(0);
-      listener.onPermissionDenied(response);
+        if (listenerSoftReference.get() != null) {
+            listenerSoftReference.get().onPermissionDenied(response);
+        }
     } else {
       PermissionGrantedResponse response = grantedResponses.get(0);
-      listener.onPermissionGranted(response);
+        if (listenerSoftReference.get() != null) {
+            listenerSoftReference.get().onPermissionGranted(response);
+        }
     }
   }
 
   @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> requests,
       PermissionToken token) {
     PermissionRequest firstRequest = requests.get(0);
-    listener.onPermissionRationaleShouldBeShown(firstRequest, token);
+
+      if (listenerSoftReference.get() != null) {
+          listenerSoftReference.get().onPermissionRationaleShouldBeShown(firstRequest, token);
+      }
   }
 }
