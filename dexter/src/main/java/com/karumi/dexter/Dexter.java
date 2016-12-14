@@ -18,6 +18,8 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Arrays;
@@ -40,7 +42,7 @@ public final class Dexter {
    */
   public static void initialize(Context context) {
     if (instance == null) {
-      AndroidPermissionService androidPermissionService = new AndroidPermissionService();
+      AndroidPermissionService androidPermissionService = new AndroidPermissionService(Build.VERSION.SDK_INT);
       IntentProvider intentProvider = new IntentProvider();
       instance = new DexterInstance(context, androidPermissionService, intentProvider);
     }

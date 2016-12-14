@@ -18,21 +18,46 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+
+import static com.karumi.dexter.AndroidVersionPermissionMap.isHandledPermission;
 
 /**
  * Wrapper class for all the static calls to the Android permission system
  */
 class AndroidPermissionService {
 
+    private final int sdkVersion;
+
+    AndroidPermissionService(int sdkVersion) {
+        this.sdkVersion = sdkVersion;
+    }
+
   /**
+   * Support library ContextCompat.checkSelfPermission handling unknown permissions
    * @see ContextCompat#checkSelfPermission
    */
   int checkSelfPermission(@NonNull Context context, @NonNull String permission) {
-    return ContextCompat.checkSelfPermission(context, permission);
+      if (isHandledPermission(sdkVersion, permission)) {
+          return supportCheckSelfPermission(context, permission);
+    } else {
+      return PackageManager.PERMISSION_GRANTED;
+    }
   }
+
+    /**
+     * Support library ContextCompat.checkSelfPermission
+     *
+     * @see ContextCompat#checkSelfPermission
+     */
+    @VisibleForTesting
+    int supportCheckSelfPermission(@NonNull Context context, @NonNull String permission) {
+        return ContextCompat.checkSelfPermission(context, permission);
+    }
 
   /**
    * @see ActivityCompat#requestPermissions
@@ -49,4 +74,5 @@ class AndroidPermissionService {
       @NonNull String permission) {
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
   }
+
 }
