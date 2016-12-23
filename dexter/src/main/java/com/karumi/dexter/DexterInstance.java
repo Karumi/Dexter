@@ -181,7 +181,7 @@ final class DexterInstance {
   /**
    * Starts the native request permissions process
    */
-  void requestPermissionsToSystem(Collection<String> permissions) {
+  private void requestPermissionsToSystem(Collection<String> permissions) {
     if (!isShowingNativeDialog.get()) {
       androidPermissionService.requestPermissions(activity,
           permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
