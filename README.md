@@ -13,6 +13,7 @@ Dexter frees your permission code from your activities and lets you write that l
 Screenshots
 -----------
 
+![Demo screenshot][1]
 
 Usage
 -----
@@ -208,7 +209,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:2.3.1'
+    compile 'com.karumi:dexter:2.4.0'
 }
 ```
 
@@ -218,7 +219,7 @@ or to your ``pom.xml`` if you are using Maven
 <dependency>
     <groupId>com.karumi</groupId>
     <artifactId>dexter</artifactId>
-    <version>2.3.1</version>
+    <version>2.4.0</version>
     <type>aar</type>
 </dependency>
 
