@@ -13,33 +13,35 @@ Dexter frees your permission code from your activities and lets you write that l
 Screenshots
 -----------
 
-![Demo screenshot][1]
 
 Usage
 -----
 
-To start using the library you just need to initialize Dexter with a ``Context``, preferably your ``Application`` as it won't be destroyed during your app lifetime:
+To start using the library you just need to call `Dexter` with a valid `Activity`:
 
 ```java
-public MyApplication extends Application {
+public MyActivity extends Activity {
 	@Override public void onCreate() {
 		super.onCreate();
-		Dexter.initialize(context);
+			Dexter.withActivity(activity)
+				.withPermission(permission)
+				.withListener(listener)
+				.check();
 	}
 }
 ```
-
-Once the library is initialized you can start checking permissions at will. You have two options, you can either check for a single permission or check for multiple permissions at once.
 
 ###Single permission 
 For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
-Dexter.checkPermission(new PermissionListener() {
-	@Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
-	@Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
-	@Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
-}, Manifest.permission.CAMERA);
+Dexter.withActivity(this)
+	.withPermission(Manifest.permission.CAMERA)
+	.withListener(new PermissionListener() {
+		@Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
+		@Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+		@Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
+	}).check();
 ```
 
 To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
@@ -56,7 +58,6 @@ PermissionListener dialogPermissionListener =
 		.withButtonText(android.R.string.ok)
 		.withIcon(R.mipmap.my_icon)
 		.build();
-Dexter.checkPermission(dialogPermissionListener, Manifest.permission.CAMERA);
 ```
 
 * ``SnackbarOnDeniedPermissionListener`` to show a snackbar message whenever the user rejects a permission request:
@@ -75,9 +76,7 @@ PermissionListener snackbarPermissionListener =
             public void onDismissed(Snackbar snackbar, int event) {
                 // Event handler for when the given Snackbar has been dismissed
             }
-        })
-		.build();
-Dexter.checkPermission(snackbarPermissionListener, Manifest.permission.CAMERA);
+        }).build();
 ```
 
 * ``CompositePermissionListener`` to compound multiple listeners into one:
@@ -85,17 +84,22 @@ Dexter.checkPermission(snackbarPermissionListener, Manifest.permission.CAMERA);
 ```java
 PermissionListener snackbarPermissionListener = /*...*/;
 PermissionListener dialogPermissionListener = /*...*/;
-Dexter.checkPermission(new CompositePermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/), Manifest.permission.CAMERA);
+PermissionListener compositePermissionListener = new CompositePermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/);
 ```
 
 ###Multiple permissions
-If you want to request multiple permissions you just need to do the same but registering an implementation of ``MultiplePermissionsListener``:
+If you want to request multiple permissions you just need to call `withPermissions` and register an implementation of ``MultiplePermissionsListener``:
 
 ```java
-Dexter.checkPermissions(new MultiplePermissionsListener() {
-    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
-    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
-}, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+Dexter.withActivity(this)
+	.withPermissions(
+		Manifest.permission.CAMERA, 
+		Manifest.permission.READ_CONTACTS, 
+		Manifest.permission.RECORD_AUDIO
+	).withListener(new MultiplePermissionsListener() {
+	    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+	    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+	}).check();
 ```
 
 The ``MultiplePermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
@@ -114,7 +118,6 @@ MultiplePermissionsListener dialogMultiplePermissionsListener =
 		.withButtonText(android.R.string.ok)
 		.withIcon(R.mipmap.my_icon)
 		.build();
-Dexter.checkPermissions(dialogMultiplePermissionsListener, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 ```
 
 * ``SnackbarOnAnyDeniedMultiplePermissionsListener`` to show a snackbar message whenever the user rejects any of the requested permissions:
@@ -135,7 +138,6 @@ MultiplePermissionsListener snackbarMultiplePermissionsListener =
             }
         })
 		.build();
-Dexter.checkPermissions(snackbarMultiplePermissionsListener, Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
 ```
 
 * ``CompositePermissionListener`` to compound multiple listeners into one:
@@ -143,38 +145,59 @@ Dexter.checkPermissions(snackbarMultiplePermissionsListener, Manifest.permission
 ```java
 MultiplePermissionsListener snackbarMultiplePermissionsListener = /*...*/;
 MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
-Dexter.checkPermissions(new CompositeMultiplePermissionsListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/), Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+MultiplePermissionsListener compositePermissionsListener = new CompositeMultiplePermissionsListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/);
 ```
 
 ###Handling listener threads
-If you want to receive permission listener callbacks on the same thread that fired the permission request, you just need to use the ``OnSameThread`` version of the single and multiple permissions methods.
+If you want to receive permission listener callbacks on the same thread that fired the permission request, you just need to call ``onSameThread`` before checking for permissions:
 
-* ``checkPermissionOnSameThread`` to request a single permission and receive callbacks in the thread that fired the request
-* ``checkPermissionsOnSameThread`` to request multiple permissions and receive callbacks in the thread that fired the request
+```java
+Dexter.withActivity(activity)
+	.withPermission(permission)
+	.withListener(listener)
+	.onSameThread()
+	.check();
+```
 
 ###Showing a rationale
 Android will notify you when you are requesting a permission that needs an additional explanation for its usage, either because it is considered dangerous, or because the user has already declined that permission once.
 
-Dexter will call the method ``onPermissionRationaleShouldBeShown`` implemented in your listener with a ``PermissionToken``. It's important to keep in mind that the request process will pause until the token is used, therefore, you won't be able to call Dexter again or request any other permissions if the token has not been used.
+Dexter will call the method ``onPermissionRationaleShouldBeShown`` implemented in your listener with a ``PermissionToken``. **It's important to keep in mind that the request process will pause until the token is used**, therefore, you won't be able to call Dexter again or request any other permissions if the token has not been used.
 
 The most simple implementation of your ``onPermissionRationaleShouldBeShown`` method could be:
 
 ```java
 @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-		token.continuePermissionRequest();
-  }
+	token.continuePermissionRequest();
+}
 ```
 
 ###Screen rotation
 If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:
 
 ```java
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.sample_activity);
-    Dexter.continuePendingRequestsIfPossible(permissionsListener);
-  }
+@Override protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.sample_activity);
+	Dexter.withActivity(this).continueRequestingPendingPermissions(permissionListener);
+}
 ```
+
+###Error handling
+If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter: 
+
+```java
+Dexter.withActivity(activity)
+	.withPermission(permission)
+	.withListener(listener)
+	.withErrorListener(new PermissionRequestErrorListener() {
+		@Override public void onError(DexterError error) {
+			Log.e("Dexter", "There was an error: " + error.toString());
+		}
+	}).check();
+```
+
+The library will notify you when something bad happens. In general, it is a good practice to, at least, log every error Dexter may throw but is up to you, the developer, to do that. 
 
 **IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 
@@ -204,13 +227,14 @@ Caveats
 -------
 * For permissions that did not exist before API Level 16, you should check the OS version and use *ContextCompat.checkSelfPermission*. See [You Cannot Hold Non-Existent Permissions](https://commonsware.com/blog/2015/11/09/you-cannot-hold-nonexistent-permissions.html).
 * Don't call Dexter from an Activity with the flag `noHistory` enabled. When a permission is requested, Dexter creates its own Activity internally and pushes it into the stack causing the original Activity to be dismissed.
+* Permissions `SYSTEM_ALERT_WINDOW` and `WRITE_SETTINGS` are considered special by Android. Dexter doesn't handle those and you'll need to request them in the old fashioned way.
 
 Do you want to contribute?
 --------------------------
 
 Feel free to add any useful feature to the library, we will be glad to improve it with your help.
 
-Keep in mind that your PRs **must** be validated by Travis-CI. Please, run a local build with ``./gradlew checkstyle build`` before submiting your code.
+Keep in mind that your PRs **must** be validated by Travis-CI. Please, run a local build with ``./gradlew checkstyle build test`` before submiting your code.
 
 
 Libraries used in this project

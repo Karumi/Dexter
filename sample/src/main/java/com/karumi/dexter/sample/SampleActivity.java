@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
@@ -54,6 +55,7 @@ public class SampleActivity extends Activity {
   private PermissionListener cameraPermissionListener;
   private PermissionListener contactsPermissionListener;
   private PermissionListener audioPermissionListener;
+  private PermissionRequestErrorListener errorListener;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -61,44 +63,49 @@ public class SampleActivity extends Activity {
     ButterKnife.bind(this);
     createPermissionListeners();
     /*
-     * If during the rotate screen process the activity has been restarted you can call this method
-     * to start with the check permission process without keep in an Android Bundle the state of
-     * the request permission process.
+     * If during the screen rotation process the activity has been restarted you can call this
+     * method to start with the check permission process without keeping the state of the request
+     * permission process in an Android Bundle.
      */
-    Dexter.continuePendingRequestsIfPossible(allPermissionsListener);
+    Dexter.withActivity(this).continueRequestingPendingPermissions(allPermissionsListener);
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermissions(allPermissionsListener, Manifest.permission.CAMERA,
-        Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO);
+    Dexter.withActivity(this)
+        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS,
+            Manifest.permission.RECORD_AUDIO)
+        .withListener(allPermissionsListener)
+        .withErrorListener(errorListener)
+        .check();
   }
 
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
     new Thread(new Runnable() {
       @Override public void run() {
-        Dexter.checkPermissionOnSameThread(cameraPermissionListener, Manifest.permission.CAMERA);
+        Dexter.withActivity(SampleActivity.this)
+            .withPermission(Manifest.permission.CAMERA)
+            .withListener(cameraPermissionListener)
+            .withErrorListener(errorListener)
+            .onSameThread()
+            .check();
       }
     }).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermission(contactsPermissionListener, Manifest.permission.READ_CONTACTS);
+    Dexter.withActivity(this)
+        .withPermission(Manifest.permission.READ_CONTACTS)
+        .withListener(contactsPermissionListener)
+        .withErrorListener(errorListener)
+        .check();
   }
 
   @OnClick(R.id.audio_permission_button) public void onAudioPermissionButtonClicked() {
-    if (Dexter.isRequestOngoing()) {
-      return;
-    }
-    Dexter.checkPermission(audioPermissionListener, Manifest.permission.RECORD_AUDIO);
+    Dexter.withActivity(this)
+        .withPermission(Manifest.permission.RECORD_AUDIO)
+        .withListener(audioPermissionListener)
+        .withErrorListener(errorListener)
+        .check();
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -133,8 +140,7 @@ public class SampleActivity extends Activity {
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
     TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied
-        ? R.string.permission_permanently_denied_feedback
+    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
         : R.string.permission_denied_feedback);
     feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
   }
@@ -155,12 +161,11 @@ public class SampleActivity extends Activity {
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .withCallback(new Snackbar.Callback() {
-              @Override
-              public void onShown(Snackbar snackbar) {
+              @Override public void onShown(Snackbar snackbar) {
                 super.onShown(snackbar);
               }
-              @Override
-              public void onDismissed(Snackbar snackbar, int event) {
+
+              @Override public void onDismissed(Snackbar snackbar, int event) {
                 super.onDismissed(snackbar, event);
               }
             })
@@ -176,6 +181,8 @@ public class SampleActivity extends Activity {
     audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
         dialogOnDeniedPermissionListener);
     cameraPermissionListener = new SampleBackgroundThreadPermissionListener(this);
+
+    errorListener = new SampleErrorListener();
   }
 
   private TextView getFeedbackViewForPermission(String name) {

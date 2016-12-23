@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Karumi.
+ * Copyright (C) 2016 Karumi.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.sample;
+package com.karumi.dexter.listener;
 
-import android.app.Application;
-import com.karumi.dexter.Dexter;
+public enum DexterError {
+  /**
+   * Error code used when the user tries to request permissions before all previous
+   * requests has finished.
+   */
+  REQUEST_ONGOING,
 
-/**
- * Sample application that initializes the Dexter library.
- */
-public class SampleApplication extends Application {
-
-  @Override public void onCreate() {
-    super.onCreate();
-    Dexter.initialize(this);
-  }
+  /**
+   * Error code used when Dexter is called with no permissions.
+   */
+  NO_PERMISSIONS_REQUESTED
 }
