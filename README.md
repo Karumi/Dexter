@@ -24,10 +24,10 @@ To start using the library you just need to call `Dexter` with a valid `Activity
 public MyActivity extends Activity {
 	@Override public void onCreate() {
 		super.onCreate();
-			Dexter.withActivity(activity)
-				.withPermission(permission)
-				.withListener(listener)
-				.check();
+		Dexter.withActivity(activity)
+			.withPermission(permission)
+			.withListener(listener)
+			.check();
 	}
 }
 ```
@@ -209,7 +209,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:2.4.0'
+    compile 'com.karumi:dexter:3.0.0'
 }
 ```
 
@@ -219,7 +219,7 @@ or to your ``pom.xml`` if you are using Maven
 <dependency>
     <groupId>com.karumi</groupId>
     <artifactId>dexter</artifactId>
-    <version>2.4.0</version>
+    <version>3.0.0</version>
     <type>aar</type>
 </dependency>
 
