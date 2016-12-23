@@ -50,7 +50,7 @@ public final class Dexter
   private boolean shouldExecuteOnSameThread = false;
 
   private Dexter(Activity activity) {
-    initialize(activity);
+    newInitialize(activity);
   }
 
   public static DexterBuilder.Permission withActivity(Activity activity) {
@@ -131,6 +131,15 @@ public final class Dexter
    * perform any permission check.
    */
   @Deprecated public static void initialize(Context context) {
+    if (instance == null) {
+      AndroidPermissionService androidPermissionService = new AndroidPermissionService();
+      IntentProvider intentProvider = new IntentProvider();
+      instance = new DexterInstance(context.getApplicationContext(), androidPermissionService,
+          intentProvider);
+    }
+  }
+
+  private static void newInitialize(Context context) {
     if (instance == null) {
       AndroidPermissionService androidPermissionService = new AndroidPermissionService();
       IntentProvider intentProvider = new IntentProvider();
