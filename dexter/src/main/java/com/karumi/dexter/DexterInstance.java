@@ -170,15 +170,6 @@ final class DexterInstance {
   }
 
   /**
-   * Is a request for permission currently ongoing?
-   * If so, state of permissions must not be checked until the request is resolved
-   * or it will cause an exception
-   */
-  boolean isRequestOngoing() {
-    return isRequestingPermission.get();
-  }
-
-  /**
    * Starts the native request permissions process
    */
   private void requestPermissionsToSystem(Collection<String> permissions) {
@@ -328,7 +319,7 @@ final class DexterInstance {
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
     this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-    if (isEveryPermissionGranted(permissions, context.get()) && isContextInstanceOfActivity()) {
+    if (isEveryPermissionGranted(permissions, context.get())) {
       thread.execute(new Runnable() {
         @Override public void run() {
           MultiplePermissionsReport report = new MultiplePermissionsReport();
@@ -343,14 +334,6 @@ final class DexterInstance {
       startTransparentActivityIfNeeded();
     }
     thread.loop();
-  }
-
-  /**
-   * To be able to provide backward compatibility with the Dexter's 2.X.X version we need to check
-   * at some point if the context instance is an instance of {@link android.app.Activity}.
-   */
-  private boolean isContextInstanceOfActivity() {
-    return context.get() != null && context.get() instanceof Activity;
   }
 
   private boolean isEveryPermissionGranted(Collection<String> permissions, Context context) {
