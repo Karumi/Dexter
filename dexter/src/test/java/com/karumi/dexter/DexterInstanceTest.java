@@ -34,7 +34,9 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -53,8 +55,8 @@ import static org.mockito.Mockito.when;
   @Mock MultiplePermissionsListener multiplePermissionsListener;
   @Mock PermissionListener permissionListener;
 
-  protected DexterInstance dexter;
-  protected AsyncExecutor asyncExecutor;
+  private DexterInstance dexter;
+  private AsyncExecutor asyncExecutor;
 
   @Before public void setUp() {
     IntentProvider intentProvider = new IntentMockProvider(intent);
@@ -64,13 +66,13 @@ import static org.mockito.Mockito.when;
     dexter = new DexterInstance(context, androidPermissionService, intentProvider);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void onNoPermissionCheckedThenThrowException() {
+  @Test(expected = DexterException.class) public void onNoPermissionCheckedThenThrowException() {
     dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(), THREAD);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = DexterException.class)
   public void onCheckPermissionMoreThanOnceThenThrowException() {
+    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
     dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
     dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
   }
@@ -78,7 +80,7 @@ import static org.mockito.Mockito.when;
   @Test public void onPermissionAlreadyGrantedThenNotifiesListener() {
     givenPermissionIsAlreadyGranted(ANY_PERMISSION);
 
-    whenCheckPermission(permissionListener, ANY_PERMISSION);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
 
     thenPermissionIsGranted(ANY_PERMISSION);
   }
@@ -155,18 +157,24 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenPermissionIsChecked(String permission, int permissionState) {
-    when(androidPermissionService.checkSelfPermission(activity, permission)).thenReturn(
-        permissionState);
+    when(androidPermissionService.checkSelfPermission(
+        any(Activity.class),
+        eq(permission))
+    ).thenReturn(permissionState);
   }
 
   private void givenShouldShowRationaleForPermission(String permission) {
-    when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
-        permission)).thenReturn(true);
+    when(androidPermissionService.shouldShowRequestPermissionRationale(
+        any(Activity.class),
+        eq(permission))
+    ).thenReturn(true);
   }
 
   private void givenShouldNotShowRationaleForPermission(String permission) {
-    when(androidPermissionService.shouldShowRequestPermissionRationale(activity,
-        permission)).thenReturn(false);
+    when(androidPermissionService.shouldShowRequestPermissionRationale(
+        any(Activity.class),
+        eq(permission))
+    ).thenReturn(false);
   }
 
   private PermissionListener givenARetryCheckPermissionOnDeniedPermissionListener(
@@ -249,7 +257,7 @@ import static org.mockito.Mockito.when;
   private static class IntentMockProvider extends IntentProvider {
     private final Intent intent;
 
-    public IntentMockProvider(Intent intent) {
+    IntentMockProvider(Intent intent) {
       this.intent = intent;
     }
 
