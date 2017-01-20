@@ -45,7 +45,7 @@ final class DexterInstance {
   private static final MultiplePermissionsListener EMPTY_LISTENER =
       new EmptyMultiplePermissionsListener();
 
-  private final WeakReference<Context> context;
+  private WeakReference<Context> context;
   private final AndroidPermissionService androidPermissionService;
   private final IntentProvider intentProvider;
   private final Collection<String> pendingPermissions;
@@ -58,9 +58,8 @@ final class DexterInstance {
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
 
-  DexterInstance(Context context, AndroidPermissionService androidPermissionService,
+  DexterInstance(AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
-    this.context = new WeakReference<>(context);
     this.androidPermissionService = androidPermissionService;
     this.intentProvider = intentProvider;
     this.pendingPermissions = new TreeSet<>();
@@ -68,6 +67,10 @@ final class DexterInstance {
     this.isRequestingPermission = new AtomicBoolean();
     this.rationaleAccepted = new AtomicBoolean();
     this.isShowingNativeDialog = new AtomicBoolean();
+  }
+
+  void setContext(Context context) {
+    this.context = new WeakReference<>(context);
   }
 
   /**

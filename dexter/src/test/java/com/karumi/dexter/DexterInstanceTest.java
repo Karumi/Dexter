@@ -20,19 +20,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
 import com.karumi.dexter.RetryCheckPermissionOnDeniedPermissionListener.CheckPermissionAction;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
-import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -63,7 +66,8 @@ import static org.mockito.Mockito.when;
     Context mockApplicationContext = mock(Context.class);
     when(context.getApplicationContext()).thenReturn(mockApplicationContext);
     asyncExecutor = new AsyncExecutor();
-    dexter = new DexterInstance(context, androidPermissionService, intentProvider);
+    dexter = new DexterInstance(androidPermissionService, intentProvider);
+    dexter.setContext(context);
   }
 
   @Test(expected = DexterException.class) public void onNoPermissionCheckedThenThrowException() {
