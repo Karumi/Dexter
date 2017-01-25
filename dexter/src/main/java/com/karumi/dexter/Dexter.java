@@ -126,9 +126,10 @@ public final class Dexter
     if (instance == null) {
       AndroidPermissionService androidPermissionService = new AndroidPermissionService();
       IntentProvider intentProvider = new IntentProvider();
-      instance = new DexterInstance(androidPermissionService, intentProvider);
+      instance = new DexterInstance(context, androidPermissionService, intentProvider);
+    } else {
+      instance.setContext(context);
     }
-    instance.setContext(context);
   }
 
   /**

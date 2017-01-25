@@ -58,7 +58,7 @@ final class DexterInstance {
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
 
-  DexterInstance(AndroidPermissionService androidPermissionService,
+  DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
     this.androidPermissionService = androidPermissionService;
     this.intentProvider = intentProvider;
@@ -67,6 +67,7 @@ final class DexterInstance {
     this.isRequestingPermission = new AtomicBoolean();
     this.rationaleAccepted = new AtomicBoolean();
     this.isShowingNativeDialog = new AtomicBoolean();
+    setContext(context);
   }
 
   void setContext(Context context) {

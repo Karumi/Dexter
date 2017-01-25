@@ -66,8 +66,7 @@ import static org.mockito.Mockito.when;
     Context mockApplicationContext = mock(Context.class);
     when(context.getApplicationContext()).thenReturn(mockApplicationContext);
     asyncExecutor = new AsyncExecutor();
-    dexter = new DexterInstance(androidPermissionService, intentProvider);
-    dexter.setContext(context);
+    dexter = new DexterInstance(context, androidPermissionService, intentProvider);
   }
 
   @Test(expected = DexterException.class) public void onNoPermissionCheckedThenThrowException() {
