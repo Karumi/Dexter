@@ -137,7 +137,13 @@ public final class Dexter
    * used.
    */
   static void onActivityReady(Activity activity) {
-    instance.onActivityReady(activity);
+    /* Check against null values because sometimes the DexterActivity can call these internal
+       methods when the DexterInstance has been cleaned up.
+       Refer to this commit message for a more detailed explanation of the issue.
+     */
+    if (instance != null) {
+      instance.onActivityReady(activity);
+    }
   }
 
   /**
@@ -150,7 +156,13 @@ public final class Dexter
    */
   static void onPermissionsRequested(Collection<String> grantedPermissions,
       Collection<String> deniedPermissions) {
-    instance.onPermissionRequestGranted(grantedPermissions);
-    instance.onPermissionRequestDenied(deniedPermissions);
+    /* Check against null values because sometimes the DexterActivity can call these internal
+       methods when the DexterInstance has been cleaned up.
+       Refer to this commit message for a more detailed explanation of the issue.
+     */
+    if (instance != null) {
+      instance.onPermissionRequestGranted(grantedPermissions);
+      instance.onPermissionRequestDenied(deniedPermissions);
+    }
   }
 }
