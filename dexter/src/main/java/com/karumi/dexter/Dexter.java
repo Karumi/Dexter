@@ -33,10 +33,10 @@ import java.util.Collections;
  * You can use this class directly using the provided fluent API like:
  *
  * Dexter.withActivity(activity)
- * .withPermission(permission)
- * .withListener(listener)
- * .onSameThread()
- * .check()
+ *       .withPermission(permission)
+ *       .withListener(listener)
+ *       .onSameThread()
+ *       .check()
  */
 public final class Dexter
     implements DexterBuilder, DexterBuilder.Permission, DexterBuilder.SinglePermissionListener,
