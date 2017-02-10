@@ -99,29 +99,6 @@ final class DexterInstance {
   }
 
   /**
-   * Check if there is a permission pending to be confirmed by the user and restarts the
-   * request for permission process.
-   */
-  void continuePendingRequestIfPossible(PermissionListener listener, Thread thread) {
-    MultiplePermissionsListenerToPermissionListenerAdapter adapter =
-        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    continuePendingRequestsIfPossible(adapter, thread);
-  }
-
-  /**
-   * Check if there are some permissions pending to be confirmed by the user and restarts the
-   * request for permission process.
-   */
-  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener, Thread thread) {
-    if (!pendingPermissions.isEmpty()) {
-      this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-      if (!rationaleAccepted.get()) {
-        onActivityReady(activity);
-      }
-    }
-  }
-
-  /**
    * Method called whenever the inner activity has been created or restarted and is ready to be
    * used.
    */
@@ -139,6 +116,13 @@ final class DexterInstance {
       handleDeniedPermissions(permissionStates.getDeniedPermissions());
       updatePermissionsAsGranted(permissionStates.getGrantedPermissions());
     }
+  }
+
+  /**
+   * Method called whenever the inner activity has been destroyed.
+   */
+  void onActivityDestroyed() {
+    isRequestingPermission.set(false);
   }
 
   /**

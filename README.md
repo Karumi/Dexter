@@ -173,17 +173,6 @@ The most simple implementation of your ``onPermissionRationaleShouldBeShown`` me
 }
 ```
 
-###Screen rotation
-If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:
-
-```java
-@Override protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.sample_activity);
-	Dexter.withActivity(this).continueRequestingPendingPermissions(permissionListener);
-}
-```
-
 ###Error handling
 If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter: 
 

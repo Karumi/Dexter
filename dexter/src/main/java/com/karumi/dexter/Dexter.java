@@ -33,10 +33,10 @@ import java.util.Collections;
  * You can use this class directly using the provided fluent API like:
  *
  * Dexter.withActivity(activity)
- *       .withPermission(permission)
- *       .withListener(listener)
- *       .onSameThread()
- *       .check()
+ * .withPermission(permission)
+ * .withListener(listener)
+ * .onSameThread()
+ * .check()
  */
 public final class Dexter
     implements DexterBuilder, DexterBuilder.Permission, DexterBuilder.SinglePermissionListener,
@@ -71,14 +71,6 @@ public final class Dexter
   public DexterBuilder.MultiPermissionListener withPermissions(Collection<String> permissions) {
     this.permissions = new ArrayList<>(permissions);
     return this;
-  }
-
-  @Override public void continueRequestingPendingPermissions(PermissionListener listener) {
-    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
-  }
-
-  @Override public void continueRequestingPendingPermissions(MultiplePermissionsListener listener) {
-    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
   @Override public DexterBuilder withListener(PermissionListener listener) {
@@ -144,6 +136,13 @@ public final class Dexter
     if (instance != null) {
       instance.onActivityReady(activity);
     }
+  }
+
+  /**
+   * Method called whenever the DexterActivity has been destroyed.
+   */
+  static void onActivityDestroyed() {
+    instance.onActivityDestroyed();
   }
 
   /**

@@ -32,6 +32,11 @@ public final class DexterActivity extends Activity {
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
   }
 
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    Dexter.onActivityDestroyed();
+  }
+
   @Override protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     Dexter.onActivityReady(this);
