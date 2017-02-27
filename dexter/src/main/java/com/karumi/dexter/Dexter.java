@@ -73,10 +73,18 @@ public final class Dexter
     return this;
   }
 
+  /**
+   * @deprecated This method is going to be removed in the next major version.
+   */
+  @Deprecated
   @Override public void continueRequestingPendingPermissions(PermissionListener listener) {
     instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
+  /**
+   * @deprecated This method is going to be removed in the next major version.
+   */
+  @Deprecated
   @Override public void continueRequestingPendingPermissions(MultiplePermissionsListener listener) {
     instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
   }
