@@ -62,12 +62,6 @@ public class SampleActivity extends Activity {
     setContentView(R.layout.sample_activity);
     ButterKnife.bind(this);
     createPermissionListeners();
-    /*
-     * If during the screen rotation process the activity has been restarted you can call this
-     * method to start with the check permission process without keeping the state of the request
-     * permission process in an Android Bundle.
-     */
-    Dexter.withActivity(this).continueRequestingPendingPermissions(allPermissionsListener);
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {

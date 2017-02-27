@@ -131,16 +131,6 @@ import static org.mockito.Mockito.when;
     thenPermissionIsPermanentlyDenied(ANY_PERMISSION);
   }
 
-  @Test public void onPermissionsPendingThenShouldNotShowPermissionRationaleTwice() {
-    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
-    givenShouldShowRationaleForPermission(ANY_PERMISSION);
-
-    whenCheckPermission(permissionListener, ANY_PERMISSION);
-    whenContinueWithTheCheckPermissionProcess(permissionListener);
-
-    thenPermissionRationaleIsShown(2);
-  }
-
   @Test public void onPermissionFailedByRuntimeExceptionThenNotifiesListener() {
     givenARuntimeExceptionIsThrownWhenPermissionIsChecked(ANY_PERMISSION);
     givenShouldShowRationaleForPermission(ANY_PERMISSION);
@@ -194,10 +184,6 @@ import static org.mockito.Mockito.when;
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
     dexter.checkPermission(permissionListener, permission, THREAD);
     dexter.onActivityReady(activity);
-  }
-
-  private void whenContinueWithTheCheckPermissionProcess(PermissionListener permissionListener) {
-    dexter.continuePendingRequestIfPossible(permissionListener, THREAD);
   }
 
   private void thenPermissionIsGranted(String permission) {

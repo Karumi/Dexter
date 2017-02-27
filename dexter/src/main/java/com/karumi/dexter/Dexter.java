@@ -73,22 +73,6 @@ public final class Dexter
     return this;
   }
 
-  /**
-   * @deprecated This method is going to be removed in the next major version.
-   */
-  @Deprecated
-  @Override public void continueRequestingPendingPermissions(PermissionListener listener) {
-    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
-  }
-
-  /**
-   * @deprecated This method is going to be removed in the next major version.
-   */
-  @Deprecated
-  @Override public void continueRequestingPendingPermissions(MultiplePermissionsListener listener) {
-    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
-  }
-
   @Override public DexterBuilder withListener(PermissionListener listener) {
     this.listener = new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
     return this;
@@ -152,6 +136,13 @@ public final class Dexter
     if (instance != null) {
       instance.onActivityReady(activity);
     }
+  }
+
+  /**
+   * Method called whenever the DexterActivity has been destroyed.
+   */
+  static void onActivityDestroyed() {
+    instance.onActivityDestroyed();
   }
 
   /**

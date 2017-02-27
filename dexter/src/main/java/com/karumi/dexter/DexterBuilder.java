@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.karumi.dexter;
 
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
@@ -36,10 +35,6 @@ public interface DexterBuilder {
     DexterBuilder.MultiPermissionListener withPermissions(String... permissions);
 
     DexterBuilder.MultiPermissionListener withPermissions(Collection<String> permissions);
-
-    void continueRequestingPendingPermissions(PermissionListener listener);
-
-    void continueRequestingPendingPermissions(MultiplePermissionsListener listener);
   }
 
   interface SinglePermissionListener {
