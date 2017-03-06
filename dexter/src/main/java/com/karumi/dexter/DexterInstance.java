@@ -25,7 +25,7 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.lang.ref.WeakReference;
@@ -43,7 +43,7 @@ final class DexterInstance {
 
   private static final int PERMISSIONS_REQUEST_CODE = 42;
   private static final MultiplePermissionsListener EMPTY_LISTENER =
-      new EmptyMultiplePermissionsListener();
+      new BaseMultiplePermissionsListener();
 
   private WeakReference<Context> context;
   private final AndroidPermissionService androidPermissionService;
@@ -99,29 +99,6 @@ final class DexterInstance {
   }
 
   /**
-   * Check if there is a permission pending to be confirmed by the user and restarts the
-   * request for permission process.
-   */
-  void continuePendingRequestIfPossible(PermissionListener listener, Thread thread) {
-    MultiplePermissionsListenerToPermissionListenerAdapter adapter =
-        new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    continuePendingRequestsIfPossible(adapter, thread);
-  }
-
-  /**
-   * Check if there are some permissions pending to be confirmed by the user and restarts the
-   * request for permission process.
-   */
-  void continuePendingRequestsIfPossible(MultiplePermissionsListener listener, Thread thread) {
-    if (!pendingPermissions.isEmpty()) {
-      this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-      if (!rationaleAccepted.get()) {
-        onActivityReady(activity);
-      }
-    }
-  }
-
-  /**
    * Method called whenever the inner activity has been created or restarted and is ready to be
    * used.
    */
@@ -139,6 +116,13 @@ final class DexterInstance {
       handleDeniedPermissions(permissionStates.getDeniedPermissions());
       updatePermissionsAsGranted(permissionStates.getGrantedPermissions());
     }
+  }
+
+  /**
+   * Method called whenever the inner activity has been destroyed.
+   */
+  void onActivityDestroyed() {
+    isRequestingPermission.set(false);
   }
 
   /**

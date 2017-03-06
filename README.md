@@ -32,7 +32,7 @@ public MyActivity extends Activity {
 }
 ```
 
-###Single permission 
+###Single permission
 For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
@@ -47,7 +47,7 @@ Dexter.withActivity(this)
 
 To make your life easier we offer some ``PermissionListener`` implementations to perform recurrent actions:
 
-* ``EmptyPermissionListener`` to make it easier to implement only the methods you want.
+* ``BasePermissionListener`` to make it easier to implement only the methods you want. Keep in mind that you should not call `super` methods when overriding them.
 * ``DialogOnDeniedPermissionListener`` to show a configurable dialog whenever the user rejects a permission request:
 
 ```java
@@ -94,8 +94,8 @@ If you want to request multiple permissions you just need to call `withPermissio
 ```java
 Dexter.withActivity(this)
 	.withPermissions(
-		Manifest.permission.CAMERA, 
-		Manifest.permission.READ_CONTACTS, 
+		Manifest.permission.CAMERA,
+		Manifest.permission.READ_CONTACTS,
 		Manifest.permission.RECORD_AUDIO
 	).withListener(new MultiplePermissionsListener() {
 	    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
@@ -107,7 +107,7 @@ The ``MultiplePermissionsReport`` contains all the details of the permission req
 
 As with the single permission listener, there are also some useful implementations for recurring patterns:
 
-* ``EmptyMultiplePermissionsListener`` to make it easier to implement only the methods you want.
+* ``BaseMultiplePermissionsListener`` to make it easier to implement only the methods you want. Keep in mind that you should not call `super` methods when overriding them.
 * ``DialogOnAnyDeniedMultiplePermissionsListener`` to show a configurable dialog whenever the user rejects at least one permission:
 
 ```java
@@ -173,19 +173,8 @@ The most simple implementation of your ``onPermissionRationaleShouldBeShown`` me
 }
 ```
 
-###Screen rotation
-If your application has to support configuration changes based on screen rotation remember to add a call to ``Dexter`` in your Activity ``onCreate`` method as follows:
-
-```java
-@Override protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.sample_activity);
-	Dexter.withActivity(this).continueRequestingPendingPermissions(permissionListener);
-}
-```
-
 ###Error handling
-If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter: 
+If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter:
 
 ```java
 Dexter.withActivity(activity)
@@ -198,7 +187,7 @@ Dexter.withActivity(activity)
 	}).check();
 ```
 
-The library will notify you when something bad happens. In general, it is a good practice to, at least, log every error Dexter may throw but is up to you, the developer, to do that. 
+The library will notify you when something bad happens. In general, it is a good practice to, at least, log every error Dexter may throw but is up to you, the developer, to do that.
 
 **IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
 

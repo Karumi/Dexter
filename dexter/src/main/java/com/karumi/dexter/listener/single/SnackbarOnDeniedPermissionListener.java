@@ -30,7 +30,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
  * denied
  */
-public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener {
+public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
 
   private final ViewGroup rootView;
   private final String text;
@@ -144,7 +144,8 @@ public class SnackbarOnDeniedPermissionListener extends EmptyPermissionListener 
      * Builds a new instance of {@link SnackbarOnDeniedPermissionListener}
      */
     public SnackbarOnDeniedPermissionListener build() {
-      return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener, snackbarCallback);
+      return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener,
+          snackbarCallback);
     }
   }
 }

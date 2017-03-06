@@ -30,7 +30,8 @@ import com.karumi.dexter.MultiplePermissionsReport;
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
  * denied
  */
-public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultiplePermissionsListener {
+public class SnackbarOnAnyDeniedMultiplePermissionsListener
+    extends BaseMultiplePermissionsListener {
 
   private final ViewGroup rootView;
   private final String text;
@@ -45,7 +46,8 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnAnyDeniedMultiplePermissionsListener(ViewGroup rootView, String text,
-      String buttonText, View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback) {
+      String buttonText, View.OnClickListener onButtonClickListener,
+      Snackbar.Callback snackbarCallback) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
@@ -150,8 +152,8 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
      * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
      */
     public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
-      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText, onClickListener,
-              snackbarCallback);
+      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText,
+          onClickListener, snackbarCallback);
     }
   }
 }

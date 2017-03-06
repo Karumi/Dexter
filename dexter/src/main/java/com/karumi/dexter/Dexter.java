@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import com.karumi.dexter.listener.EmptyPermissionRequestErrorListener;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public final class Dexter
   private static DexterInstance instance;
 
   private Collection<String> permissions;
-  private MultiplePermissionsListener listener = new EmptyMultiplePermissionsListener();
+  private MultiplePermissionsListener listener = new BaseMultiplePermissionsListener();
   private PermissionRequestErrorListener errorListener = new EmptyPermissionRequestErrorListener();
   private boolean shouldExecuteOnSameThread = false;
 
@@ -71,22 +71,6 @@ public final class Dexter
   public DexterBuilder.MultiPermissionListener withPermissions(Collection<String> permissions) {
     this.permissions = new ArrayList<>(permissions);
     return this;
-  }
-
-  /**
-   * @deprecated This method is going to be removed in the next major version.
-   */
-  @Deprecated
-  @Override public void continueRequestingPendingPermissions(PermissionListener listener) {
-    instance.continuePendingRequestIfPossible(listener, ThreadFactory.makeMainThread());
-  }
-
-  /**
-   * @deprecated This method is going to be removed in the next major version.
-   */
-  @Deprecated
-  @Override public void continueRequestingPendingPermissions(MultiplePermissionsListener listener) {
-    instance.continuePendingRequestsIfPossible(listener, ThreadFactory.makeMainThread());
   }
 
   @Override public DexterBuilder withListener(PermissionListener listener) {
@@ -152,6 +136,13 @@ public final class Dexter
     if (instance != null) {
       instance.onActivityReady(activity);
     }
+  }
+
+  /**
+   * Method called whenever the DexterActivity has been destroyed.
+   */
+  static void onActivityDestroyed() {
+    instance.onActivityDestroyed();
   }
 
   /**
