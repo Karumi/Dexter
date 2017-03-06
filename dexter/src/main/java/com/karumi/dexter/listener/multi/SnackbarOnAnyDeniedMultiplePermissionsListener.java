@@ -25,12 +25,16 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import java.util.List;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
  * denied
  */
-public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultiplePermissionsListener {
+public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
+    BaseMultiplePermissionsListener {
 
   private final ViewGroup rootView;
   private final String text;
@@ -60,6 +64,9 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends EmptyMultipl
       showSnackbar();
     }
   }
+
+  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+      PermissionToken token) {}
 
   private void showSnackbar() {
     Snackbar snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG);

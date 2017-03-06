@@ -18,14 +18,14 @@ package com.karumi.dexter;
 
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.EmptyPermissionListener;
+import com.karumi.dexter.listener.single.BasePermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 /**
  * PermissionListener implementation that will perform yet another check when denied for the first
  * time. It will register the provided listener when retrying the check.
  */
-public class RetryCheckPermissionOnDeniedPermissionListener extends EmptyPermissionListener {
+public class RetryCheckPermissionOnDeniedPermissionListener extends BasePermissionListener {
 
   private final PermissionListener listener;
   private final CheckPermissionAction checkPermission;

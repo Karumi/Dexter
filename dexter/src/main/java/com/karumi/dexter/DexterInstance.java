@@ -25,7 +25,7 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.EmptyMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import java.lang.ref.WeakReference;
@@ -43,7 +43,7 @@ final class DexterInstance {
 
   private static final int PERMISSIONS_REQUEST_CODE = 42;
   private static final MultiplePermissionsListener EMPTY_LISTENER =
-      new EmptyMultiplePermissionsListener();
+      new BaseMultiplePermissionsListener();
 
   private WeakReference<Context> context;
   private final AndroidPermissionService androidPermissionService;

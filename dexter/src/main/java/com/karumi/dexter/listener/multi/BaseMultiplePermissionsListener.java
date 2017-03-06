@@ -22,7 +22,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import java.util.List;
 
 /**
- * Base implementation of {@link MultiplePermissionsListener} to allow extensions to implement
+ * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement
  * only the required methods
  */
 public class BaseMultiplePermissionsListener implements MultiplePermissionsListener {

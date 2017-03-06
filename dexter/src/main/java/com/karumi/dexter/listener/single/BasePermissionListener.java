@@ -22,7 +22,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 
 /**
- * Base implementation of {@link PermissionListener} to allow extensions to implement only the
+ * Empty implementation of {@link PermissionListener} to allow extensions to implement only the
  * required methods
  */
 public class BasePermissionListener implements PermissionListener {
