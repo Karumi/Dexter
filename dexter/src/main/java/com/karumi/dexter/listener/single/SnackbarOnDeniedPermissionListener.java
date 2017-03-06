@@ -24,9 +24,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
-import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
@@ -66,11 +64,6 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
       snackbar.setCallback(snackbarCallback);
     }
     snackbar.show();
-  }
-
-  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
-      PermissionToken token) {
-
   }
 
   /**
@@ -151,7 +144,8 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      * Builds a new instance of {@link SnackbarOnDeniedPermissionListener}
      */
     public SnackbarOnDeniedPermissionListener build() {
-      return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener, snackbarCallback);
+      return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener,
+          snackbarCallback);
     }
   }
 }

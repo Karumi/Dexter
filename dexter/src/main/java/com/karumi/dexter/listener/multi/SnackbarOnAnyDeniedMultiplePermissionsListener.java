@@ -25,16 +25,13 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import java.util.List;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
  * denied
  */
-public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
-    BaseMultiplePermissionsListener {
+public class SnackbarOnAnyDeniedMultiplePermissionsListener
+    extends BaseMultiplePermissionsListener {
 
   private final ViewGroup rootView;
   private final String text;
@@ -49,7 +46,8 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnAnyDeniedMultiplePermissionsListener(ViewGroup rootView, String text,
-      String buttonText, View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback) {
+      String buttonText, View.OnClickListener onButtonClickListener,
+      Snackbar.Callback snackbarCallback) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
@@ -63,11 +61,6 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
     if (!report.areAllPermissionsGranted()) {
       showSnackbar();
     }
-  }
-
-  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-      PermissionToken token) {
-
   }
 
   private void showSnackbar() {
@@ -159,8 +152,8 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
      * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
      */
     public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
-      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText, onClickListener,
-              snackbarCallback);
+      return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText,
+          onClickListener, snackbarCallback);
     }
   }
 }
