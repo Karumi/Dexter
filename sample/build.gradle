@@ -20,7 +20,7 @@ android {
 
 dependencies {
   compile fileTree(include: ['*.jar'], dir: 'libs')
-  compile 'com.android.support:appcompat-v7:25.1.0'
+  compile 'com.android.support:appcompat-v7:25.2.0'
   compile 'com.jakewharton:butterknife:7.0.1'
   compile project(':dexter')
 }
