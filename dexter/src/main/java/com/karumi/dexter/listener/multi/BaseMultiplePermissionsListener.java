@@ -24,11 +24,8 @@ import java.util.List;
 /**
  * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement
  * only the required methods
- * @deprecated Use {@link BaseMultiplePermissionsListener} instead that has a default implementation
- * for the method onPermissionRationaleShouldBeShown.
  */
-@Deprecated
-public class EmptyMultiplePermissionsListener implements MultiplePermissionsListener {
+public class BaseMultiplePermissionsListener implements MultiplePermissionsListener {
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
 
@@ -36,6 +33,6 @@ public class EmptyMultiplePermissionsListener implements MultiplePermissionsList
 
   @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token) {
-
+    token.continuePermissionRequest();
   }
 }
