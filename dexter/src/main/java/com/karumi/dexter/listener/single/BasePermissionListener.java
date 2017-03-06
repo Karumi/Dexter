@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.multi;
+package com.karumi.dexter.listener.single;
 
-import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import java.util.List;
 
 /**
- * Empty implementation of {@link MultiplePermissionsListener} to allow extensions to implement
- * only the required methods
- * @deprecated Use {@link BaseMultiplePermissionsListener} instead that has a default implementation
- * for the method onPermissionRationaleShouldBeShown.
+ * Base implementation of {@link PermissionListener} to allow extensions to implement only the
+ * required methods
  */
-@Deprecated
-public class EmptyMultiplePermissionsListener implements MultiplePermissionsListener {
+public class BasePermissionListener implements PermissionListener {
 
-  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
+  @Override public void onPermissionGranted(PermissionGrantedResponse response) {
 
   }
 
-  @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-      PermissionToken token) {
+  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
 
+  }
+
+  @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
+      PermissionToken token) {
+    token.continuePermissionRequest();
   }
 }
