@@ -69,7 +69,9 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
   }
 
   @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
-      PermissionToken token) {}
+      PermissionToken token) {
+
+  }
 
   /**
    * Builder class to configure the displayed snackbar

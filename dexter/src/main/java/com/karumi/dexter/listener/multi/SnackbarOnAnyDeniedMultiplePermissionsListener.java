@@ -66,7 +66,9 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener extends
   }
 
   @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-      PermissionToken token) {}
+      PermissionToken token) {
+
+  }
 
   private void showSnackbar() {
     Snackbar snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG);
