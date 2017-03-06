@@ -3,7 +3,7 @@ apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn
 
 android {
   compileSdkVersion 25
-  buildToolsVersion "23.0.3"
+  buildToolsVersion '25.0.0'
 
   defaultConfig {
     minSdkVersion 10
