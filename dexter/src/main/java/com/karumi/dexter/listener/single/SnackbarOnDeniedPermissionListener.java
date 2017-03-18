@@ -37,6 +37,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
   private final String buttonText;
   private final View.OnClickListener onButtonClickListener;
   private final Snackbar.Callback snackbarCallback;
+  private int duration = 5_000;
 
   /**
    * @param rootView Parent view to show the snackbar
@@ -45,12 +46,13 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnDeniedPermissionListener(ViewGroup rootView, String text, String buttonText,
-      View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback) {
+      View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback, int duration) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
     this.snackbarCallback = snackbarCallback;
+    this.duration = duration;
   }
 
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
@@ -63,6 +65,8 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
     if (snackbarCallback != null) {
       snackbar.setCallback(snackbarCallback);
     }
+    
+    snackbar.setDuration(duration);
     snackbar.show();
   }
 
@@ -76,16 +80,26 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
     private String buttonText;
     private View.OnClickListener onClickListener;
     private Snackbar.Callback snackbarCallback;
+    private int duration = 5_000;
 
     private Builder(ViewGroup rootView, String text) {
       this.rootView = rootView;
       this.text = text;
     }
-
+    private Builder(ViewGroup rootView, String text, int duration) {
+      this.rootView = rootView;
+      this.text = text;
+      this.duration = duration;
+    }
+    
     public static Builder with(ViewGroup rootView, String text) {
       return new Builder(rootView, text);
     }
-
+    public static Builder
+    with(ViewGroup rootView, String text, int duration) {
+      return new Builder(rootView, text, duration);
+    }
+    
     public static Builder with(ViewGroup rootView, @StringRes int textResourceId) {
       return Builder.with(rootView, rootView.getContext().getString(textResourceId));
     }
@@ -145,7 +159,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      */
     public SnackbarOnDeniedPermissionListener build() {
       return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener,
-          snackbarCallback);
+          snackbarCallback, duration);
     }
   }
 }
