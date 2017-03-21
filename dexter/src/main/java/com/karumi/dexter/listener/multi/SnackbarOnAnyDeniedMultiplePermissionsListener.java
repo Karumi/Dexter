@@ -95,7 +95,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     }
 
     public static Builder with(ViewGroup rootView, @StringRes int textResourceId) {
-      return Builder.with(rootView, rootView.getContext().getString(textResourceId));
+      return Builder.with(rootView, rootView.getResources().getString(textResourceId));
     }
 
     /**

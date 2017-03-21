@@ -31,7 +31,7 @@
       >
 
     <activity
-        android:name=".SampleActivity"
+        android:name=".SampleActivity2"
         >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
