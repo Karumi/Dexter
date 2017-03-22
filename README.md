@@ -189,7 +189,7 @@ Dexter.withActivity(activity)
 
 The library will notify you when something bad happens. In general, it is a good practice to, at least, log every error Dexter may throw but is up to you, the developer, to do that.
 
-**IMPORTANT**: Remember to follow the [Google design guidelines] [2] to make your application as user-friendly as possible.
+**IMPORTANT**: Remember to follow the [Google design guidelines][2] to make your application as user-friendly as possible.
 
 Add it to your project
 ----------------------
@@ -230,9 +230,9 @@ Keep in mind that your PRs **must** be validated by Travis-CI. Please, run a loc
 Libraries used in this project
 ------------------------------
 
-* [Butterknife] [3]
-* [JUnit] [4]
-* [Mockito] [5]
+* [Butterknife][3]
+* [JUnit][4]
+* [Mockito][5]
 
 License
 -------
