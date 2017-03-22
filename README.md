@@ -88,7 +88,7 @@ PermissionListener dialogPermissionListener = /*...*/;
 PermissionListener compositePermissionListener = new CompositePermissionListener(snackbarPermissionListener, dialogPermissionListener, /*...*/);
 ```
 
-###Multiple permissions
+### Multiple permissions
 If you want to request multiple permissions you just need to call `withPermissions` and register an implementation of ``MultiplePermissionsListener``:
 
 ```java
@@ -149,7 +149,7 @@ MultiplePermissionsListener dialogMultiplePermissionsListener = /*...*/;
 MultiplePermissionsListener compositePermissionsListener = new CompositeMultiplePermissionsListener(snackbarMultiplePermissionsListener, dialogMultiplePermissionsListener, /*...*/);
 ```
 
-###Handling listener threads
+### Handling listener threads
 If you want to receive permission listener callbacks on the same thread that fired the permission request, you just need to call ``onSameThread`` before checking for permissions:
 
 ```java
@@ -160,7 +160,7 @@ Dexter.withActivity(activity)
 	.check();
 ```
 
-###Showing a rationale
+### Showing a rationale
 Android will notify you when you are requesting a permission that needs an additional explanation for its usage, either because it is considered dangerous, or because the user has already declined that permission once.
 
 Dexter will call the method ``onPermissionRationaleShouldBeShown`` implemented in your listener with a ``PermissionToken``. **It's important to keep in mind that the request process will pause until the token is used**, therefore, you won't be able to call Dexter again or request any other permissions if the token has not been used.
@@ -173,7 +173,7 @@ The most simple implementation of your ``onPermissionRationaleShouldBeShown`` me
 }
 ```
 
-###Error handling
+### Error handling
 If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter:
 
 ```java
