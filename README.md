@@ -32,7 +32,7 @@ public MyActivity extends Activity {
 }
 ```
 
-###Single permission
+### Single permission
 For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
