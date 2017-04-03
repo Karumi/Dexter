@@ -86,12 +86,6 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
       this.text = text;
     }
 
-    private Builder(ViewGroup rootView, String text, int duration) {
-      this.rootView = rootView;
-      this.text = text;
-      this.duration = duration;
-    }
-
     public static Builder with(ViewGroup rootView, String text) {
       return new Builder(rootView, text);
     }
