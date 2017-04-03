@@ -198,21 +198,10 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    compile 'com.karumi:dexter:4.0.0'
+    compile 'com.karumi:dexter:4.1.0'
 }
 ```
 
-or to your ``pom.xml`` if you are using Maven
-
-```xml
-<dependency>
-    <groupId>com.karumi</groupId>
-    <artifactId>dexter</artifactId>
-    <version>4.0.0</version>
-    <type>aar</type>
-</dependency>
-
-```
 Caveats
 -------
 * For permissions that did not exist before API Level 16, you should check the OS version and use *ContextCompat.checkSelfPermission*. See [You Cannot Hold Non-Existent Permissions](https://commonsware.com/blog/2015/11/09/you-cannot-hold-nonexistent-permissions.html).
