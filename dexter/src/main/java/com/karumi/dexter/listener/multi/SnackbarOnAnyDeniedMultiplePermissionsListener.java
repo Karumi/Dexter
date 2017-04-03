@@ -38,6 +38,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
   private final String buttonText;
   private final View.OnClickListener onButtonClickListener;
   private final Snackbar.Callback snackbarCallback;
+  private final int duration;
 
   /**
    * @param rootView Parent view to show the snackbar
@@ -47,12 +48,13 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
    */
   private SnackbarOnAnyDeniedMultiplePermissionsListener(ViewGroup rootView, String text,
       String buttonText, View.OnClickListener onButtonClickListener,
-      Snackbar.Callback snackbarCallback) {
+      Snackbar.Callback snackbarCallback, int duration) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
     this.snackbarCallback = snackbarCallback;
+    this.duration = duration;
   }
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -64,7 +66,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
   }
 
   private void showSnackbar() {
-    Snackbar snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG);
+    Snackbar snackbar = Snackbar.make(rootView, text, duration);
     if (buttonText != null && onButtonClickListener != null) {
       snackbar.setAction(buttonText, onButtonClickListener);
     }
@@ -84,6 +86,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     private String buttonText;
     private View.OnClickListener onClickListener;
     private Snackbar.Callback snackbarCallback;
+    private int duration = Snackbar.LENGTH_LONG;
 
     private Builder(ViewGroup rootView, String text) {
       this.rootView = rootView;
@@ -148,12 +151,17 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
       return this;
     }
 
+    public Builder withDuration(int duration) {
+      this.duration = duration;
+      return this;
+    }
+
     /**
      * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
      */
     public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
       return new SnackbarOnAnyDeniedMultiplePermissionsListener(rootView, text, buttonText,
-          onClickListener, snackbarCallback);
+          onClickListener, snackbarCallback, duration);
     }
   }
 }

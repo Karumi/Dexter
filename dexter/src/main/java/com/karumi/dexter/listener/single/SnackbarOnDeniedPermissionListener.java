@@ -37,6 +37,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
   private final String buttonText;
   private final View.OnClickListener onButtonClickListener;
   private final Snackbar.Callback snackbarCallback;
+  private final int duration;
 
   /**
    * @param rootView Parent view to show the snackbar
@@ -45,18 +46,20 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
   private SnackbarOnDeniedPermissionListener(ViewGroup rootView, String text, String buttonText,
-      View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback) {
+      View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback,
+      int duration) {
     this.rootView = rootView;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
     this.snackbarCallback = snackbarCallback;
+    this.duration = duration;
   }
 
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
     super.onPermissionDenied(response);
 
-    Snackbar snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG);
+    Snackbar snackbar = Snackbar.make(rootView, text, duration);
     if (buttonText != null && onButtonClickListener != null) {
       snackbar.setAction(buttonText, onButtonClickListener);
     }
@@ -76,6 +79,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
     private String buttonText;
     private View.OnClickListener onClickListener;
     private Snackbar.Callback snackbarCallback;
+    private int duration = Snackbar.LENGTH_LONG;
 
     private Builder(ViewGroup rootView, String text) {
       this.rootView = rootView;
@@ -133,10 +137,18 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
     }
 
     /**
-     * Adds a callback to handle the snackbar {@code onDismissed} and {@code onShown} events.
+     * Adds a callback to handle the snackbar {@code onDismissed} and {@code onShown} events
      */
     public Builder withCallback(Snackbar.Callback callback) {
       this.snackbarCallback = callback;
+      return this;
+    }
+
+    /**
+     * Adds the duration of the snackbar on the screen
+     */
+    public Builder withDuration(int duration) {
+      this.duration = duration;
       return this;
     }
 
@@ -145,7 +157,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      */
     public SnackbarOnDeniedPermissionListener build() {
       return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener,
-          snackbarCallback);
+          snackbarCallback, duration);
     }
   }
 }
