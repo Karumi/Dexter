@@ -18,6 +18,8 @@ package com.karumi.dexter;
 
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**
@@ -25,30 +27,32 @@ import java.util.List;
  */
 final class MultiplePermissionListenerThreadDecorator implements MultiplePermissionsListener {
 
-  private final MultiplePermissionsListener listener;
+  private final SoftReference<MultiplePermissionsListener> listenerSoftReference;
   private final Thread thread;
 
   MultiplePermissionListenerThreadDecorator(MultiplePermissionsListener listener,
       Thread thread) {
     this.thread = thread;
-    this.listener = listener;
+    this.listenerSoftReference = new SoftReference<MultiplePermissionsListener>(listener);
   }
 
   /**
-   * Decorates de permission listener execution with a given thread
+   * Decorates de permission listenerSoftReference execution with a given thread
    *
    * @param report In detail report with all the permissions that has been denied and granted
    */
   @Override public void onPermissionsChecked(final MultiplePermissionsReport report) {
     thread.execute(new Runnable() {
       @Override public void run() {
-        listener.onPermissionsChecked(report);
+          if (listenerSoftReference.get() != null) {
+              listenerSoftReference.get().onPermissionsChecked(report);
+          }
       }
     });
   }
 
   /**
-   * Decorates de permission listener execution with a given thread
+   * Decorates de permission listenerSoftReference execution with a given thread
    *
    * @param permissions The permissions that has been requested. Collections of values found in
    * {@link android.Manifest.permission}
@@ -59,7 +63,9 @@ final class MultiplePermissionListenerThreadDecorator implements MultiplePermiss
       final List<PermissionRequest> permissions, final PermissionToken token) {
     thread.execute(new Runnable() {
       @Override public void run() {
-        listener.onPermissionRationaleShouldBeShown(permissions, token);
+          if (listenerSoftReference.get() != null) {
+              listenerSoftReference.get().onPermissionRationaleShouldBeShown(permissions, token);
+          }
       }
     });
   }
