@@ -57,6 +57,7 @@ final class DexterInstance {
 
   private Activity activity;
   private MultiplePermissionsListener listener = EMPTY_LISTENER;
+  private boolean forcePermissionRequest = false;
 
   DexterInstance(Context context, AndroidPermissionService androidPermissionService,
       IntentProvider intentProvider) {
@@ -81,8 +82,9 @@ final class DexterInstance {
    * @param permission One of the values found in {@link android.Manifest.permission}
    * @param thread thread the Listener methods will be called on
    */
-  void checkPermission(PermissionListener listener, String permission, Thread thread) {
-    checkSinglePermission(listener, permission, thread);
+  void checkPermission(PermissionListener listener, String permission, Thread thread,
+                       boolean shouldForcePermission) {
+    checkSinglePermission(listener, permission, thread, shouldForcePermission);
   }
 
   /**
@@ -94,8 +96,8 @@ final class DexterInstance {
    * @param thread thread the Listener methods will be called on
    */
   void checkPermissions(MultiplePermissionsListener listener, Collection<String> permissions,
-      Thread thread) {
-    checkMultiplePermissions(listener, permissions, thread);
+      Thread thread, boolean shouldForcePermission) {
+    checkMultiplePermissions(listener, permissions, thread, shouldForcePermission);
   }
 
   /**
@@ -194,6 +196,9 @@ final class DexterInstance {
    * https://github.com/Karumi/Dexter/issues/86
    */
   private int checkSelfPermission(Activity activity, String permission) {
+    if (forcePermissionRequest) {
+      return PackageManager.PERMISSION_DENIED;
+    }
     try {
       return androidPermissionService.checkSelfPermission(activity, permission);
     } catch (RuntimeException ignored) {
@@ -288,14 +293,14 @@ final class DexterInstance {
   }
 
   private void checkSinglePermission(PermissionListener listener, String permission,
-      Thread thread) {
+      Thread thread, boolean shouldForcePermission) {
     MultiplePermissionsListener adapter =
         new MultiplePermissionsListenerToPermissionListenerAdapter(listener);
-    checkMultiplePermissions(adapter, Collections.singleton(permission), thread);
+    checkMultiplePermissions(adapter, Collections.singleton(permission), thread, shouldForcePermission);
   }
 
   private void checkMultiplePermissions(final MultiplePermissionsListener listener,
-      final Collection<String> permissions, Thread thread) {
+      final Collection<String> permissions, Thread thread, boolean shouldForcePermission) {
     checkNoDexterRequestOngoing();
     checkRequestSomePermission(permissions);
 
@@ -303,11 +308,12 @@ final class DexterInstance {
       return;
     }
 
+    forcePermissionRequest = shouldForcePermission;
     pendingPermissions.clear();
     pendingPermissions.addAll(permissions);
     multiplePermissionsReport.clear();
     this.listener = new MultiplePermissionListenerThreadDecorator(listener, thread);
-    if (isEveryPermissionGranted(permissions, context.get())) {
+    if (isEveryPermissionGranted(permissions, context.get()) && !shouldForcePermission) {
       thread.execute(new Runnable() {
         @Override public void run() {
           MultiplePermissionsReport report = new MultiplePermissionsReport();

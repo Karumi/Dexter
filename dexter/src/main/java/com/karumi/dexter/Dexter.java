@@ -48,6 +48,7 @@ public final class Dexter
   private MultiplePermissionsListener listener = new BaseMultiplePermissionsListener();
   private PermissionRequestErrorListener errorListener = new EmptyPermissionRequestErrorListener();
   private boolean shouldExecuteOnSameThread = false;
+  private boolean shouldForcePermission = false;
 
   private Dexter(Activity activity) {
     initialize(activity);
@@ -88,6 +89,11 @@ public final class Dexter
     return this;
   }
 
+  @Override public DexterBuilder force() {
+    shouldForcePermission = true;
+    return this;
+  }
+
   @Override public DexterBuilder withErrorListener(PermissionRequestErrorListener errorListener) {
     this.errorListener = errorListener;
     return this;
@@ -96,7 +102,7 @@ public final class Dexter
   @Override public void check() {
     try {
       Thread thread = getThread();
-      instance.checkPermissions(listener, permissions, thread);
+      instance.checkPermissions(listener, permissions, thread, shouldForcePermission);
     } catch (DexterException e) {
       errorListener.onError(e.error);
     }
