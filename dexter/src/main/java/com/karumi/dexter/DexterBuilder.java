@@ -25,6 +25,8 @@ public interface DexterBuilder {
 
   DexterBuilder onSameThread();
 
+  DexterBuilder force();
+
   DexterBuilder withErrorListener(PermissionRequestErrorListener errorListener);
 
   void check();
