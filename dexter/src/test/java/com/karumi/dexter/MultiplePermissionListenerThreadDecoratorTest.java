@@ -16,14 +16,18 @@
 
 package com.karumi.dexter;
 
+import android.content.Context;
+
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertTrue;
@@ -68,6 +72,10 @@ import static org.mockito.Mockito.verify;
 
     @Override public void cancelPermissionRequest() {
 
+    }
+
+    @Override public Context getContext() {
+      return null;
     }
   }
 

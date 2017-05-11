@@ -27,9 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
@@ -40,6 +38,10 @@ import com.karumi.dexter.listener.single.CompositePermissionListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Sample activity showing the permission request process with Dexter.
@@ -65,7 +67,7 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.all_permissions_button) public void onAllPermissionsButtonClicked() {
-    Dexter.withActivity(this)
+    Dexter.withContext(this)
         .withPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS,
             Manifest.permission.RECORD_AUDIO)
         .withListener(allPermissionsListener)
@@ -76,7 +78,7 @@ public class SampleActivity extends Activity {
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
     new Thread(new Runnable() {
       @Override public void run() {
-        Dexter.withActivity(SampleActivity.this)
+        Dexter.withContext(SampleActivity.this)
             .withPermission(Manifest.permission.CAMERA)
             .withListener(cameraPermissionListener)
             .withErrorListener(errorListener)
@@ -87,7 +89,7 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
-    Dexter.withActivity(this)
+    Dexter.withContext(this)
         .withPermission(Manifest.permission.READ_CONTACTS)
         .withListener(contactsPermissionListener)
         .withErrorListener(errorListener)
@@ -95,7 +97,7 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.audio_permission_button) public void onAudioPermissionButtonClicked() {
-    Dexter.withActivity(this)
+    Dexter.withContext(this)
         .withPermission(Manifest.permission.RECORD_AUDIO)
         .withListener(audioPermissionListener)
         .withErrorListener(errorListener)
@@ -104,7 +106,9 @@ public class SampleActivity extends Activity {
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   public void showPermissionRationale(final PermissionToken token) {
-    new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)
+    //Use the context of the token to display alert dialog. This is useful in an environment
+    // laking of activities.
+    new AlertDialog.Builder(token.getContext()).setTitle(R.string.permission_rationale_title)
         .setMessage(R.string.permission_rationale_message)
         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {

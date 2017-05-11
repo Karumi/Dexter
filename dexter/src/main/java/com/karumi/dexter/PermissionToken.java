@@ -16,6 +16,8 @@
 
 package com.karumi.dexter;
 
+import android.content.Context;
+
 /**
  * Utility class to let clients show the user how is the permission going to be used
  * Clients of this class must call one of the two methods and only once
@@ -31,4 +33,9 @@ public interface PermissionToken {
    * Cancels the permission request process
    */
   void cancelPermissionRequest();
+
+  /**
+   * @return Context associated with this token
+   */
+  Context getContext();
 }

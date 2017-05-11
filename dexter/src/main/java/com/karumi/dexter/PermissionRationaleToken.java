@@ -16,13 +16,17 @@
 
 package com.karumi.dexter;
 
+import android.content.Context;
+
 final class PermissionRationaleToken implements PermissionToken {
 
   private final DexterInstance dexterInstance;
   private boolean isTokenResolved = false;
+  private final Context context;
 
-  public PermissionRationaleToken(DexterInstance dexterInstance) {
+  public PermissionRationaleToken(DexterInstance dexterInstance, Context context) {
     this.dexterInstance = dexterInstance;
+    this.context = context;
   }
 
   @Override public void continuePermissionRequest() {
@@ -37,5 +41,9 @@ final class PermissionRationaleToken implements PermissionToken {
       dexterInstance.onCancelPermissionRequest();
       isTokenResolved = true;
     }
+  }
+
+  @Override public Context getContext() {
+    return context;
   }
 }

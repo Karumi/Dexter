@@ -235,7 +235,7 @@ final class DexterInstance {
     if (shouldShowRequestRationalePermissions.isEmpty()) {
       requestPermissionsToSystem(permissions);
     } else if (!rationaleAccepted.get()) {
-      PermissionRationaleToken permissionToken = new PermissionRationaleToken(this);
+      PermissionRationaleToken permissionToken = new PermissionRationaleToken(this, activity);
       listener.onPermissionRationaleShouldBeShown(shouldShowRequestRationalePermissions,
           permissionToken);
     }
