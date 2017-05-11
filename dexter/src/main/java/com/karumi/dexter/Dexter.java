@@ -148,7 +148,13 @@ public final class Dexter
    * Method called whenever the DexterActivity has been destroyed.
    */
   static void onActivityDestroyed() {
-    instance.onActivityDestroyed();
+    /* Check against null values because sometimes the DexterActivity can call these internal
+       methods when the DexterInstance has been cleaned up.
+       Refer to this commit message for a more detailed explanation of the issue.
+     */
+    if (instance != null) {
+      instance.onActivityDestroyed();
+    }
   }
 
   /**
