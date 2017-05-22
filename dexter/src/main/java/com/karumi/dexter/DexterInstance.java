@@ -21,6 +21,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.v4.content.PermissionChecker;
 import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -173,11 +174,13 @@ final class DexterInstance {
 
     for (String permission : pendingPermissions) {
       int permissionState = checkSelfPermission(activity, permission);
+
       switch (permissionState) {
-        case PackageManager.PERMISSION_DENIED:
+        case PermissionChecker.PERMISSION_DENIED:
+        case PermissionChecker.PERMISSION_DENIED_APP_OP:
           permissionStates.addDeniedPermission(permission);
           break;
-        case PackageManager.PERMISSION_GRANTED:
+        case PermissionChecker.PERMISSION_GRANTED:
         default:
           permissionStates.addGrantedPermission(permission);
           break;
@@ -327,7 +330,7 @@ final class DexterInstance {
   private boolean isEveryPermissionGranted(Collection<String> permissions, Context context) {
     for (String permission : permissions) {
       int permissionState = androidPermissionService.checkSelfPermission(context, permission);
-      if (permissionState != PackageManager.PERMISSION_GRANTED) {
+      if (permissionState != PermissionChecker.PERMISSION_GRANTED) {
         return false;
       }
     }
