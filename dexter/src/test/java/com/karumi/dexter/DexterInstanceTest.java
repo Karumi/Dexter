@@ -70,20 +70,21 @@ import static org.mockito.Mockito.when;
   }
 
   @Test(expected = DexterException.class) public void onNoPermissionCheckedThenThrowException() {
-    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(), THREAD);
+    dexter.checkPermissions(multiplePermissionsListener, Collections.<String>emptyList(), THREAD,
+                            false);
   }
 
   @Test(expected = DexterException.class)
   public void onCheckPermissionMoreThanOnceThenThrowException() {
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
-    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
-    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD, false);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD, false);
   }
 
   @Test public void onPermissionAlreadyGrantedThenNotifiesListener() {
     givenPermissionIsAlreadyGranted(ANY_PERMISSION);
 
-    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD);
+    dexter.checkPermission(permissionListener, ANY_PERMISSION, THREAD, false);
 
     thenPermissionIsGranted(ANY_PERMISSION);
   }
@@ -182,7 +183,7 @@ import static org.mockito.Mockito.when;
   }
 
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
-    dexter.checkPermission(permissionListener, permission, THREAD);
+    dexter.checkPermission(permissionListener, permission, THREAD, false);
     dexter.onActivityReady(activity);
   }
 
@@ -257,7 +258,7 @@ import static org.mockito.Mockito.when;
 
   private class CheckPermissionWithOnActivityReadyInBackground implements CheckPermissionAction {
     @Override public void check(final PermissionListener listener, final String permission) {
-      dexter.checkPermission(listener, permission, THREAD);
+      dexter.checkPermission(listener, permission, THREAD, false);
       asyncExecutor.execute(new Runnable() {
         @Override public void run() {
           dexter.onActivityReady(activity);
