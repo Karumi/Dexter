@@ -11,4 +11,5 @@ android:
     - extra-android-m2repository
 
 script:
-  ./gradlew checkstyle build test
+  ./gradlew checkstyle build test && ./gradlew assembleRelease
+

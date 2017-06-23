@@ -27,7 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.karumi.dexter.Dexter;
@@ -46,10 +46,10 @@ import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
  */
 public class SampleActivity extends Activity {
 
-  @Bind(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
-  @Bind(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
-  @Bind(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
-  @Bind(android.R.id.content) ViewGroup rootView;
+  @BindView(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
+  @BindView(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
+  @BindView(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
+  @BindView(android.R.id.content) ViewGroup rootView;
 
   private MultiplePermissionsListener allPermissionsListener;
   private PermissionListener cameraPermissionListener;
