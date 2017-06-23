@@ -18,6 +18,17 @@ Screenshots
 Usage
 -----
 
+### Dependency
+
+Include the library in your ``build.gradle``
+
+```groovy
+dependencies{
+    compile 'com.karumi:dexter:4.1.0'
+}
+```
+
+
 To start using the library you just need to call `Dexter` with a valid `Activity`:
 
 ```java
@@ -191,16 +202,6 @@ The library will notify you when something bad happens. In general, it is a good
 
 **IMPORTANT**: Remember to follow the [Google design guidelines][2] to make your application as user-friendly as possible.
 
-Add it to your project
-----------------------
-
-Include the library in your ``build.gradle``
-
-```groovy
-dependencies{
-    compile 'com.karumi:dexter:4.1.0'
-}
-```
 
 Caveats
 -------
