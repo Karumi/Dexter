@@ -20,11 +20,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.WindowManager;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public final class DexterActivity extends Activity {
+public final class DexterActivity extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
