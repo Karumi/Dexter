@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.view.WindowManager;
 import java.util.Collection;
@@ -43,8 +44,9 @@ public final class DexterActivity extends Activity implements ActivityCompat.OnR
     Dexter.onActivityReady(this);
   }
 
-  @Override public void onRequestPermissionsResult(int requestCode, String[] permissions,
-      int[] grantResults) {
+  @Override public void onRequestPermissionsResult(int requestCode,
+                                                   @NonNull String[] permissions,
+                                                   @NonNull int[] grantResults) {
     Collection<String> grantedPermissions = new LinkedList<>();
     Collection<String> deniedPermissions = new LinkedList<>();
 
