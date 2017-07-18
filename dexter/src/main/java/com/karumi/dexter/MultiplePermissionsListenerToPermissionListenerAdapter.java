@@ -32,7 +32,7 @@ final class MultiplePermissionsListenerToPermissionListenerAdapter
 
   private final PermissionListener listener;
 
-  public MultiplePermissionsListenerToPermissionListenerAdapter(PermissionListener listener) {
+  MultiplePermissionsListenerToPermissionListenerAdapter(PermissionListener listener) {
     this.listener = listener;
   }
 
