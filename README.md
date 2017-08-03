@@ -77,7 +77,7 @@ PermissionListener dialogPermissionListener =
 ```java
 PermissionListener snackbarPermissionListener =
 	SnackbarOnDeniedPermissionListener.Builder
-		.with(rootView, "Camera access is needed to take pictures of your dog")
+		.with(view, "Camera access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
         .withCallback(new Snackbar.Callback() {
             @Override
@@ -137,7 +137,7 @@ MultiplePermissionsListener dialogMultiplePermissionsListener =
 ```java
 MultiplePermissionsListener snackbarMultiplePermissionsListener =
 	SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
-		.with(rootView, "Camera and audio access is needed to take pictures of your dog")
+		.with(view, "Camera and audio access is needed to take pictures of your dog")
 		.withOpenSettingsButton("Settings")
         .withCallback(new Snackbar.Callback() {
             @Override

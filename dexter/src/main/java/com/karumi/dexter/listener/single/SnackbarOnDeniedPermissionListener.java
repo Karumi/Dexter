@@ -23,7 +23,6 @@ import android.provider.Settings;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.view.ViewGroup;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 
 /**
@@ -32,7 +31,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
  */
 public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
 
-  private final ViewGroup rootView;
+  private final View view;
   private final String text;
   private final String buttonText;
   private final View.OnClickListener onButtonClickListener;
@@ -40,15 +39,15 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
   private final int duration;
 
   /**
-   * @param rootView Parent view to show the snackbar
+   * @param view The view to find a parent from
    * @param text Message displayed in the snackbar
    * @param buttonText Message displayed in the snackbar button
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
-  private SnackbarOnDeniedPermissionListener(ViewGroup rootView, String text, String buttonText,
+  private SnackbarOnDeniedPermissionListener(View view, String text, String buttonText,
       View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback,
       int duration) {
-    this.rootView = rootView;
+    this.view = view;
     this.text = text;
     this.buttonText = buttonText;
     this.onButtonClickListener = onButtonClickListener;
@@ -59,7 +58,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
     super.onPermissionDenied(response);
 
-    Snackbar snackbar = Snackbar.make(rootView, text, duration);
+    Snackbar snackbar = Snackbar.make(view, text, duration);
     if (buttonText != null && onButtonClickListener != null) {
       snackbar.setAction(buttonText, onButtonClickListener);
     }
@@ -74,24 +73,24 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
    * Non set fields will not be shown
    */
   public static class Builder {
-    private final ViewGroup rootView;
+    private final View view;
     private final String text;
     private String buttonText;
     private View.OnClickListener onClickListener;
     private Snackbar.Callback snackbarCallback;
     private int duration = Snackbar.LENGTH_LONG;
 
-    private Builder(ViewGroup rootView, String text) {
-      this.rootView = rootView;
+    private Builder(View view, String text) {
+      this.view = view;
       this.text = text;
     }
 
-    public static Builder with(ViewGroup rootView, String text) {
-      return new Builder(rootView, text);
+    public static Builder with(View view, String text) {
+      return new Builder(view, text);
     }
 
-    public static Builder with(ViewGroup rootView, @StringRes int textResourceId) {
-      return Builder.with(rootView, rootView.getContext().getString(textResourceId));
+    public static Builder with(View view, @StringRes int textResourceId) {
+      return Builder.with(view, view.getContext().getString(textResourceId));
     }
 
     /**
@@ -108,7 +107,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      */
     public Builder withButton(@StringRes int buttonTextResourceId,
         View.OnClickListener onClickListener) {
-      return withButton(rootView.getContext().getString(buttonTextResourceId), onClickListener);
+      return withButton(view.getContext().getString(buttonTextResourceId), onClickListener);
     }
 
     /**
@@ -118,7 +117,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
       this.buttonText = buttonText;
       this.onClickListener = new View.OnClickListener() {
         @Override public void onClick(View v) {
-          Context context = rootView.getContext();
+          Context context = view.getContext();
           Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
               Uri.parse("package:" + context.getPackageName()));
           myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
@@ -133,7 +132,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      * Adds a button that opens the application settings when clicked
      */
     public Builder withOpenSettingsButton(@StringRes int buttonTextResourceId) {
-      return withOpenSettingsButton(rootView.getContext().getString(buttonTextResourceId));
+      return withOpenSettingsButton(view.getContext().getString(buttonTextResourceId));
     }
 
     /**
@@ -156,7 +155,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      * Builds a new instance of {@link SnackbarOnDeniedPermissionListener}
      */
     public SnackbarOnDeniedPermissionListener build() {
-      return new SnackbarOnDeniedPermissionListener(rootView, text, buttonText, onClickListener,
+      return new SnackbarOnDeniedPermissionListener(view, text, buttonText, onClickListener,
           snackbarCallback, duration);
     }
   }
