@@ -171,6 +171,18 @@ Dexter.withActivity(activity)
 	.check();
 ```
 
+### Force
+For some reason, you may want to force permission asking even if Android system is 
+telling that permission is granted. 
+
+```java
+Dexter.withActivity(activity)
+	.withPermission(permission)
+	.withListener(listener)
+	.force()
+	.check();
+```
+
 ### Showing a rationale
 Android will notify you when you are requesting a permission that needs an additional explanation for its usage, either because it is considered dangerous, or because the user has already declined that permission once.
 
