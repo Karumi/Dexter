@@ -25,7 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +49,7 @@ public class SampleActivity extends Activity {
   @BindView(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
   @BindView(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
   @BindView(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
-  @BindView(android.R.id.content) ViewGroup rootView;
+  @BindView(android.R.id.content) View contentView;
 
   private MultiplePermissionsListener allPermissionsListener;
   private PermissionListener cameraPermissionListener;
@@ -146,12 +146,12 @@ public class SampleActivity extends Activity {
 
     allPermissionsListener =
         new CompositeMultiplePermissionsListener(feedbackViewMultiplePermissionListener,
-            SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(rootView,
+            SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.with(contentView,
                 R.string.all_permissions_denied_feedback)
                 .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
                 .build());
     contactsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
-        SnackbarOnDeniedPermissionListener.Builder.with(rootView,
+        SnackbarOnDeniedPermissionListener.Builder.with(contentView,
             R.string.contacts_permission_denied_feedback)
             .withOpenSettingsButton(R.string.permission_rationale_settings_button_text)
             .withCallback(new Snackbar.Callback() {
