@@ -115,6 +115,7 @@ final class DexterInstance {
 
     if (permissionStates != null) {
       handleDeniedPermissions(permissionStates.getDeniedPermissions());
+      updatePermissionsAsDenied(permissionStates.getImpossibleToGrantPermissions());
       updatePermissionsAsGranted(permissionStates.getGrantedPermissions());
     }
   }
@@ -176,8 +177,10 @@ final class DexterInstance {
       int permissionState = checkSelfPermission(activity, permission);
 
       switch (permissionState) {
-        case PermissionChecker.PERMISSION_DENIED:
         case PermissionChecker.PERMISSION_DENIED_APP_OP:
+          permissionStates.addImpossibleToGrantPermission(permission);
+          break;
+        case PermissionChecker.PERMISSION_DENIED:
           permissionStates.addDeniedPermission(permission);
           break;
         case PermissionChecker.PERMISSION_GRANTED:
@@ -339,10 +342,15 @@ final class DexterInstance {
 
   private final class PermissionStates {
     private final Collection<String> deniedPermissions = new LinkedList<>();
+    private final Collection<String> impossibleToGrantPermissions = new LinkedList<>();
     private final Collection<String> grantedPermissions = new LinkedList<>();
 
     private void addDeniedPermission(String permission) {
       deniedPermissions.add(permission);
+    }
+
+    private void addImpossibleToGrantPermission(String permission) {
+      impossibleToGrantPermissions.add(permission);
     }
 
     private void addGrantedPermission(String permission) {
@@ -355,6 +363,10 @@ final class DexterInstance {
 
     private Collection<String> getGrantedPermissions() {
       return grantedPermissions;
+    }
+
+    public Collection<String> getImpossibleToGrantPermissions() {
+      return impossibleToGrantPermissions;
     }
   }
 }
