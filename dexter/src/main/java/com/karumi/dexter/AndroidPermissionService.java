@@ -21,7 +21,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 
 /**
  * Wrapper class for all the static calls to the Android permission system
@@ -29,10 +29,10 @@ import android.support.v4.content.ContextCompat;
 class AndroidPermissionService {
 
   /**
-   * @see ContextCompat#checkSelfPermission
+   * @see PermissionChecker#checkSelfPermission
    */
   int checkSelfPermission(@NonNull Context context, @NonNull String permission) {
-    return ContextCompat.checkSelfPermission(context, permission);
+    return PermissionChecker.checkSelfPermission(context, permission);
   }
 
   /**
