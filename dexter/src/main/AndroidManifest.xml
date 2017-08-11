@@ -22,7 +22,6 @@
     <activity
         android:name=".DexterActivity"
         android:theme="@style/Dexter.Internal.Theme.Transparent"
-        android:launchMode="singleInstance"
         />
   </application>
 
