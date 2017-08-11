@@ -1,15 +1,32 @@
 language: android
 jdk: oraclejdk8
+dist: precise
+env:
+  global:
+    - ADB_INSTALL_TIMEOUT=8 # 8 minutes (2 minutes by default)
 
 android:
   components:
     - tools
     - build-tools-25.0.0
     - platform-tools
+    - android-24
     - android-25
+    - extra-android-support
     - extra-google-m2repository
     - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-24
+    - sys-img-armeabi-v7a-android-25
+
+before_script:
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell settings put global window_animation_scale 0 &
+  - adb shell settings put global transition_animation_scale 0 &
+  - adb shell settings put global animator_duration_scale 0 &
+  - adb shell input keyevent 82 &
 
 script:
-  ./gradlew checkstyle build test && ./gradlew assembleRelease
+  ./gradlew checkstyle build test connectedDebugAndroidTest && ./gradlew assembleRelease
 

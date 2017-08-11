@@ -21,7 +21,7 @@ final class PermissionRationaleToken implements PermissionToken {
   private final DexterInstance dexterInstance;
   private boolean isTokenResolved = false;
 
-  public PermissionRationaleToken(DexterInstance dexterInstance) {
+  PermissionRationaleToken(DexterInstance dexterInstance) {
     this.dexterInstance = dexterInstance;
   }
 
