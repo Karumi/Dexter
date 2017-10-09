@@ -14,7 +14,7 @@ android:
     - extra-android-support
     - extra-google-m2repository
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-26
+    - sys-img-x86_64-android-26
 
 before_script:
   - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
