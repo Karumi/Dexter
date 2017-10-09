@@ -17,7 +17,7 @@ android:
     - sys-img-x86_64-android-26
 
 before_script:
-  - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-26 --abi x86_64
   - QEMU_AUDIO_DRV=none emulator -avd test -no-window &
   - android-wait-for-emulator
   - adb shell settings put global window_animation_scale 0 &
