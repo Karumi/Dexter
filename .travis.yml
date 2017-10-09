@@ -14,10 +14,10 @@ android:
     - extra-android-support
     - extra-google-m2repository
     - extra-android-m2repository
-    - sys-img-x86_64-android-26
+    - sys-img-armeabi-v7a-android-25
 
 before_script:
-  - echo no | android create avd --force -n test -t android-26 --abi google_apis/x86_64
+  - echo no | android create avd --force -n test -t android-25 --abi armeabi-v7a
   - QEMU_AUDIO_DRV=none emulator -avd test -no-window &
   - android-wait-for-emulator
   - adb shell settings put global window_animation_scale 0 &
