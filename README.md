@@ -114,6 +114,34 @@ Dexter.withActivity(this)
 	}).check();
 ```
 
+## NB : Remember to declare permissions inside the manifest tag but outside the application tag in the AndroidManifest.xml
+Eg,for multiple permissions above,the correct equivalent AndroidManifest.xml will be  
+``` 
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="whatever.whatever">
+<application android:label="@string/app_name">
+<activity android:name=".MainActivity"></activity>
+</application>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+</manifest>
+```
+but not 
+``` 
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="whatever.whatever">
+<application android:label="@string/app_name">
+<activity android:name=".MainActivity"></activity>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- uses-permission should not be declared in the <application> tag but outside of it,otherwise the library won't work.
+</application>
+    
+</manifest>
+```
+
 The ``MultiplePermissionsReport`` contains all the details of the permission request like the list of denied/granted permissions or utility methods like ``areAllPermissionsGranted`` and ``isAnyPermissionPermanentlyDenied``.
 
 As with the single permission listener, there are also some useful implementations for recurring patterns:
