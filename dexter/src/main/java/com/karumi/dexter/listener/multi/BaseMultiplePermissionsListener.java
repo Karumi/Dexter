@@ -33,6 +33,6 @@ public class BaseMultiplePermissionsListener implements MultiplePermissionsListe
 
   @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
       PermissionToken token) {
-    token.continuePermissionRequest();
+
   }
 }

@@ -37,6 +37,6 @@ public class BasePermissionListener implements PermissionListener {
 
   @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission,
       PermissionToken token) {
-    token.continuePermissionRequest();
+
   }
 }
