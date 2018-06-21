@@ -46,11 +46,16 @@ import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
  */
 public class SampleActivity extends Activity {
 
-  @BindView(R.id.audio_permission_feedback) TextView audioPermissionFeedbackView;
-  @BindView(R.id.camera_permission_feedback) TextView cameraPermissionFeedbackView;
-  @BindView(R.id.contacts_permission_feedback) TextView contactsPermissionFeedbackView;
+  @BindView(R.id.audio_permission_feedback)
+  TextView audioPermissionFeedbackView;
+  @BindView(R.id.camera_permission_feedback)
+  TextView cameraPermissionFeedbackView;
+  @BindView(R.id.contacts_permission_feedback)
+  TextView contactsPermissionFeedbackView;
+
   @BindView(android.R.id.content) View contentView;
 
+  private PermissionsViews permissionsViews;
   private MultiplePermissionsListener allPermissionsListener;
   private PermissionListener cameraPermissionListener;
   private PermissionListener contactsPermissionListener;
@@ -61,6 +66,9 @@ public class SampleActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_activity);
     ButterKnife.bind(this);
+    permissionsViews = new PermissionsViews(audioPermissionFeedbackView,
+            cameraPermissionFeedbackView,
+            contactsPermissionFeedbackView);
     createPermissionListeners();
   }
 
@@ -127,16 +135,12 @@ public class SampleActivity extends Activity {
   }
 
   public void showPermissionGranted(String permission) {
-    TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(R.string.permission_granted_feedback);
-    feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_granted));
+    permissionsViews.showPermissionGranted(permission, ContextCompat.getColor(this, R.color.permission_granted));
   }
 
   public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
-    TextView feedbackView = getFeedbackViewForPermission(permission);
-    feedbackView.setText(isPermanentlyDenied ? R.string.permission_permanently_denied_feedback
-        : R.string.permission_denied_feedback);
-    feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
+    permissionsViews.showPermissionDenied(permission, ContextCompat.getColor(this, R.color.permission_denied),
+            isPermanentlyDenied);
   }
 
   private void createPermissionListeners() {
@@ -177,25 +181,5 @@ public class SampleActivity extends Activity {
     cameraPermissionListener = new SampleBackgroundThreadPermissionListener(this);
 
     errorListener = new SampleErrorListener();
-  }
-
-  private TextView getFeedbackViewForPermission(String name) {
-    TextView feedbackView;
-
-    switch (name) {
-      case Manifest.permission.CAMERA:
-        feedbackView = cameraPermissionFeedbackView;
-        break;
-      case Manifest.permission.READ_CONTACTS:
-        feedbackView = contactsPermissionFeedbackView;
-        break;
-      case Manifest.permission.RECORD_AUDIO:
-        feedbackView = audioPermissionFeedbackView;
-        break;
-      default:
-        throw new RuntimeException("No feedback view for this permission");
-    }
-
-    return feedbackView;
   }
 }
