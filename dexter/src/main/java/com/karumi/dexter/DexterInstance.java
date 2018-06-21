@@ -125,6 +125,7 @@ final class DexterInstance {
    */
   void onActivityDestroyed() {
     isRequestingPermission.set(false);
+    listener = EMPTY_LISTENER;
   }
 
   /**
@@ -322,6 +323,7 @@ final class DexterInstance {
           }
           isRequestingPermission.set(false);
           listener.onPermissionsChecked(report);
+          DexterInstance.this.listener = EMPTY_LISTENER;
         }
       });
     } else {
