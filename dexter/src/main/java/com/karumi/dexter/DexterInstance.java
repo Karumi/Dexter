@@ -322,6 +322,7 @@ final class DexterInstance {
           }
           isRequestingPermission.set(false);
           listener.onPermissionsChecked(report);
+          DexterInstance.this.listener = EMPTY_LISTENER;
         }
       });
     } else {
