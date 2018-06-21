@@ -2,14 +2,11 @@ package com.karumi.dexter.sample;
 
 import android.Manifest;
 import android.widget.TextView;
-import butterknife.BindView;
+
 
 public class PermissionsViews {
-    @BindView(R.id.audio_permission_feedback)
     TextView audioPermissionFeedbackView;
-    @BindView(R.id.camera_permission_feedback)
     TextView cameraPermissionFeedbackView;
-    @BindView(R.id.contacts_permission_feedback)
     TextView contactsPermissionFeedbackView;
 
     PermissionsViews(TextView audioView, TextView cameraView, TextView contactView) {
@@ -30,7 +27,7 @@ public class PermissionsViews {
         feedbackView.setTextColor(color);
     }
 
-    TextView getFeedbackViewForPermission(String name) {
+    private TextView getFeedbackViewForPermission(String name) {
         switch (name) {
             case Manifest.permission.CAMERA:
                 return cameraPermissionFeedbackView;
