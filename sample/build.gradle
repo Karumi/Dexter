@@ -7,12 +7,12 @@ configurations.all {
 }
 
 android {
-  compileSdkVersion 27
-  buildToolsVersion '27.0.3'
+  compileSdkVersion 28
+  buildToolsVersion '28.0.3'
   defaultConfig {
     applicationId "com.karumi.dexter.sample"
     minSdkVersion 18
-    targetSdkVersion 27
+    targetSdkVersion 28
     versionCode 1
     versionName "1.0"
 
@@ -31,8 +31,8 @@ android {
 
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
-  implementation 'com.android.support:appcompat-v7:27.1.1'
-  implementation 'com.android.support:design:27.1.1'
+  implementation 'com.android.support:appcompat-v7:28.0.0'
+  implementation 'com.android.support:design:28.0.0'
   implementation 'com.jakewharton:butterknife:8.6.0'
   implementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
   annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
