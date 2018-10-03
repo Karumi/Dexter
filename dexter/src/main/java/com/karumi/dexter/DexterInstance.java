@@ -254,7 +254,7 @@ final class DexterInstance {
   private void updatePermissionsAsDenied(Collection<String> permissions) {
     for (String permission : permissions) {
       PermissionDeniedResponse response = PermissionDeniedResponse.from(permission,
-          !androidPermissionService.shouldShowRequestPermissionRationale(activity, permission));
+          androidPermissionService.isPermissionPermanentlyDenied(activity, permission));
       multiplePermissionsReport.addDeniedPermissionResponse(response);
     }
     onPermissionsChecked(permissions);
