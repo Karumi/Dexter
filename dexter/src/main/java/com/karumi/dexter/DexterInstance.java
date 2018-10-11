@@ -124,7 +124,10 @@ final class DexterInstance {
    * Method called whenever the inner activity has been destroyed.
    */
   void onActivityDestroyed() {
+    activity = null;
     isRequestingPermission.set(false);
+    rationaleAccepted.set(false);
+    isShowingNativeDialog.set(false);
     listener = EMPTY_LISTENER;
   }
 

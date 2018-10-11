@@ -38,6 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -142,6 +143,25 @@ import static org.mockito.Mockito.when;
     thenPermissionIsDenied(ANY_PERMISSION);
   }
 
+  @Test(expected = DexterException.class) public void onCheckPermissionTwiceThenThrowException() {
+    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
+
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+
+    verifyRequestPermissions(new String[]{ANY_PERMISSION}, 1);
+  }
+
+  @Test public void onCheckPermissionAgainAfterActivityDestroyedThenRequestedTwice() {
+    givenPermissionIsAlreadyDenied(ANY_PERMISSION);
+
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+    dexter.onActivityDestroyed();
+    whenCheckPermission(permissionListener, ANY_PERMISSION);
+
+    verifyRequestPermissions(new String[]{ANY_PERMISSION}, 2);
+  }
+
   private void givenPermissionIsAlreadyDenied(String permission) {
     givenPermissionIsChecked(permission, PackageManager.PERMISSION_DENIED);
   }
@@ -185,6 +205,10 @@ import static org.mockito.Mockito.when;
   private void whenCheckPermission(PermissionListener permissionListener, String permission) {
     dexter.checkPermission(permissionListener, permission, THREAD);
     dexter.onActivityReady(activity);
+  }
+
+  private void verifyRequestPermissions(String[] permissions, int nTimes) {
+    verify(androidPermissionService, times(nTimes)).requestPermissions(eq(activity), eq(permissions), anyInt());
   }
 
   private void thenPermissionIsGranted(String permission) {
