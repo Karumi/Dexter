@@ -132,6 +132,7 @@ import static org.mockito.Mockito.when;
   }
 
   @Test public void onPermissionFailedByRuntimeExceptionThenNotifiesListener() {
+    givenPermissionIsChecked(ANY_PERMISSION, PackageManager.PERMISSION_DENIED);
     givenARuntimeExceptionIsThrownWhenPermissionIsChecked(ANY_PERMISSION);
     givenShouldShowRationaleForPermission(ANY_PERMISSION);
 

@@ -8,14 +8,21 @@ env:
 android:
   components:
     - tools
-    - build-tools-26.0.2
+    - build-tools-27.0.3
     - platform-tools
+    - tools
+    - android-27
     - android-24
     - android-26
     - extra-android-support
     - extra-google-m2repository
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-24
+
+  licenses:
+      - 'android-sdk-preview-license-52d11cd2'
+      - 'android-sdk-license-.+'
+      - 'google-gdk-license-.+'
 
 before_script:
   - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
