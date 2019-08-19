@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.verify;
   @Test public void onPermissionCheckedThenListenerIsDecorated() {
     decorator.onPermissionsChecked(null);
 
-    verify(listener).onPermissionsChecked(any(MultiplePermissionsReport.class));
+    verify(listener).onPermissionsChecked(null);
     assertTrue(thread.decorated);
   }
 
