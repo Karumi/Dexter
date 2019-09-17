@@ -16,7 +16,7 @@
 
 package com.karumi.dexter.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Wrapper class for a permission request
