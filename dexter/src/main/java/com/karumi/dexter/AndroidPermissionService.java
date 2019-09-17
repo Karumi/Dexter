@@ -18,6 +18,7 @@ package com.karumi.dexter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -57,5 +58,14 @@ class AndroidPermissionService {
     }
 
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+  }
+
+  boolean isPermissionPermanentlyDenied(@Nullable Activity activity,
+      @NonNull String permission) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return false;
+    }
+
+    return !shouldShowRequestPermissionRationale(activity, permission);
   }
 }
