@@ -3,10 +3,11 @@ package com.karumi.dexter.sample;
 import android.Manifest;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.rule.GrantPermissionRule;
-import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
+
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -20,13 +21,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(AndroidJUnit4.class) public class DexterTest {
+public class DexterTest {
 
   private static final String TAG = "DexterTest";
   private final AtomicBoolean unblock = new AtomicBoolean(false);

@@ -21,7 +21,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.content.PermissionChecker;
+import androidx.core.content.PermissionChecker;
 import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -166,7 +166,7 @@ final class DexterInstance {
   private void requestPermissionsToSystem(Collection<String> permissions) {
     if (!isShowingNativeDialog.get()) {
       androidPermissionService.requestPermissions(activity,
-          permissions.toArray(new String[permissions.size()]), PERMISSIONS_REQUEST_CODE);
+          permissions.toArray(new String[0]), PERMISSIONS_REQUEST_CODE);
     }
     isShowingNativeDialog.set(true);
   }

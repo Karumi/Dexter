@@ -1,23 +1,24 @@
 apply plugin: 'com.android.application'
 
-configurations.all {
-  resolutionStrategy {
-    force 'com.android.support:support-annotations:25.2.0'
-  }
-}
-
 android {
-  compileSdkVersion 27
-  buildToolsVersion '27.0.3'
+  compileSdkVersion 28
+
   defaultConfig {
     applicationId "com.karumi.dexter.sample"
     minSdkVersion 18
-    targetSdkVersion 27
+    targetSdkVersion 28
     versionCode 1
     versionName "1.0"
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
+
+  // Butterknife requires Java 8.
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
   buildTypes {
     debug {
       minifyEnabled false
@@ -31,15 +32,15 @@ android {
 
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
-  implementation 'com.android.support:appcompat-v7:27.1.1'
-  implementation 'com.android.support:design:27.1.1'
-  implementation 'com.jakewharton:butterknife:8.6.0'
-  implementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-  annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
   implementation project(':dexter')
-  androidTestImplementation 'com.android.support.test:runner:0.5'
-  androidTestImplementation 'com.android.support.test:rules:0.5'
+  implementation 'androidx.appcompat:appcompat:1.0.2'
+  implementation 'com.google.android.material:material:1.0.0'
+  implementation 'com.jakewharton:butterknife:10.1.0'
+  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
+  annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+  androidTestImplementation 'androidx.test:runner:1.2.0'
+  androidTestImplementation 'androidx.test:rules:1.2.0'
   androidTestImplementation 'org.awaitility:awaitility:3.0.0'
   androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
-  androidTestImplementation 'com.android.support.test:rules:1.0.0'
+  androidTestImplementation 'androidx.test:rules:1.2.0'
 }

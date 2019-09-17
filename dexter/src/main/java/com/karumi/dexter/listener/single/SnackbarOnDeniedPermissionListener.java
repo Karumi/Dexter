@@ -20,8 +20,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.StringRes;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 
@@ -63,7 +63,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
       snackbar.setAction(buttonText, onButtonClickListener);
     }
     if (snackbarCallback != null) {
-      snackbar.setCallback(snackbarCallback);
+      snackbar.addCallback(snackbarCallback);
     }
     snackbar.show();
   }

@@ -16,7 +16,7 @@
 
 package com.karumi.dexter.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * If a permission was granted, an instance of this class will be returned

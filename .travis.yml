@@ -24,7 +24,10 @@ android:
       - 'android-sdk-preview-license-52d11cd2'
       - 'android-sdk-license-.+'
       - 'google-gdk-license-.+'
-
+      -
+before_install:
+  - yes | sdkmanager "platforms;android-28"
+  -
 before_script:
   - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
   - QEMU_AUDIO_DRV=none emulator -avd test -no-window &
