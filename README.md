@@ -202,6 +202,39 @@ The library will notify you when something bad happens. In general, it is a good
 
 **IMPORTANT**: Remember to follow the [Google design guidelines][2] to make your application as user-friendly as possible.
 
+### Permission dialog not being shown
+
+If you are using the ``MultiplePermissionsListener`` and you don't see the permission dialog the second time the permission is checked review your configuration. Keep in mind you need to let Dexter know the rationale you can show was closed or not by calling ``token?.continuePermissionRequest()``. If you don't do this, the next time the permission is requested, the OS dialog asking for this permission won't be shown. You can find more information about this in [here](https://github.com/Karumi/Dexter/issues/105). This is an example of how a multiple permission request should be implemented:
+
+```kotlin
+button.setOnClickListener {
+    Dexter.withActivity(this@MainActivity)
+                        .withPermissions(
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                            ,Manifest.permission.ACCESS_FINE_LOCATION)
+                        .withListener(object: MultiplePermissionsListener {
+                            override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                                report?.let {
+                                    if(report.areAllPermissionsGranted()){
+                                        toast("OK")
+                                    }
+                                }
+                            }
+                            override fun onPermissionRationaleShouldBeShown(
+                                permissions: MutableList<PermissionRequest>?,
+                                token: PermissionToken?
+                            ) {
+                                // Remember to invoke this method when the custom rationale is closed
+                                // or just by default if you don't want to use any custom rationale.
+                                token?.continuePermissionRequest()
+                            }
+                        })
+                        .withErrorListener {
+                            toast(it.name)
+                        }
+                        .check()
+}
+```
 
 Caveats
 -------
