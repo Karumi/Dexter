@@ -271,8 +271,12 @@ final class DexterInstance {
     synchronized (pendingPermissionsMutex) {
       pendingPermissions.removeAll(permissions);
       if (pendingPermissions.isEmpty()) {
-        activity.finish();
-        activity = null;
+        // Just in case heck to avoid NPE if the OS destroys the activity before
+        // the permission is checked. Issues #243 and #221
+        if (activity != null) {
+          activity.finish();
+          activity = null;
+        }
         isRequestingPermission.set(false);
         rationaleAccepted.set(false);
         isShowingNativeDialog.set(false);
