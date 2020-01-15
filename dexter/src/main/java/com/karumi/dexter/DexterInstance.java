@@ -124,11 +124,13 @@ final class DexterInstance {
    * Method called whenever the inner activity has been destroyed.
    */
   void onActivityDestroyed() {
-    activity = null;
-    isRequestingPermission.set(false);
-    rationaleAccepted.set(false);
-    isShowingNativeDialog.set(false);
-    listener = EMPTY_LISTENER;
+    if (activity != null) {
+      activity = null;
+      isRequestingPermission.set(false);
+      rationaleAccepted.set(false);
+      isShowingNativeDialog.set(false);
+      listener = EMPTY_LISTENER;
+    }
   }
 
   /**
@@ -275,7 +277,6 @@ final class DexterInstance {
         // the permission is checked. Issues #243 and #221
         if (activity != null) {
           activity.finish();
-          activity = null;
         }
         isRequestingPermission.set(false);
         rationaleAccepted.set(false);
@@ -315,6 +316,10 @@ final class DexterInstance {
 
     if (context.get() == null) {
       return;
+    }
+
+    if (activity != null && activity.isFinishing()) {
+      onActivityDestroyed();
     }
 
     pendingPermissions.clear();
