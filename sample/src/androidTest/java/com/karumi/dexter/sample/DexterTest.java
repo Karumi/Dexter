@@ -9,6 +9,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.DexterBuilder;
 import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -69,14 +70,27 @@ public class DexterTest {
   @Test public void testWithLooper() {
     AtomicBoolean milestone = new AtomicBoolean(false);
 
-    requestAndAcceptPermissionOnHandlerThread(milestone, Manifest.permission.CAMERA);
+    requestAndAcceptPermissionOnHandlerThread(milestone, Manifest.permission.CAMERA, false);
 
     block();
     assertThat(milestone.get(), is(true));
   }
 
-  private void getPermission(String permission) {
-    Dexter.withActivity(activityTestRule.getActivity())
+  @Test public void testWithLooperAndAppContext() {
+    AtomicBoolean milestone = new AtomicBoolean(false);
+
+    requestAndAcceptPermissionOnHandlerThread(milestone, Manifest.permission.CAMERA, true);
+
+    block();
+    assertThat(milestone.get(), is(true));
+  }
+
+  private void getPermission(String permission, boolean useAppContext) {
+    DexterBuilder.Permission dexter;
+    if (useAppContext) dexter = Dexter.withContext(activityTestRule.getActivity().getApplicationContext());
+    else dexter = Dexter.withActivity(activityTestRule.getActivity());
+
+    dexter
         .withPermission(permission)
         .withListener(permissionListener)
         .withErrorListener(errorListener)
@@ -85,10 +99,10 @@ public class DexterTest {
   }
 
   private void requestAndAcceptPermissionOnHandlerThread(final AtomicBoolean milestone,
-      final String permission) {
+      final String permission, boolean useAppContext) {
     handler.post(new Runnable() {
       @Override public void run() {
-        getPermission(permission);
+        getPermission(permission, useAppContext);
         milestone.set(true);
       }
     });
