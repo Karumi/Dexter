@@ -4,13 +4,10 @@ import android.Manifest;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
-
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.DexterBuilder;
-import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
@@ -41,13 +38,10 @@ public class DexterTest {
       unblock();
     }
   };
-  private final PermissionRequestErrorListener errorListener =
-      new PermissionRequestErrorListener() {
-        @Override public void onError(DexterError error) {
-          Log.i(TAG, error.toString());
-          unblock();
-        }
-      };
+  private final PermissionRequestErrorListener errorListener = error -> {
+    Log.i(TAG, error.toString());
+    unblock();
+  };
 
   @Rule public ActivityTestRule<SampleActivity> activityTestRule =
       new ActivityTestRule<>(SampleActivity.class);
@@ -57,13 +51,13 @@ public class DexterTest {
   private Handler handler;
   private HandlerThread handlerThread;
 
-  @Before public void setUp() throws Exception {
+  @Before public void setUp() {
     handlerThread = new HandlerThread(TAG);
     handlerThread.start();
     handler = new Handler(handlerThread.getLooper());
   }
 
-  @After public void tearDown() throws Exception {
+  @After public void tearDown() {
     handlerThread.quit();
   }
 
@@ -87,11 +81,13 @@ public class DexterTest {
 
   private void getPermission(String permission, boolean useAppContext) {
     DexterBuilder.Permission dexter;
-    if (useAppContext) dexter = Dexter.withContext(activityTestRule.getActivity().getApplicationContext());
-    else dexter = Dexter.withActivity(activityTestRule.getActivity());
+    if (useAppContext) {
+      dexter = Dexter.withContext(activityTestRule.getActivity().getApplicationContext());
+    } else {
+      dexter = Dexter.withActivity(activityTestRule.getActivity());
+    }
 
-    dexter
-        .withPermission(permission)
+    dexter.withPermission(permission)
         .withListener(permissionListener)
         .withErrorListener(errorListener)
         .onSameThread()
@@ -100,11 +96,9 @@ public class DexterTest {
 
   private void requestAndAcceptPermissionOnHandlerThread(final AtomicBoolean milestone,
       final String permission, boolean useAppContext) {
-    handler.post(new Runnable() {
-      @Override public void run() {
-        getPermission(permission, useAppContext);
-        milestone.set(true);
-      }
+    handler.post(() -> {
+      getPermission(permission, useAppContext);
+      milestone.set(true);
     });
   }
 

@@ -34,28 +34,18 @@ public class SampleBackgroundThreadPermissionListener extends SamplePermissionLi
   }
 
   @Override public void onPermissionGranted(final PermissionGrantedResponse response) {
-    handler.post(new Runnable() {
-      @Override public void run() {
-        SampleBackgroundThreadPermissionListener.super.onPermissionGranted(response);
-      }
-    });
+    handler.post(
+        () -> SampleBackgroundThreadPermissionListener.super.onPermissionGranted(response));
   }
 
   @Override public void onPermissionDenied(final PermissionDeniedResponse response) {
-    handler.post(new Runnable() {
-      @Override public void run() {
-        SampleBackgroundThreadPermissionListener.super.onPermissionDenied(response);
-      }
-    });
+    handler.post(() -> SampleBackgroundThreadPermissionListener.super.onPermissionDenied(response));
   }
 
   @Override public void onPermissionRationaleShouldBeShown(final PermissionRequest permission,
       final PermissionToken token) {
-    handler.post(new Runnable() {
-      @Override public void run() {
-        SampleBackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(
-            permission, token);
-      }
-    });
+    handler.post(
+        () -> SampleBackgroundThreadPermissionListener.super.onPermissionRationaleShouldBeShown(
+            permission, token));
   }
 }

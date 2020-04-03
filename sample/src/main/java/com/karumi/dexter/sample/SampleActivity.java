@@ -74,16 +74,12 @@ public class SampleActivity extends Activity {
   }
 
   @OnClick(R.id.camera_permission_button) public void onCameraPermissionButtonClicked() {
-    new Thread(new Runnable() {
-      @Override public void run() {
-        Dexter.withContext(getApplicationContext())
-            .withPermission(Manifest.permission.CAMERA)
-            .withListener(cameraPermissionListener)
-            .withErrorListener(errorListener)
-            .onSameThread()
-            .check();
-      }
-    }).start();
+    new Thread(() -> Dexter.withContext(getApplicationContext())
+        .withPermission(Manifest.permission.CAMERA)
+        .withListener(cameraPermissionListener)
+        .withErrorListener(errorListener)
+        .onSameThread()
+        .check()).start();
   }
 
   @OnClick(R.id.contacts_permission_button) public void onContactsPermissionButtonClicked() {
