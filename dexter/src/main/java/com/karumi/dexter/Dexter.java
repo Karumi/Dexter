@@ -53,6 +53,12 @@ public final class Dexter
     initialize(context);
   }
 
+  /**
+   * Obsolete method requiring an {@link Activity} to start using Dexter.
+   *
+   * @deprecated Use {@link Dexter#withContext(Context)} instead.
+   */
+  @Deprecated
   public static DexterBuilder.Permission withActivity(Activity activity) {
     return new Dexter(activity);
   }
