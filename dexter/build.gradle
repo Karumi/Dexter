@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/97de89785bdbf0bc0b380fb60851cabc552811dc/gradle-mvn-push.gradle'
 
 android {
   compileSdkVersion 28
