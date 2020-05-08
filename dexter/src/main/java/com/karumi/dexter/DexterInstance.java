@@ -17,7 +17,6 @@
 package com.karumi.dexter;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -220,7 +219,7 @@ final class DexterInstance {
     }
 
     Intent intent = intentProvider.get(context, DexterActivity.class);
-    if (context instanceof Application) {
+    if (!(context instanceof Activity)) {
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
     context.startActivity(intent);
