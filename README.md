@@ -24,7 +24,7 @@ Include the library in your ``build.gradle``
 
 ```groovy
 dependencies{
-    implementation 'com.karumi:dexter:6.1.0'
+    implementation 'com.karumi:dexter:6.1.2'
 }
 ```
 
