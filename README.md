@@ -6,7 +6,6 @@ Dexter is an Android library that simplifies the process of requesting permissio
 
 Android Marshmallow includes a new functionality to let users grant or deny permissions when running an app instead of granting them all when installing it. This approach gives the user more control over applications but requires developers to add lots of code to support it.
 
-The official API is heavily coupled with the ``Activity`` class.
 Dexter frees your permission code from your activities and lets you write that logic anywhere you want.
 
 
@@ -29,13 +28,13 @@ dependencies{
 ```
 
 
-To start using the library you just need to call `Dexter` with a valid `Activity`:
+To start using the library you just need to call `Dexter` with a valid `Context`:
 
 ```java
 public MyActivity extends Activity {
 	@Override public void onCreate() {
 		super.onCreate();
-		Dexter.withActivity(activity)
+		Dexter.withContext(activity)
 			.withPermission(permission)
 			.withListener(listener)
 			.check();
@@ -47,7 +46,7 @@ public MyActivity extends Activity {
 For each permission, register a ``PermissionListener`` implementation to receive the state of the request:
 
 ```java
-Dexter.withActivity(this)
+Dexter.withContext(this)
 	.withPermission(Manifest.permission.CAMERA)
 	.withListener(new PermissionListener() {
 		@Override public void onPermissionGranted(PermissionGrantedResponse response) {/* ... */}
@@ -103,7 +102,7 @@ PermissionListener compositePermissionListener = new CompositePermissionListener
 If you want to request multiple permissions you just need to call `withPermissions` and register an implementation of ``MultiplePermissionsListener``:
 
 ```java
-Dexter.withActivity(this)
+Dexter.withContext(this)
 	.withPermissions(
 		Manifest.permission.CAMERA,
 		Manifest.permission.READ_CONTACTS,
@@ -164,7 +163,7 @@ MultiplePermissionsListener compositePermissionsListener = new CompositeMultiple
 If you want to receive permission listener callbacks on the same thread that fired the permission request, you just need to call ``onSameThread`` before checking for permissions:
 
 ```java
-Dexter.withActivity(activity)
+Dexter.withContext(context)
 	.withPermission(permission)
 	.withListener(listener)
 	.onSameThread()
@@ -188,7 +187,7 @@ The most simple implementation of your ``onPermissionRationaleShouldBeShown`` me
 If you think there is an error in your Dexter integration, just register a `PermissionRequestErrorListener` when calling Dexter:
 
 ```java
-Dexter.withActivity(activity)
+Dexter.withContext(context)
 	.withPermission(permission)
 	.withListener(listener)
 	.withErrorListener(new PermissionRequestErrorListener() {
@@ -208,7 +207,7 @@ If you are using the ``MultiplePermissionsListener`` and you don't see the permi
 
 ```kotlin
 button.setOnClickListener {
-    Dexter.withActivity(this@MainActivity)
+    Dexter.withContext(this@MainActivity)
                         .withPermissions(
                             Manifest.permission.ACCESS_COARSE_LOCATION
                             ,Manifest.permission.ACCESS_FINE_LOCATION)
