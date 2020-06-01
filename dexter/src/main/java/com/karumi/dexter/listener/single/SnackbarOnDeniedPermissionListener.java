@@ -16,14 +16,13 @@
 
 package com.karumi.dexter.listener.single;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.Settings;
-import androidx.annotation.StringRes;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.SettingsClickListener;
+
+import androidx.annotation.StringRes;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
@@ -115,16 +114,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
      */
     public Builder withOpenSettingsButton(String buttonText) {
       this.buttonText = buttonText;
-      this.onClickListener = new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          Context context = view.getContext();
-          Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-              Uri.parse("package:" + context.getPackageName()));
-          myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
-          myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          context.startActivity(myAppSettings);
-        }
-      };
+      this.onClickListener = new SettingsClickListener();
       return this;
     }
 
