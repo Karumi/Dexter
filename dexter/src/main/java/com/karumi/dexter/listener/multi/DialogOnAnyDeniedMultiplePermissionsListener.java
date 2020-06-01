@@ -21,9 +21,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.listener.OnDialogButtonClickListener;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
-import com.karumi.dexter.MultiplePermissionsReport;
 
 /**
  * Utility listener that shows a {@link Dialog} with a minimum configuration when the user rejects
@@ -36,14 +39,17 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends BaseMultiplePe
   private final String message;
   private final String positiveButtonText;
   private final Drawable icon;
+  private final OnDialogButtonClickListener onDialogButtonClickListener;
 
   private DialogOnAnyDeniedMultiplePermissionsListener(Context context, String title,
-      String message, String positiveButtonText, Drawable icon) {
+      String message, String positiveButtonText, Drawable icon,
+          OnDialogButtonClickListener onDialogButtonClickListener) {
     this.context = context;
     this.title = title;
     this.message = message;
     this.positiveButtonText = positiveButtonText;
     this.icon = icon;
+    this.onDialogButtonClickListener = onDialogButtonClickListener;
   }
 
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -61,6 +67,7 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends BaseMultiplePe
         .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
           @Override public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
+            onDialogButtonClickListener.onClick();
           }
         })
         .setIcon(icon)
@@ -77,6 +84,7 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends BaseMultiplePe
     private String message;
     private String buttonText;
     private Drawable icon;
+    private OnDialogButtonClickListener onDialogButtonClickListener;
 
     private Builder(Context context) {
       this.context = context;
@@ -116,6 +124,18 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends BaseMultiplePe
       return this;
     }
 
+    public Builder withButtonText(String buttonText, OnDialogButtonClickListener onDialogButtonClickListener) {
+      this.buttonText = buttonText;
+      this.onDialogButtonClickListener = onDialogButtonClickListener;
+      return this;
+    }
+
+    public Builder withButtonText(@StringRes int resId, OnDialogButtonClickListener onDialogButtonClickListener) {
+      this.buttonText = context.getString(resId);
+      this.onDialogButtonClickListener = onDialogButtonClickListener;
+      return this;
+    }
+
     public Builder withIcon(Drawable icon) {
       this.icon = icon;
       return this;
@@ -130,7 +150,16 @@ public class DialogOnAnyDeniedMultiplePermissionsListener extends BaseMultiplePe
       String title = this.title == null ? "" : this.title;
       String message = this.message == null ? "" : this.message;
       String buttonText = this.buttonText == null ? "" : this.buttonText;
-      return new DialogOnAnyDeniedMultiplePermissionsListener(context, title, message, buttonText, icon);
+      OnDialogButtonClickListener onDialogButtonClickListener =
+              this.onDialogButtonClickListener != null
+              ? this.onDialogButtonClickListener
+              : new OnDialogButtonClickListener() {
+        @Override
+        public void onClick() {
+        }
+      };
+      return new DialogOnAnyDeniedMultiplePermissionsListener(context, title, message, buttonText, icon,
+              onDialogButtonClickListener);
     }
   }
 }
