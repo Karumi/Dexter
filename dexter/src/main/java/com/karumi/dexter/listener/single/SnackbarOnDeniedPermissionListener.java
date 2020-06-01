@@ -21,6 +21,7 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.SettingsClickListener;
+import com.karumi.dexter.listener.SnackbarUtils;
 
 import androidx.annotation.StringRes;
 
@@ -56,15 +57,7 @@ public class SnackbarOnDeniedPermissionListener extends BasePermissionListener {
 
   @Override public void onPermissionDenied(PermissionDeniedResponse response) {
     super.onPermissionDenied(response);
-
-    Snackbar snackbar = Snackbar.make(view, text, duration);
-    if (buttonText != null && onButtonClickListener != null) {
-      snackbar.setAction(buttonText, onButtonClickListener);
-    }
-    if (snackbarCallback != null) {
-      snackbar.addCallback(snackbarCallback);
-    }
-    snackbar.show();
+    SnackbarUtils.show(view, text, duration, buttonText, onButtonClickListener, snackbarCallback);
   }
 
   /**

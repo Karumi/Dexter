@@ -21,6 +21,7 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.listener.SettingsClickListener;
+import com.karumi.dexter.listener.SnackbarUtils;
 
 import androidx.annotation.StringRes;
 
@@ -59,19 +60,8 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     super.onPermissionsChecked(report);
 
     if (!report.areAllPermissionsGranted()) {
-      showSnackbar();
+      SnackbarUtils.show(view, text, duration, buttonText, onButtonClickListener, snackbarCallback);
     }
-  }
-
-  private void showSnackbar() {
-    Snackbar snackbar = Snackbar.make(view, text, duration);
-    if (buttonText != null && onButtonClickListener != null) {
-      snackbar.setAction(buttonText, onButtonClickListener);
-    }
-    if (snackbarCallback != null) {
-      snackbar.addCallback(snackbarCallback);
-    }
-    snackbar.show();
   }
 
   /**
