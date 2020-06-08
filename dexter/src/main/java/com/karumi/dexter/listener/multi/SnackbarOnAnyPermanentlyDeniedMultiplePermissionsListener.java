@@ -27,9 +27,9 @@ import androidx.annotation.StringRes;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
- * denied
+ * permanently denied
  */
-public class SnackbarOnAnyDeniedMultiplePermissionsListener
+public class SnackbarOnAnyPermanentlyDeniedMultiplePermissionsListener
     extends BaseMultiplePermissionsListener {
 
   private final View view;
@@ -45,7 +45,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
    * @param buttonText Message displayed in the snackbar button
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
-  private SnackbarOnAnyDeniedMultiplePermissionsListener(View view, String text,
+  private SnackbarOnAnyPermanentlyDeniedMultiplePermissionsListener(View view, String text,
       String buttonText, View.OnClickListener onButtonClickListener,
       Snackbar.Callback snackbarCallback, int duration) {
     this.view = view;
@@ -59,7 +59,7 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
   @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
     super.onPermissionsChecked(report);
 
-    if (!report.areAllPermissionsGranted()) {
+    if (!report.isAnyPermissionPermanentlyDenied()) {
       SnackbarUtils.show(view, text, duration, buttonText, onButtonClickListener, snackbarCallback);
     }
   }
@@ -136,10 +136,10 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     }
 
     /**
-     * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
+     * Builds a new instance of {@link SnackbarOnAnyPermanentlyDeniedMultiplePermissionsListener}
      */
-    public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
-      return new SnackbarOnAnyDeniedMultiplePermissionsListener(view, text, buttonText,
+    public SnackbarOnAnyPermanentlyDeniedMultiplePermissionsListener build() {
+      return new SnackbarOnAnyPermanentlyDeniedMultiplePermissionsListener(view, text, buttonText,
           onClickListener, snackbarCallback, duration);
     }
   }

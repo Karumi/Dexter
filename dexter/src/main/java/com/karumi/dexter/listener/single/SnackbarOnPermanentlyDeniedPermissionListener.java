@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.karumi.dexter.listener.multi;
+package com.karumi.dexter.listener.single;
 
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.SettingsClickListener;
 import com.karumi.dexter.listener.SnackbarUtils;
 
@@ -27,10 +27,9 @@ import androidx.annotation.StringRes;
 
 /**
  * Utility listener that shows a {@link Snackbar} with a custom text whenever a permission has been
- * denied
+ * permanently denied
  */
-public class SnackbarOnAnyDeniedMultiplePermissionsListener
-    extends BaseMultiplePermissionsListener {
+public class SnackbarOnPermanentlyDeniedPermissionListener extends BasePermissionListener {
 
   private final View view;
   private final String text;
@@ -45,9 +44,9 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
    * @param buttonText Message displayed in the snackbar button
    * @param onButtonClickListener Action performed when the user clicks the snackbar button
    */
-  private SnackbarOnAnyDeniedMultiplePermissionsListener(View view, String text,
-      String buttonText, View.OnClickListener onButtonClickListener,
-      Snackbar.Callback snackbarCallback, int duration) {
+  private SnackbarOnPermanentlyDeniedPermissionListener(View view, String text, String buttonText,
+      View.OnClickListener onButtonClickListener, Snackbar.Callback snackbarCallback,
+      int duration) {
     this.view = view;
     this.text = text;
     this.buttonText = buttonText;
@@ -56,10 +55,9 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     this.duration = duration;
   }
 
-  @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
-    super.onPermissionsChecked(report);
-
-    if (!report.areAllPermissionsGranted()) {
+  @Override public void onPermissionDenied(PermissionDeniedResponse response) {
+    super.onPermissionDenied(response);
+    if (response.isPermanentlyDenied()) {
       SnackbarUtils.show(view, text, duration, buttonText, onButtonClickListener, snackbarCallback);
     }
   }
@@ -123,24 +121,27 @@ public class SnackbarOnAnyDeniedMultiplePermissionsListener
     }
 
     /**
-     * Adds a callback to handle the snackbar {@code onDismissed} and {@code onShown} events.
+     * Adds a callback to handle the snackbar {@code onDismissed} and {@code onShown} events
      */
     public Builder withCallback(Snackbar.Callback callback) {
       this.snackbarCallback = callback;
       return this;
     }
 
+    /**
+     * Adds the duration of the snackbar on the screen
+     */
     public Builder withDuration(int duration) {
       this.duration = duration;
       return this;
     }
 
     /**
-     * Builds a new instance of {@link SnackbarOnAnyDeniedMultiplePermissionsListener}
+     * Builds a new instance of {@link SnackbarOnPermanentlyDeniedPermissionListener}
      */
-    public SnackbarOnAnyDeniedMultiplePermissionsListener build() {
-      return new SnackbarOnAnyDeniedMultiplePermissionsListener(view, text, buttonText,
-          onClickListener, snackbarCallback, duration);
+    public SnackbarOnPermanentlyDeniedPermissionListener build() {
+      return new SnackbarOnPermanentlyDeniedPermissionListener(view, text, buttonText, onClickListener,
+          snackbarCallback, duration);
     }
   }
 }
