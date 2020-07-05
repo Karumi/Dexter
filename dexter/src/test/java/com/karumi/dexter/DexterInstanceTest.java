@@ -153,7 +153,7 @@ import static org.mockito.Mockito.when;
     givenPermissionIsAlreadyDenied(ANY_PERMISSION);
 
     whenCheckPermission(permissionListener, ANY_PERMISSION);
-    dexter.onActivityDestroyed();
+    dexter.onActivityDestroyed(activity);
     whenCheckPermission(permissionListener, ANY_PERMISSION);
 
     verifyRequestPermissions(new String[]{ANY_PERMISSION}, 2);

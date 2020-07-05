@@ -40,7 +40,7 @@ public final class DexterActivity extends Activity
 
   @Override protected void onDestroy() {
     super.onDestroy();
-    Dexter.onActivityDestroyed();
+    Dexter.onActivityDestroyed(this);
   }
 
   @Override protected void onNewIntent(Intent intent) {
