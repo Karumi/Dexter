@@ -121,9 +121,10 @@ final class DexterInstance {
 
   /**
    * Method called whenever the inner activity has been destroyed.
+   * @param oldActivity the DexterActivity that was destroyed
    */
-  void onActivityDestroyed() {
-    if (activity != null) {
+  void onActivityDestroyed(Activity oldActivity) {
+    if (activity == oldActivity) {
       activity = null;
       isRequestingPermission.set(false);
       rationaleAccepted.set(false);
@@ -318,7 +319,7 @@ final class DexterInstance {
     }
 
     if (activity != null && activity.isFinishing()) {
-      onActivityDestroyed();
+      onActivityDestroyed(activity);
     }
 
     pendingPermissions.clear();
