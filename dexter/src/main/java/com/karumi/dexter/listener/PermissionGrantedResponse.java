@@ -44,4 +44,21 @@ public final class PermissionGrantedResponse {
   public String getPermissionName() {
     return requestedPermission.getName();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PermissionGrantedResponse that = (PermissionGrantedResponse) o;
+    return requestedPermission.getName().equals(that.requestedPermission.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return requestedPermission.getName().hashCode();
+  }
 }
