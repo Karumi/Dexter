@@ -18,34 +18,37 @@ package com.karumi.dexter;
 
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
+
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An in detail report of the request permission process
  */
 public final class MultiplePermissionsReport {
 
-  private final List<PermissionGrantedResponse> grantedPermissionResponses;
-  private final List<PermissionDeniedResponse> deniedPermissionResponses;
+  private final Set<PermissionGrantedResponse> grantedPermissionResponses;
+  private final Set<PermissionDeniedResponse> deniedPermissionResponses;
 
   MultiplePermissionsReport() {
-    grantedPermissionResponses = new LinkedList<>();
-    deniedPermissionResponses = new LinkedList<>();
+    grantedPermissionResponses = new LinkedHashSet<>();
+    deniedPermissionResponses = new LinkedHashSet<>();
   }
 
   /**
    * Returns a collection with all the permissions that has been granted
    */
   public List<PermissionGrantedResponse> getGrantedPermissionResponses() {
-    return grantedPermissionResponses;
+    return new LinkedList<>(grantedPermissionResponses);
   }
 
   /**
    * Returns a collection with all the permissions that has been denied
    */
   public List<PermissionDeniedResponse> getDeniedPermissionResponses() {
-    return deniedPermissionResponses;
+    return new LinkedList<>(deniedPermissionResponses);
   }
 
   /**

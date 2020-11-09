@@ -53,4 +53,21 @@ public final class PermissionDeniedResponse {
   public boolean isPermanentlyDenied() {
     return permanentlyDenied;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PermissionDeniedResponse that = (PermissionDeniedResponse) o;
+    return requestedPermission.getName().equals(that.requestedPermission.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return requestedPermission.getName().hashCode();
+  }
 }
