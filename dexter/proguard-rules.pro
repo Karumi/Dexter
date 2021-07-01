@@ -1,5 +1,3 @@
--renamesourcefileattribute SourceFile
-
 # Preserve all Dexter classes and method names
 
 -keepattributes InnerClasses, Signature, *Annotation*
